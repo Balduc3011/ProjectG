@@ -1,0 +1,103 @@
+using System.Collections.Generic;
+using DataSave;
+using NUnit.Framework;
+using R3;
+using UnityEngine;
+
+public class ResourceManager : MonoBehaviour
+{
+    public List<ReactiveGameResource> gameResources;
+
+    public void LoadData()
+    {
+        List<GameResource> savedResources = ResourceDataSave.Function.GameResources();
+        gameResources = new List<ReactiveGameResource>();
+        for (var i = 0; i < savedResources.Count; i++)
+        {
+            var resource = savedResources[i];
+            ReactiveGameResource reactiveResource = new ReactiveGameResource(resource.Type, resource.DefineValue, resource.Value);
+            gameResources.Add(reactiveResource);
+        }
+    }
+    
+    public ReactiveGameResource GetGameResource(ResourceType type, int defineValue)
+    {
+        for (var i = 0; i < gameResources.Count; i++)
+        {
+            var resource = gameResources[i];
+            if (resource.Type == type && resource.DefineValue == defineValue)
+            {
+                return resource;
+            }
+        }
+        return AddNewGameResource(type, defineValue, 0);
+    }
+    
+    private ReactiveGameResource AddNewGameResource(ResourceType type, int defineValue, float value)
+    {
+        ResourceDataSave.Function.AddNewGameResource(type, defineValue, value);
+        ReactiveGameResource resource = new ReactiveGameResource(type, defineValue, value);
+        gameResources.Add(resource);
+        return resource;
+    }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type">ResourceType</param>
+    /// <param name="defineValue"></param>
+    /// <param name="value">Positive to Add, Negative to Subtract</param>
+    /// <returns></returns>
+    public ReactiveGameResource AddGameResource(ResourceType type, int defineValue, float value)
+    {
+        ResourceDataSave.Function.AddGameResource(type, defineValue, value);
+        ReactiveGameResource resource = GetGameResource(type, defineValue);
+        resource.Value.Value += value;
+        return resource;
+    }
+}
+
+[System.Serializable]
+public partial class ReactiveGameResource
+{
+    [field: SerializeField] public ResourceType Type { get; set; }
+    [field: SerializeField] public int DefineValue { get; set; }
+    [field: SerializeField] public ReactiveProperty<float> Value { get; set; }
+
+    public ReactiveGameResource(ResourceType type, int defineValue, float value)
+    {
+        Type = type;
+        DefineValue = defineValue;
+        Value = new ReactiveProperty<float>(value);
+    }
+}
+
+public enum ResourceType
+{
+    None = 0,
+    Currency = 1,
+    Booster = 2,
+    Special = 3,
+}
+
+public enum CurrencyType
+{
+    None = 0,
+    Money = 1,
+    Energy = 2,
+}
+
+public enum BoosterType
+{
+    None = 0,
+    Booster1 = 1,
+    Booster2 = 2,
+    Booster3 = 3,
+    Booster4 = 4,
+}
+
+public enum SpecialType
+{
+    None = 0,
+    NoAds = 1,
+}
