@@ -1,22 +1,20 @@
 using System;
 using Cysharp.Threading.Tasks;
-using Demo.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 using ZBase.UnityScreenNavigator.Core.Modals;
-using ZBase.UnityScreenNavigator.Core.Views;
 
 namespace Balduu
 {
-    public class UIScreenMain : ZBase.UnityScreenNavigator.Core.Screens.Screen
+    public class UIModalMenu : Modal
     {
         public static class Events
         {
             
         }
-        [field: SerializeField] public static string ScreenName { get; private set; } = "UIScreenMain";
-        [field: SerializeField] public UIScreenMainModel Model { get; private set; }
-        [field: SerializeField] public UIScreenMainView View { get; private set; }
+        [field: SerializeField] public static string ModalName { get; private set; } = "UIModalMenu";
+        [field: SerializeField] public UIModalMenuModel Model { get; private set; }
+        [field: SerializeField] public UIModalMenuView View { get; private set; }
 
         public override async UniTask Initialize(Memory<object> args)
         {
@@ -29,12 +27,16 @@ namespace Balduu
 
         public override UniTask Cleanup(Memory<object> args)
         {
-            View.SettingBtn.onClick.RemoveAllListeners();
-            View.TestAdsBtn.onClick.RemoveAllListeners();
-            View.PlayGameBtn.onClick.RemoveAllListeners();
+            ClearAction();
             return UniTask.CompletedTask;
         }
 
+        private void ClearAction()
+        {
+            View.SettingBtn.onClick.RemoveAllListeners();
+            View.TestAdsBtn.onClick.RemoveAllListeners();
+            View.PlayGameBtn.onClick.RemoveAllListeners();
+        }
         private async UniTask OnClickSettingBtn()
         {
             await UIManager.ShowModal("UIModalSetting", null);
@@ -63,7 +65,7 @@ namespace Balduu
     }
 
     [System.Serializable]
-    public class UIScreenMainModel
+    public class UIModalMenuModel
     {
         public async UniTask Initialize(Memory<object> args)
         {
@@ -72,13 +74,13 @@ namespace Balduu
     }
 
     [System.Serializable]
-    public class UIScreenMainView
+    public class UIModalMenuView
     {
-        [field: SerializeField] public CanvasGroup MainView {get; private set;}
+        [field: SerializeField] public CanvasGroup MainView { get; private set; }
         [field: SerializeField] public Button SettingBtn {get; private set;}
         [field: SerializeField] public Button TestAdsBtn {get; private set;}
         [field: SerializeField] public Button PlayGameBtn {get; private set;}
-        
+
         public async UniTask Initialize(Memory<object> args)
         {
             await UniTask.CompletedTask;

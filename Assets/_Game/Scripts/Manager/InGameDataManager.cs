@@ -70,4 +70,13 @@ public class InGameDataManager : DDOLSingleton<InGameDataManager>
         InGameData = new InGameData();
         SaveData();
     }
+    
+    [Button]
+    private void LogResourceData()
+    {
+        foreach (var resource in InGameData.ResourceDataSave.gameResources)
+        {
+            DebugAds.Log($"Resource Type: {resource.Type}, DefineValue: {resource.DefineValue}, Value: {resource.Value}");
+        }
+    }
 }

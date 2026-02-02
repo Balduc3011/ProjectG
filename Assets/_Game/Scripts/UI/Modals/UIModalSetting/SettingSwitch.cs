@@ -1,4 +1,5 @@
 using Balduu;
+using Baseduu.ReactiveFields;
 using R3;
 using TMPro;
 using UnityEngine;
@@ -6,11 +7,11 @@ using UnityEngine;
 public class SettingSwitch : MonoBehaviour
 {
     public SettingType settingType;
-    public ReactiveProperty<bool> value;
+    public ReactiveValue<bool> value;
     public TextMeshProUGUI titleTxt;
     public UISwitch uiSwitch;
     
-    public void Init(SettingType type, ReactiveProperty<bool> val)
+    public void Init(SettingType type, ReactiveValue<bool> val)
     {
         settingType = type;
         titleTxt.text = GameManager.LocalizationManager.GetTextBySample(settingType.ToString());

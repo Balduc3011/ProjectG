@@ -16,8 +16,8 @@ namespace Balduu
         public Transform handleActivePos;
         public Transform handleDeactivePos;
         public CanvasGroup handleActiveCG;
-        public float trasitionTime = 0.15f;
-        private bool isTrasiting;
+        public float transitionTime = 0.15f;
+        private bool isTransiting;
         
         private void Start()
         {
@@ -32,7 +32,7 @@ namespace Balduu
         
         private void ToggleSwitch()
         {
-            if (!isTrasiting)
+            if (!isTransiting)
             {
                 activeStatus = !activeStatus;
                 onValueChange?.Invoke(activeStatus);
@@ -43,18 +43,18 @@ namespace Balduu
         private async UniTask UpdateSwitchVisuals()
         {
             var targetPos = !activeStatus ? handleDeactivePos : handleActivePos;
-            isTrasiting = true;
+            isTransiting = true;
             if (handleActiveCG)
             {
                 var targetAlpha = !activeStatus ? 0f : 1f;
-                LMotion.Create(handleActiveCG.alpha, targetAlpha, trasitionTime)
+                LMotion.Create(handleActiveCG.alpha, targetAlpha, transitionTime)
                     .BindToAlpha(handleActiveCG)
                     .AddTo(handleActiveCG);
             }
-            await LMotion.Create(handle.localPosition, targetPos.localPosition, trasitionTime)
+            await LMotion.Create(handle.localPosition, targetPos.localPosition, transitionTime)
                 .BindToLocalPosition(handle)
                 .AddTo(handle);
-            isTrasiting = false;
+            isTransiting = false;
         }
     }
 }

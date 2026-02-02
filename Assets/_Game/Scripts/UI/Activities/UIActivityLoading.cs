@@ -95,7 +95,7 @@ namespace Balduu
 
         public async UniTask RunLoading()
         {
-            await LMotion.Create(0.05f, 1f, 2f).Bind(SetLoadingSliderValue);
+            await LMotion.Create(0.05f, 1f, 1f).Bind(SetLoadingSliderValue);
         }
 
         private void SetLoadingSliderValue(float value)

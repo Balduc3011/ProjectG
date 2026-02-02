@@ -26,13 +26,35 @@ namespace DataSave
         
         public static class Function
         {
+            private static ProfileDataSave ProfileDataSave => InGameDataManager.Instance.InGameData.ProfileDataSave;
             public static string GetPlayerId()
             {
-                return Instance.playerId;
+                return ProfileDataSave.playerId;
             }
             public static void SetPlayerId(string id)
             {
-                Instance.playerId = id;
+                ProfileDataSave.playerId = id;
+                InGameDataManager.Instance.SaveData();
+            }
+            public static string GetPlayerName()
+            {
+                return ProfileDataSave.playerName;
+            }
+
+            public static void SetPlayerName(string name)
+            {
+                ProfileDataSave.playerName = name;
+                InGameDataManager.Instance.SaveData();
+            }
+            
+            public static int GetPlayerLevel()
+            {
+                return ProfileDataSave.playerLevel;
+            }
+            public static void SetPlayerLevel(int level)
+            {
+                ProfileDataSave.playerLevel = level;
+                InGameDataManager.Instance.SaveData();
             }
         }
     }

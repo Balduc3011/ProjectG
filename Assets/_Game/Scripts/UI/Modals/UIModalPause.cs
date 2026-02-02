@@ -48,7 +48,14 @@ namespace Balduu
         
         private void OnClickBackToMenu()
         {
-            CloseModal().Forget();
+            BackToMenu().Forget();
+        }
+        
+        private async UniTask BackToMenu()
+        {
+            ClearAction();
+            GameManager.Instance.BackToMenu().Forget();
+            await UIManager.CloseModal(ModalName, null);
         }
     }
 

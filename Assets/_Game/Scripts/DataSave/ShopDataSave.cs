@@ -26,6 +26,7 @@ namespace DataSave
                 if (!ShopDataSave.purchasedPackIds.Contains(packId))
                 {
                     ShopDataSave.purchasedPackIds.Add(packId);
+                    InGameDataManager.Instance.SaveData();
                 }
             }
         }

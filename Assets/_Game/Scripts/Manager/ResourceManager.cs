@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Baseduu.ReactiveFields;
 using DataSave;
 using NUnit.Framework;
 using R3;
@@ -55,6 +56,15 @@ public class ResourceManager : MonoBehaviour
         resource.Value.Value += value;
         return resource;
     }
+    
+    public void AddGameResources(List<GameResource> resources)
+    {
+        for (var i = 0; i < resources.Count; i++)
+        {
+            var res = resources[i];
+            AddGameResource(res.Type, res.DefineValue, res.Value);
+        }
+    }
 }
 
 [System.Serializable]
@@ -62,13 +72,13 @@ public partial class ReactiveGameResource
 {
     [field: SerializeField] public ResourceType Type { get; set; }
     [field: SerializeField] public int DefineValue { get; set; }
-    [field: SerializeField] public ReactiveProperty<float> Value { get; set; }
+    [field: SerializeField] public ReactiveValue<float> Value { get; set; }
 
     public ReactiveGameResource(ResourceType type, int defineValue, float value)
     {
         Type = type;
         DefineValue = defineValue;
-        Value = new ReactiveProperty<float>(value);
+        Value = new ReactiveValue<float>(value);
     }
 }
 
@@ -100,4 +110,5 @@ public enum SpecialType
 {
     None = 0,
     NoAds = 1,
+    IAP = 2,
 }

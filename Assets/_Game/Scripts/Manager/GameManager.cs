@@ -1,4 +1,5 @@
 using System;
+using Balduu;
 using Balduu.Utility.DesignPattern;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -21,6 +22,7 @@ public class GameManager : Singleton<GameManager>
     public static ProfileManager ProfileManager => Instance.profileManager;
     public ResourceManager resourceManager;
     public static ResourceManager ResourceManager => Instance.resourceManager;
+    private bool loadedUIScreenMain = false;
 
     private void Start()
     {
@@ -33,5 +35,23 @@ public class GameManager : Singleton<GameManager>
         ResourceManager.LoadData();
         await UniTask.DelayFrame(1);
         UIManager.LoadData().Forget();
+    }
+
+    public async UniTaskVoid BackToMenu()
+    {
+        loadedUIScreenMain = false;
+        UIActivityLoadingModel loadingModel = new UIActivityLoadingModel
+        {
+            WaitAction = WaitForFirstUI,
+            DoneAction = null
+        };
+        await UIManager.ShowActivity(UIActivityLoading.ActivityName, new Memory<object>(new object[] { loadingModel }));
+        await UIManager.CloseScreen(UIScreenPlay.ScreenName, null);
+        loadedUIScreenMain = true;
+    }
+
+    private async UniTask WaitForFirstUI()
+    {
+        await UniTask.WaitUntil(() => loadedUIScreenMain);
     }
 }

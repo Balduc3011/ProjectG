@@ -45,6 +45,7 @@ namespace DataSave
             {
                 SettingData settingData = new SettingData(settingType, isOn);
                 SettingDataSave.settingData.Add(settingData);
+                InGameDataManager.Instance.SaveData();
                 return settingData;
             }
             
@@ -52,6 +53,7 @@ namespace DataSave
             {
                 SettingData settingData = GetSettingData(settingType);
                 settingData.isOn = isOn;
+                InGameDataManager.Instance.SaveData();
                 return settingData;
             }
         }

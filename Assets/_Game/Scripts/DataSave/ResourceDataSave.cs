@@ -51,6 +51,7 @@ namespace DataSave
             {
                 GameResource resource = new GameResource(type, defineValue, value);
                 ResourceDataSave.gameResources.Add(resource);
+                InGameDataManager.Instance.SaveData();
                 return resource;
             }
 
@@ -58,6 +59,7 @@ namespace DataSave
             {
                 GameResource resource = GetGameResource(type, defineValue);
                 resource.Value += value;
+                InGameDataManager.Instance.SaveData();
                 return resource;
             }
         }

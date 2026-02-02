@@ -70,7 +70,7 @@ namespace Balduu
 
         private void ClearAction()
         {{
-            View.CloseBtn.onClick.RemoveAllListeners();
+            View.CloseBtn?.onClick.RemoveAllListeners();
         }}
     }}
 
