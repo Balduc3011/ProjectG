@@ -12,3 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d8cebabfb91c224d8574f585daa4ea6, type: 3}
   m_Name: SpriteGlobalConfig
   m_EditorClassIdentifier: Assembly-CSharp::SpriteGlobalConfig
+  currencySprites:
+  - type: 1
+    sprite: {fileID: 21300000, guid: cb9ac5c430df5468c8ecf26434823ecb, type: 3}
+  - type: 2
+    sprite: {fileID: 21300000, guid: e0940f4e599044730b69eb2f0af6617d, type: 3}
+  - type: 3
+    sprite: {fileID: 21300000, guid: 29bdb75a9863a48d2ae08b345389a74a, type: 3}
+  boosterSprites:
+  - type: 1
+    sprite: {fileID: 21300000, guid: cee2ed6d1f89d417cad772822770ccd6, type: 3}
+  - type: 2
+    sprite: {fileID: 21300000, guid: a92e7d630c4dd410796633cb8c85ba0d, type: 3}
+  - type: 3
+    sprite: {fileID: 21300000, guid: 414430e627d654d12b00ab20fb44fa86, type: 3}
+  - type: 4
+    sprite: {fileID: 21300000, guid: 668669c06616f43a98368840d9bcd570, type: 3}
+  specialSprites:
+  - type: 1
+    sprite: {fileID: 21300000, guid: 98fdd601ab36241848c3e55745f1ebe7, type: 3}

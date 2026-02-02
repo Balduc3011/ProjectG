@@ -95,6 +95,7 @@ public enum CurrencyType
     None = 0,
     Money = 1,
     Energy = 2,
+    Life = 3,
 }
 
 public enum BoosterType
