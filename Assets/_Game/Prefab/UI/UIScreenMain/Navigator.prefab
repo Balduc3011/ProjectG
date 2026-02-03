@@ -289,10 +289,18 @@ PrefabInstance:
       propertyPath: m_Alpha
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4636405403534816136, guid: f3eb97240afe1e9449ecf43dde4b4cd5, type: 3}
+      propertyPath: m_text
+      value: Game
+      objectReference: {fileID: 0}
     - target: {fileID: 4652266194370150522, guid: f3eb97240afe1e9449ecf43dde4b4cd5, type: 3}
       propertyPath: tabIndex
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5989344269470597262, guid: f3eb97240afe1e9449ecf43dde4b4cd5, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0a71eb36b409140e28dd260cdd059f04, type: 3}
     - target: {fileID: 8582497001666612348, guid: f3eb97240afe1e9449ecf43dde4b4cd5, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.25
@@ -426,6 +434,14 @@ PrefabInstance:
       propertyPath: m_Alpha
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4636405403534816136, guid: f3eb97240afe1e9449ecf43dde4b4cd5, type: 3}
+      propertyPath: m_text
+      value: Shop
+      objectReference: {fileID: 0}
+    - target: {fileID: 5989344269470597262, guid: f3eb97240afe1e9449ecf43dde4b4cd5, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 93c216ac791944ce3890a9175a006fbf, type: 3}
     - target: {fileID: 9101856283086289955, guid: f3eb97240afe1e9449ecf43dde4b4cd5, type: 3}
       propertyPath: m_Name
       value: NavTabBtn
@@ -543,10 +559,18 @@ PrefabInstance:
       propertyPath: m_Alpha
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4636405403534816136, guid: f3eb97240afe1e9449ecf43dde4b4cd5, type: 3}
+      propertyPath: m_text
+      value: Collection
+      objectReference: {fileID: 0}
     - target: {fileID: 4652266194370150522, guid: f3eb97240afe1e9449ecf43dde4b4cd5, type: 3}
       propertyPath: tabIndex
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5989344269470597262, guid: f3eb97240afe1e9449ecf43dde4b4cd5, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: e4400a30b0218447088b25563552978d, type: 3}
     - target: {fileID: 8582497001666612348, guid: f3eb97240afe1e9449ecf43dde4b4cd5, type: 3}
       propertyPath: m_LocalScale.x
       value: 1

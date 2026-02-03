@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 using Baseduu.ReactiveFields;
@@ -27,3 +28,4 @@ public class ReactiveValueDrawer : PropertyDrawer
         return EditorGUI.GetPropertyHeight(valueProp, label, true);
     }
 }
+#endif

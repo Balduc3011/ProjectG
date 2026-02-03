@@ -18,7 +18,7 @@ public class NavTabBtn : MonoBehaviour
     private float cachedWidth;
     private float cachedHeight;
     private float cachedWidthMul;
-    private float iconMul = 1.25f;
+    private float iconMul = 1.5f;
     private float transtionTime = 0.1f;
     private MotionHandle tabRectHandle;
     private MotionHandle tabIconScaleHandle;

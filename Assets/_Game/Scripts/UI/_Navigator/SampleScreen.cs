@@ -1,8 +1,8 @@
 using System;
-using Cysharp.Threading.Tasks;using Sirenix.OdinInspector.Editor.Internal;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Demo.Scripts
+namespace Balduu
 {
     public class SampleScreen : ZBase.UnityScreenNavigator.Core.Screens.Screen
     {
