@@ -14,8 +14,8 @@ namespace Balduu
     {
         public static class Events
         {
-            public static Action OnStartDragSwipeEvent;
             public static Action OnEndDragSwipeEvent;
+            public static Action<int> MoveSwipeAreaEvent;
         }
         [field: SerializeField] public static string ScreenName { get; private set; } = "UIScreenMain";
         [field: SerializeField] public UIScreenMainModel Model { get; private set; }
@@ -25,14 +25,14 @@ namespace Balduu
         {
             await Model.Initialize(args);
             await View.Initialize(args);
-            Events.OnStartDragSwipeEvent += View.OnStartDragSwipe;
             Events.OnEndDragSwipeEvent += View.OnEndDragSwipe;
+            Events.MoveSwipeAreaEvent += View.MoveSwipeArea;
         }
 
         public override UniTask Cleanup(Memory<object> args)
         {
-            Events.OnStartDragSwipeEvent -= View.OnStartDragSwipe;
             Events.OnEndDragSwipeEvent -= View.OnEndDragSwipe;
+            Events.MoveSwipeAreaEvent -= View.MoveSwipeArea;
             return UniTask.CompletedTask;
         }
     }
@@ -57,7 +57,6 @@ namespace Balduu
         [field: SerializeField] public List<float> ModalRectsPosX {get; private set;}
         [field: SerializeField] public SwipeControls SwipeControls {get; private set;}
         [field: SerializeField] public RectTransform SwipeArea {get; private set;}
-        private MotionHandle swipeAreaHandle;
         
         public async UniTask Initialize(Memory<object> args)
         {
@@ -70,6 +69,7 @@ namespace Balduu
         public async UniTask InitializeModal(Memory<object> args)
         {
             InitModal(args);
+            await UniTask.CompletedTask;
         }
 
         private void InitModal(Memory<object> args)
@@ -87,17 +87,9 @@ namespace Balduu
                 ModalRectsPosX.Add(posX);
             }
         }
-        
-        public void OnStartDragSwipe()
-        {
-            if(swipeAreaHandle.IsPlaying())
-                swipeAreaHandle.Cancel();
-        }
 
         public void OnEndDragSwipe()
         {
-            if(swipeAreaHandle.IsPlaying())
-                swipeAreaHandle.Cancel();
             var nearestDistance = float.MaxValue;
             var nearestIndex = 0;
             for (var i = 0; i < ModalRectsPosX.Count; i++)
@@ -109,16 +101,13 @@ namespace Balduu
                     nearestIndex = i;
                 }
             }
-            AutoMoveSwipeArea(SwipeArea.anchoredPosition.x, ModalRectsPosX[nearestIndex]);
+            SwipeControls.AutoMoveSwipeArea(SwipeArea.anchoredPosition.x, ModalRectsPosX[nearestIndex]).Forget();
+            MenuNav.SetSelectedTabEvent?.Invoke(ModalRectsPosX.Count - 1 - nearestIndex);
         }
-        
-        private void AutoMoveSwipeArea(float from, float to)
+
+        public void MoveSwipeArea(int tabIndex)
         {
-            swipeAreaHandle = LMotion.Create(from, to, 0.2f).Bind(ChangeSwipeAreaPosX);
-        }
-        private void ChangeSwipeAreaPosX(float x)
-        {
-            SwipeArea.position = new Vector2(x, SwipeArea.position.y);
+            SwipeControls.AutoMoveSwipeArea(SwipeArea.anchoredPosition.x, ModalRectsPosX[ModalRects.Count - 1 -tabIndex]).Forget();
         }
     }
 }
