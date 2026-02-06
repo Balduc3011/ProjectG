@@ -135,6 +135,29 @@ namespace Balduu
         #endregion
 
         #region Object
+
+        // Keep reference type T as class to use MemberwiseClone
+        public static T ShallowClone<T>(T source) where T : class
+        {
+            if (source == null) return null;
+            return (T)source.GetType()
+                .GetMethod("MemberwiseClone", 
+                    System.Reflection.BindingFlags.Instance | 
+                    System.Reflection.BindingFlags.NonPublic)
+                .Invoke(source, null);
+        }
+        
+        // Renew all reference type T properties, so it will be deep clone
+        public static T DeepClone<T>(T source)
+        {
+            if (source == null) return default;
+            string json = JsonUtility.ToJson(source);
+            return JsonUtility.FromJson<T>(json);
+        }
+
+        #endregion
+
+        #region Transform
         public static Quaternion RandomRotation()
         {
             Vector3 rotation = new(0f, Random.Range(0, 360), 0);
