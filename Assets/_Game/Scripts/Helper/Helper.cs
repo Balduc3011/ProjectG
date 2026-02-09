@@ -536,20 +536,22 @@ namespace Balduu
 
         private static Func<UniTask> currentOnClickTask;
 
-        public static void AddListenerUI(this Button button, Action action)
+        public static void AddListenerUI(this Button button, Action action, bool animate = true)
         {
             button.onClick.AddListener(() =>
             {
                 action?.Invoke();
-                RunClickAnim(button.transform).Forget();
+                if (animate)
+                    RunClickAnim(button.transform).Forget();
             });
         }
-        public static void AddListenerUI(this Button button, Func<UniTask> action)
+        public static void AddListenerUI(this Button button, Func<UniTask> action, bool animate = true)
         {
             button.onClick.AddListener(() =>
             {
                 RunClickAction(action).Forget();
-                RunClickAnim(button.transform).Forget();
+                if (animate)
+                    RunClickAnim(button.transform).Forget();
             });
         }
         

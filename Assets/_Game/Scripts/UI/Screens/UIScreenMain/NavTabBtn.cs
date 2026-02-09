@@ -27,7 +27,7 @@ public class NavTabBtn : MonoBehaviour
 
     private void Start()
     {
-        tabBtn.AddListenerUI(ChangeSelectedTab);
+        tabBtn.AddListenerUI(ChangeSelectedTab, false);
     }
 
     private void ChangeSelectedTab()

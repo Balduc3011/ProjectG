@@ -54,8 +54,24 @@ namespace Balduu
         private async UniTask BackToMenu()
         {
             ClearAction();
-            GameManager.Instance.BackToMenu().Forget();
             await UIManager.CloseModal(ModalName, null);
+            UIActivityAlertModelData data = new UIActivityAlertModelData();
+            data.alertValue = "Back To Menu\nAll progress will be lost.";
+            data.confirmAction = ConfirmBackToMenu;
+            data.declineAction = DeclineBackToMenu;
+            data.positiveConfirm = false;
+            await UIManager.ShowActivity(nameof(UIActivityAlert), new Memory<object>(new object[] { data }));
+        }
+        
+        // Back To Menu Alert
+        public void ConfirmBackToMenu()
+        {
+            GameManager.Instance.BackToMenu().Forget();
+        }
+
+        public void DeclineBackToMenu()
+        {
+            UIManager.ShowModal(UIModalPause.ModalName, null).Forget();
         }
     }
 

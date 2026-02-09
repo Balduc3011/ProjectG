@@ -3,6 +3,7 @@ using Baseduu.ReactiveFields;
 using DataSave;
 using NUnit.Framework;
 using R3;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class ResourceManager : MonoBehaviour
@@ -34,6 +35,7 @@ public class ResourceManager : MonoBehaviour
         return AddNewGameResource(type, defineValue, 0);
     }
     
+    [Button]
     private ReactiveGameResource AddNewGameResource(ResourceType type, int defineValue, float value)
     {
         ResourceDataSave.Function.AddNewGameResource(type, defineValue, value);

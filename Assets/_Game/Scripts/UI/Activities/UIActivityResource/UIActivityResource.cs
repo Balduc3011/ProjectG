@@ -26,6 +26,10 @@ namespace Balduu
             }
             await Model.Initialize(args);
             await View.Initialize(args);
+            
+            View.UIResourceBarMoney.Init(GameManager.ResourceManager.GetGameResource(ResourceType.Currency, (int)CurrencyType.Money).Value, OnClickOpenShopMoney);
+            View.UIResourceBarLife.Init(GameManager.ResourceManager.GetGameResource(ResourceType.Currency, (int)CurrencyType.Life).Value, OnClickOpenShopLife);
+            
             Events.ShowContentEvent += ShowContent;
         }
 
@@ -60,6 +64,18 @@ namespace Balduu
                 View.MainView.alpha = show ? 1 : 0;
             }
         }
+
+        private void OnClickOpenShopMoney()
+        {
+            MenuNav.SetSelectedTabEvent?.Invoke(0);
+            UIScreenMain.Events.MoveSwipeAreaEvent?.Invoke(0);
+        }
+
+        private void OnClickOpenShopLife()
+        {
+            MenuNav.SetSelectedTabEvent?.Invoke(0);
+            UIScreenMain.Events.MoveSwipeAreaEvent?.Invoke(0);
+        }
     }
 
     [System.Serializable]
@@ -75,6 +91,8 @@ namespace Balduu
     public class UIActivityResourceView
     {
         [field: SerializeField] public CanvasGroup MainView { get; private set; }
+        [field: SerializeField] public UIResourceBar UIResourceBarMoney { get; private set; }
+        [field: SerializeField] public UIResourceBar UIResourceBarLife { get; private set; }
         public async UniTask Initialize(Memory<object> args)
         {
             await UniTask.CompletedTask;
