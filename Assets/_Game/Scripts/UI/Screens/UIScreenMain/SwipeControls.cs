@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Balduu;
 using Cysharp.Threading.Tasks;
 using LitMotion;
@@ -16,6 +17,8 @@ public class SwipeControls : MonoBehaviour
         private bool dragging;
         private float draggingTime;
         private MotionHandle swipeAreaHandle;
+        public List<RectTransform> childRect;
+        private float limitRect;
         
         private void Update()
         {
@@ -113,9 +116,23 @@ public class SwipeControls : MonoBehaviour
             if (dragging && TryGetPointer(out TouchPhase phase, out Vector2 pointerPos) && (phase == TouchPhase.Moved || phase == TouchPhase.Began))
             {
                 var delta = pointerPos.x - startTouchPosition.x;
+                delta += rootSwipeAreaPosX;
+                float limit = GetRectLimit();
+                delta = Mathf.Clamp(delta, -limit, limit);
                 // use anchoredPosition to match root values
-                swipeArea.anchoredPosition = new Vector2(rootSwipeAreaPosX + delta, rootSwipeAreaPosY);
+                swipeArea.anchoredPosition = new Vector2(delta, rootSwipeAreaPosY);
             }
+        }
+
+        private float GetRectLimit()
+        {
+            if (limitRect == 0)
+            {
+                int sideChild = childRect.Count / 2;
+                float childWidth = childRect[0].rect.width;
+                limitRect = (childWidth * sideChild);
+            }
+            return limitRect;
         }
 
         public async UniTask AutoMoveSwipeArea(float from, float to)

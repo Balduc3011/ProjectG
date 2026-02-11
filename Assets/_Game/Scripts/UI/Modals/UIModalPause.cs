@@ -78,6 +78,7 @@ namespace Balduu
     [System.Serializable]
     public class UIModalPauseModel
     {
+        [field: SerializeField] public bool LastPauseGame { get; private set; }
         public async UniTask Initialize(Memory<object> args)
         {
             await UniTask.CompletedTask;

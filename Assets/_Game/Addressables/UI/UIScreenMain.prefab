@@ -305,6 +305,10 @@ MonoBehaviour:
   navMenu: {fileID: 7898078550589237617}
   swipeArea: {fileID: 6564302554537268781}
   swipeAreaCg: {fileID: 7334596049045109478}
+  childRect:
+  - {fileID: 8199522975988958760}
+  - {fileID: 5993774670561487189}
+  - {fileID: 1206590225230179468}
 --- !u!1001 &1850529012664257257
 PrefabInstance:
   m_ObjectHideFlags: 0
