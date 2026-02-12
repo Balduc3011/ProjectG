@@ -22,7 +22,7 @@ namespace Balduu
             await View.Initialize(args);
             View.SettingBtn.AddListenerUI(OnClickSettingBtn);
             View.TestAdsBtn.AddListenerUI(OnClickTestAdsBtn);
-            View.PlayGameBtn.AddListenerUI(OnClickPlayGameBtn);
+            View.PlayGameBtn.AddListenerUI(GameManager.Instance.OpenBattleScene);
         }
 
         public override UniTask Cleanup(Memory<object> args)
@@ -44,23 +44,6 @@ namespace Balduu
         private async UniTask OnClickTestAdsBtn()
         {
             await UIManager.ShowModal("UIModalTestAds", null);
-        }
-        
-        private async UniTask OnClickPlayGameBtn()
-        {
-            UIActivityLoadingModel loadingModel = new UIActivityLoadingModel
-            {
-                WaitAction = OpenUIScreenPlay,
-                DoneAction = null
-            };
-            UIActivityResource.Events.ShowContentEvent?.Invoke(false, false);
-            await UIManager.ShowActivity(UIActivityLoading.ActivityName, new Memory<object>(new object[] { loadingModel }));
-        }
-        
-        private async UniTask OpenUIScreenPlay()
-        {
-            UIActivityResource.Events.ShowContentEvent?.Invoke(true, false);
-            await UIManager.ShowScreen(UIScreenPlay.ScreenName, null);
         }
     }
 

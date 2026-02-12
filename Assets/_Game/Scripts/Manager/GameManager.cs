@@ -14,8 +14,6 @@ public class GameManager : Singleton<GameManager>
     public static SettingManager SettingManager => Instance.settingManager;
     public LocalizationManager localizationManager;
     public static LocalizationManager LocalizationManager => Instance.localizationManager;
-    public GamePlayManager gamePlayManager;
-    public static GamePlayManager GamePlayManager => Instance.gamePlayManager;
     public TimeManager timeManager;
     public static TimeManager TimeManager => Instance.timeManager;
     public ProfileManager profileManager;
@@ -37,6 +35,26 @@ public class GameManager : Singleton<GameManager>
         UIManager.LoadData().Forget();
     }
 
+    #region Navigation
+
+    public async UniTask OpenBattleScene()
+    {
+        GamePlayManager.Instance.OpenBattleScene();
+        UIActivityLoadingModel loadingModel = new UIActivityLoadingModel
+        {
+            WaitAction = OpenUIScreenPlay,
+            DoneAction = null
+        };
+        UIActivityResource.Events.ShowContentEvent?.Invoke(false, false);
+        await UIManager.ShowActivity(UIActivityLoading.ActivityName, new Memory<object>(new object[] { loadingModel }));
+    }
+        
+    private async UniTask OpenUIScreenPlay()
+    {
+        UIActivityResource.Events.ShowContentEvent?.Invoke(true, false);
+        await UIManager.ShowScreen(UIScreenPlay.ScreenName, null);
+    }
+    
     public async UniTaskVoid BackToMenu()
     {
         loadedUIScreenMain = false;
@@ -49,9 +67,11 @@ public class GameManager : Singleton<GameManager>
         await UIManager.CloseScreen(UIScreenPlay.ScreenName, null);
         loadedUIScreenMain = true;
     }
-
+    
     private async UniTask WaitForFirstUI()
     {
         await UniTask.WaitUntil(() => loadedUIScreenMain);
     }
+
+    #endregion
 }

@@ -1,11 +1,28 @@
+using Balduu.Utility.DesignPattern;
+using Baseduu.ReactiveFields;
 using UnityEngine;
 
-public class GamePlayManager : MonoBehaviour
+public class GamePlayManager : Singleton<GamePlayManager>
 {
-    public bool pause = true;
-    public bool IsGamePaused => pause;
+    public bool gameStarted = false;
+    [field: SerializeField] public ReactiveValue<bool> IsGamePaused { get; private set; } = new(true);
+    
+    public void OpenBattleScene()
+    {
+        gameStarted = false;
+        IsGamePaused.Value = true;
+    }
+    
+    public void StartGame()
+    {
+        gameStarted = true;
+        IsGamePaused.Value = false;
+    }
+    
     public void PauseGame(bool isPause)
     {
-        pause = isPause;
+        if(!gameStarted)
+            return;
+        IsGamePaused.Value = isPause;
     }
 }

@@ -38,7 +38,7 @@ namespace Balduu
         {
             ClearAction();
             await UIManager.CloseModal(ModalName, null);
-            GameManager.GamePlayManager.PauseGame(false);
+            GamePlayManager.Instance.PauseGame(false);
         }
 
         private void ClearAction()

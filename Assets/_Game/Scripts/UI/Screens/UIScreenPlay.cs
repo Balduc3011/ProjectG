@@ -40,7 +40,7 @@ namespace Balduu
         
         private void OnClickPauseBtn()
         {
-            GameManager.GamePlayManager.PauseGame(true);
+            GamePlayManager.Instance.PauseGame(true);
             ShowUIModalPause().Forget();
             
         }
