@@ -4,14 +4,14 @@ using DataSave;
 using R3;
 using UnityEngine;
 
-public class SettingManager : MonoBehaviour
+public class SettingManager : BaseManager
 {
     [field: SerializeField] public int SampleValue { get; set; }
     [field: SerializeField] public ReactiveValue<bool> MusicStatus { get; set; }
     [field: SerializeField] public ReactiveValue<bool> SoundStatus { get; set; }
     [field: SerializeField] public ReactiveValue<bool> HapticStatus { get; set; }
 
-    public void LoadData()
+    public override async UniTask LoadData()
     {
         MusicStatus = new ReactiveValue<bool>(SettingDataSave.Function.GetSettingData(SettingType.Music).isOn);
         MusicStatus.Property.Subscribe((v) => { OnChangeSettingState(SettingType.Music, v); }).AddTo(gameObject.GetCancellationTokenOnDestroy());
@@ -19,6 +19,7 @@ public class SettingManager : MonoBehaviour
         SoundStatus.Property.Subscribe((v) => { OnChangeSettingState(SettingType.Sound, v); }).AddTo(gameObject.GetCancellationTokenOnDestroy());
         HapticStatus = new ReactiveValue<bool>(SettingDataSave.Function.GetSettingData(SettingType.Haptic).isOn);
         HapticStatus.Property.Subscribe((v) => { OnChangeSettingState(SettingType.Haptic, v); }).AddTo(gameObject.GetCancellationTokenOnDestroy());
+        await UniTask.CompletedTask;
     }
     
     private void OnChangeSettingState(SettingType type, bool isOn)

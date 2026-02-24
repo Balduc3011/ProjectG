@@ -9,8 +9,36 @@ using ZBase.UnityScreenNavigator.Core.Modals;
 using ZBase.UnityScreenNavigator.Core.Screens;
 using ZBase.UnityScreenNavigator.Core.Views;
 
-public class UIManager : MonoBehaviour
+public class UIManager : BaseManager
 {
+    #region Statup
+    [BoxGroup("Loading")] public bool loadedUIScreenMain = false;
+    [BoxGroup("Loading")] public GameObject tempLoadingObj;
+    public override async UniTask LoadData()
+    {
+        UIActivityLoadingModel loadingModel = new UIActivityLoadingModel
+        {
+            WaitAction = WaitForFirstUI,
+            DoneAction = OpenUIActivityResource
+        };
+        await ShowActivity(UIActivityLoading.ActivityName, new Memory<object>(new object[] { loadingModel }));
+        tempLoadingObj.SetActive(false);
+        await ShowScreen(UIScreenMain.ScreenName, null);
+        loadedUIScreenMain = true;
+    }
+
+    private async UniTask WaitForFirstUI()
+    {
+        await UniTask.WaitUntil(() => loadedUIScreenMain);
+    }
+
+    public async UniTask OpenUIActivityResource()
+    {
+        await ShowActivity(UIActivityResource.ActivityName, null);
+    }
+
+    #endregion
+    
     #region Function
     public static async UniTask ShowScreen(string screenName, Memory<object> args)
     {
@@ -53,31 +81,5 @@ public class UIManager : MonoBehaviour
 
     #endregion
 
-    #region Statup
-    [BoxGroup("Loading")] public bool loadedUIScreenMain = false;
-    [BoxGroup("Loading")] public GameObject tempLoadingObj;
-    public async UniTaskVoid LoadData()
-    {
-        UIActivityLoadingModel loadingModel = new UIActivityLoadingModel
-        {
-            WaitAction = WaitForFirstUI,
-            DoneAction = OpenUIActivityResource
-        };
-        await UIManager.ShowActivity(UIActivityLoading.ActivityName, new Memory<object>(new object[] { loadingModel }));
-        tempLoadingObj.SetActive(false);
-        await UIManager.ShowScreen(UIScreenMain.ScreenName, null);
-        loadedUIScreenMain = true;
-    }
-
-    private async UniTask WaitForFirstUI()
-    {
-        await UniTask.WaitUntil(() => loadedUIScreenMain);
-    }
-
-    public async UniTask OpenUIActivityResource()
-    {
-        await ShowActivity(UIActivityResource.ActivityName, null);
-    }
-
-    #endregion
+    
 }

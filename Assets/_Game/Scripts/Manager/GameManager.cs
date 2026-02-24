@@ -29,10 +29,14 @@ public class GameManager : Singleton<GameManager>
 
     private async UniTask LoadData()
     {
-        SettingManager.LoadData();
-        ResourceManager.LoadData();
+        await AudioManager.LoadData();
+        await SettingManager.LoadData();
+        await LocalizationManager.LoadData();
+        await TimeManager.LoadData();
+        await ProfileManager.LoadData();
+        await ResourceManager.LoadData();
         await UniTask.DelayFrame(1);
-        UIManager.LoadData().Forget();
+        await UIManager.LoadData();
     }
 
     #region Navigation

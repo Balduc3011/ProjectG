@@ -1,16 +1,10 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class TimeManager : MonoBehaviour
+public class TimeManager : BaseManager
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public override async UniTask LoadData()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        await UniTask.CompletedTask;
     }
 }

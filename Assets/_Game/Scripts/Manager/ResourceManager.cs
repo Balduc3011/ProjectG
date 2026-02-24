@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using Baseduu.ReactiveFields;
+using Cysharp.Threading.Tasks;
 using DataSave;
 using NUnit.Framework;
 using R3;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class ResourceManager : MonoBehaviour
+public class ResourceManager : BaseManager
 {
     public List<ReactiveGameResource> gameResources;
 
-    public void LoadData()
+    public override async UniTask LoadData()
     {
         List<GameResource> savedResources = ResourceDataSave.Function.GameResources();
         gameResources = new List<ReactiveGameResource>();
@@ -20,6 +21,7 @@ public class ResourceManager : MonoBehaviour
             ReactiveGameResource reactiveResource = new ReactiveGameResource(resource.Type, resource.DefineValue, resource.Value);
             gameResources.Add(reactiveResource);
         }
+        await UniTask.CompletedTask;
     }
     
     public ReactiveGameResource GetGameResource(ResourceType type, int defineValue)
