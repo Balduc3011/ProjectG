@@ -1,55 +1,69 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using R3;
 
 namespace Baseduu.ReactiveFields
 {
     [Serializable]
-    public class ReactiveValue<T> : ISerializationCallbackReceiver
+    public class ReactiveValue<T>
     {
-        [SerializeField] private T _serializedValue;
-        [NonSerialized] private ReactiveProperty<T> _property;
-        
-        public ReactiveValue(T value)
+        [SerializeField]
+        private T value;
+
+        [NonSerialized]
+        private ReactiveProperty<T> _property;
+
+        public ReactiveValue()
         {
-            _serializedValue = value;
+            EnsureProperty();
+        }
+
+        public ReactiveValue(T initialValue)
+        {
+            value = initialValue;
+            _property = new ReactiveProperty<T>(initialValue);
+        }
+
+        public T Value
+        {
+            get => value;
+            set
+            {
+                if (!EqualityComparer<T>.Default.Equals(value, this.value))
+                {
+                    this.value = value;
+                    EnsureProperty();
+                    _property.Value = value;
+                }
+            }
         }
 
         public ReactiveProperty<T> Property
         {
             get
             {
-                if (_property == null)
-                    _property = new ReactiveProperty<T>(_serializedValue);
+                EnsureProperty();
                 return _property;
             }
         }
 
-        public T Value
+        private void EnsureProperty()
         {
-            get => _property != null ? _property.Value : _serializedValue;
-            set
+            if (_property == null)
+                _property = new ReactiveProperty<T>(value);
+        }
+
+        // 🔥 QUAN TRỌNG
+        public void InternalSetFromInspector(T newValue)
+        {
+            EnsureProperty();
+
+            if (!EqualityComparer<T>.Default.Equals(_property.Value, newValue))
             {
-                if (_property != null)
-                    _property.Value = value;
-                _serializedValue = value;
+                value = newValue;
+                _property.Value = newValue;
             }
-        }
-
-        public void OnBeforeSerialize()
-        {
-            if (_property != null)
-                _serializedValue = _property.Value;
-        }
-
-        public void OnAfterDeserialize()
-        {
-            _property = new ReactiveProperty<T>(_serializedValue);
-        }
-
-        public override string ToString()
-        {
-            return (object)Value != null ? Value.ToString() : "(null)";
         }
     }
 }

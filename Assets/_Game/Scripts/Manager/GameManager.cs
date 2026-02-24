@@ -37,6 +37,7 @@ public class GameManager : Singleton<GameManager>
         await ResourceManager.LoadData();
         await UniTask.DelayFrame(1);
         await UIManager.LoadData();
+        Application.targetFrameRate = 60;
     }
 
     #region Navigation

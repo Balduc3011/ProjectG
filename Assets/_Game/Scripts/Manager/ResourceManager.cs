@@ -53,6 +53,7 @@ public class ResourceManager : BaseManager
     /// <param name="defineValue"></param>
     /// <param name="value">Positive to Add, Negative to Subtract</param>
     /// <returns></returns>
+    [Button]
     public ReactiveGameResource AddGameResource(ResourceType type, int defineValue, float value)
     {
         ResourceDataSave.Function.AddGameResource(type, defineValue, value);
