@@ -40,17 +40,26 @@ public class GameManager : Singleton<GameManager>
     }
 
     #region Navigation
-
+    private UIActivityLoadingModel loadingBattleModel;
+    private Memory<object> loadingBattleModelArgs;
+    private UIActivityLoadingModel loadingBackModel;
+    private Memory<object> loadingBackModelArgs;
+    
     public async UniTask OpenBattleScene()
     {
         GamePlayManager.Instance.OpenBattleScene();
-        UIActivityLoadingModel loadingModel = new UIActivityLoadingModel
+        if (loadingBattleModel == null)
         {
-            WaitAction = OpenUIScreenPlay,
-            DoneAction = null
-        };
+            loadingBattleModel = new UIActivityLoadingModel
+            {
+                WaitAction = OpenUIScreenPlay,
+                DoneAction = null
+            };
+        }
+        if(loadingBattleModelArgs.IsEmpty)
+            loadingBattleModelArgs = new Memory<object>(new object[] { loadingBattleModel });
         UIActivityResource.Events.ShowContentEvent?.Invoke(false, false);
-        await UIManager.ShowActivity(UIActivityLoading.ActivityName, new Memory<object>(new object[] { loadingModel }));
+        await UIManager.ShowActivity(UIActivityLoading.ActivityName, loadingBattleModelArgs);
     }
         
     private async UniTask OpenUIScreenPlay()
@@ -61,13 +70,19 @@ public class GameManager : Singleton<GameManager>
     
     public async UniTaskVoid BackToMenu()
     {
+        GamePlayManager.Instance.OpenBattleScene();
         loadedUIScreenMain = false;
-        UIActivityLoadingModel loadingModel = new UIActivityLoadingModel
+        if (loadingBackModel == null)
         {
-            WaitAction = WaitForFirstUI,
-            DoneAction = null
-        };
-        await UIManager.ShowActivity(UIActivityLoading.ActivityName, new Memory<object>(new object[] { loadingModel }));
+            loadingBackModel = new UIActivityLoadingModel
+            {
+                WaitAction = WaitForFirstUI,
+                DoneAction = null
+            };
+        }
+        if(loadingBackModelArgs.IsEmpty) 
+            loadingBackModelArgs = new Memory<object>(new object[] { loadingBackModel });
+        await UIManager.ShowActivity(UIActivityLoading.ActivityName, loadingBackModelArgs);
         await UIManager.CloseScreen(UIScreenPlay.ScreenName, null);
         loadedUIScreenMain = true;
     }
