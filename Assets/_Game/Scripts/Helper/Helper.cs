@@ -764,6 +764,16 @@ namespace Balduu
         }
 
         #endregion
+        
+        #region Compare
+
+        public static bool CanSuccessByChance(float chance)
+        {
+            float randomValue = UnityEngine.Random.Range(0f, 100f);
+            return randomValue <= chance;
+        }
+
+        #endregion
     }
 }
 
