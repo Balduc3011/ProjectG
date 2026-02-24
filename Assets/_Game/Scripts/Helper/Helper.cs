@@ -141,6 +141,20 @@ namespace Balduu
         }
 
         #endregion
+        
+        #region Vector2
+
+        public static Vector2 GetPositionAtDistance(Vector2 root, float distance)
+        {
+            float angle = Random.value * Mathf.PI * 2f;
+            return root + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
+        }
+        public static Vector2 GetPositionInRange(Vector2 root, float xDistance, float yDistance)
+        {
+            return root + new Vector2(Random.Range(-xDistance, xDistance), Random.Range(-yDistance, yDistance));
+        }
+
+        #endregion
 
         #region Object
 
@@ -761,6 +775,16 @@ namespace Balduu
             {
                 bAction?.Invoke();
             }
+        }
+
+        #endregion
+        
+        #region Compare
+
+        public static bool CanSuccessByChance(float chance)
+        {
+            float randomValue = UnityEngine.Random.Range(0f, 100f);
+            return randomValue <= chance;
         }
 
         #endregion
