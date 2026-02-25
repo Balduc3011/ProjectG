@@ -10,8 +10,7 @@ namespace DataSave
     public partial class ResourceDataSave
     {
         public static ResourceDataSave Instance => InGameDataManager.Instance.InGameData.ResourceDataSave;
-        [MemoryPackOrder(0)]
-        public List<GameResource> gameResources;
+        [MemoryPackOrder(0)] public List<GameResource> gameResources;
 
         [MemoryPackConstructor]
         public ResourceDataSave()
@@ -24,7 +23,7 @@ namespace DataSave
                 new GameResource(ResourceType.Booster, (int)BoosterType.Booster4, 0),
             };
         }
-        
+
         public static class Function
         {
             private static ResourceDataSave ResourceDataSave => InGameDataManager.Instance.InGameData.ResourceDataSave;
@@ -33,7 +32,7 @@ namespace DataSave
             {
                 return ResourceDataSave.gameResources;
             }
-            
+
             public static GameResource GetGameResource(ResourceType type, int defineValue)
             {
                 for (var i = 0; i < ResourceDataSave.gameResources.Count; i++)
@@ -44,9 +43,10 @@ namespace DataSave
                         return resource;
                     }
                 }
+
                 return AddNewGameResource(type, defineValue, 0);
             }
-            
+
             public static GameResource AddNewGameResource(ResourceType type, int defineValue, float value)
             {
                 GameResource resource = new GameResource(type, defineValue, value);
@@ -62,19 +62,52 @@ namespace DataSave
                 InGameDataManager.Instance.SaveData();
                 return resource;
             }
+
+            public static void FormatDuplicateGameResource()
+            {
+                Dictionary<string, GameResource> uniqueResources = new Dictionary<string, GameResource>();
+                List<GameResource> duplicates = new List<GameResource>();
+
+                for (var i = 0; i < ResourceDataSave.gameResources.Count; i++)
+                {
+                    var resource = ResourceDataSave.gameResources[i];
+                    string key = $"{resource.Type}_{resource.DefineValue}";
+                    if (uniqueResources.ContainsKey(key))
+                    {
+                        uniqueResources[key].Value += resource.Value;
+                        duplicates.Add(resource);
+                    }
+                    else
+                    {
+                        uniqueResources[key] = resource;
+                    }
+                }
+
+                for (var i = 0; i < duplicates.Count; i++)
+                {
+                    ResourceDataSave.gameResources.Remove(duplicates[i]);
+                }
+
+                InGameDataManager.Instance.SaveData();
+
+            }
         }
     }
-
     [System.Serializable]
     [MemoryPackable]
     public partial class GameResource
     {
         [MemoryPackOrder(0)]
-        [field: SerializeField] public ResourceType Type { get; set; }
+        [field: SerializeField]
+        public ResourceType Type { get; set; }
+
         [MemoryPackOrder(1)]
-        [field: SerializeField] public int DefineValue { get; set; }
+        [field: SerializeField]
+        public int DefineValue { get; set; }
+
         [MemoryPackOrder(2)]
-        [field: SerializeField] public float Value { get; set; } = 0;
+        [field: SerializeField]
+        public float Value { get; set; } = 0;
 
         [MemoryPackConstructor]
         public GameResource(ResourceType type, int defineValue, float value)

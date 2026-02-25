@@ -13,6 +13,7 @@ public class ResourceManager : BaseManager
 
     public override async UniTask LoadData()
     {
+        ResourceDataSave.Function.FormatDuplicateGameResource();
         List<GameResource> savedResources = ResourceDataSave.Function.GameResources();
         gameResources = new List<ReactiveGameResource>();
         for (var i = 0; i < savedResources.Count; i++)

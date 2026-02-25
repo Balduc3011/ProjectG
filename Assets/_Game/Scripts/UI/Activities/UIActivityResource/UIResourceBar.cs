@@ -31,7 +31,7 @@ public class UIResourceBar : MonoBehaviour
 
     void UpdateValue(float value)
     {
-        valueTxt.ChangeText(((int)value).ToString());
+        valueTxt.ChangeText(value.ToStringUI(2));
     }
     
     private void OnGetMoreBtn()

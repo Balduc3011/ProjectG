@@ -622,10 +622,54 @@ namespace Balduu
             return string.Format(formatter, value.ToString(CultureInfo.InvariantCulture));
         }
 
+        #endregion
+
+        #region Value to String
+        
+        private const int STEP = 1000;
+        public enum NumberSuffix
+        {
+            None = 0,   // 10^0
+            K = 1,      // 10^3
+            M = 2,      // 10^6
+            B = 3,      // 10^9
+            T = 4,      // 10^12
+            Qa = 5,     // 10^15 (Quadrillion)
+            Qi = 6      // 10^18
+        }
+
         public static string ToStringUI(this float value, string formatter = "{0}")
         {
             var temp = MathF.Round(value, 2);
             return string.Format(formatter, temp.ToString(CultureInfo.InvariantCulture));
+        }
+        
+        public static string ToStringUI(this float value, int decimalPlaces)
+        {
+            if (value == 0)
+                return "0";
+
+            float absValue = Math.Abs(value);
+
+            // Tính bậc theo log
+            int exponent = (int)Math.Floor(Math.Log(absValue, STEP));
+
+            // Clamp theo enum hiện có
+            int maxEnum = Enum.GetValues(typeof(NumberSuffix)).Length - 1;
+            exponent = Math.Clamp(exponent, 0, maxEnum);
+
+            float scaled = value / (float)Math.Pow(STEP, exponent);
+
+            string number = scaled
+                .ToString($"F{decimalPlaces}")
+                .TrimEnd('0')
+                .TrimEnd('.');
+
+            string suffix = ((NumberSuffix)exponent) == NumberSuffix.None
+                ? ""
+                : ((NumberSuffix)exponent).ToString();
+
+            return number + suffix.ToLower();
         }
 
         #endregion
