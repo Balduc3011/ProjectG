@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Balduu;
 using TMPro;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class UIShopPack : MonoBehaviour
     public TextMeshProUGUI titleTxt;
     public TextMeshProUGUI priceTxt;
     public Button purchaseBtn;
+    public List<UIItemShow> itemShows;
 
     private void Start()
     {
@@ -40,11 +42,25 @@ public class UIShopPack : MonoBehaviour
 
     private void InitUI()
     {
-        
+        titleTxt?.ChangeText(package.title);
+        priceTxt.ChangeText(ShopGlobalConfig.Instance.GetResourceTextValue(package.price));
+        for (var i = 0; i < itemShows.Count; i++)
+        {
+            if(i < package.gameResources.Count)
+            {
+                var sprite = SpriteGlobalConfig.Instance.GetResourceSprite(package.gameResources[i].Type, package.gameResources[i].DefineValue);
+                var value = ShopGlobalConfig.Instance.GetResourceTextValue(package.gameResources[i]);
+                itemShows[i].Init(sprite, value);
+            }
+            else
+            {
+                itemShows[i].gameObject.SetActive(false);
+            }
+        }
     }
     
     private void PurchasePackage()
     {
-        
+        GameManager.RewardManager.AddReward(package.gameResources);
     }
 }

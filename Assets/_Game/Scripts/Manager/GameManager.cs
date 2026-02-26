@@ -20,6 +20,8 @@ public class GameManager : Singleton<GameManager>
     public static ProfileManager ProfileManager => Instance.profileManager;
     public ResourceManager resourceManager;
     public static ResourceManager ResourceManager => Instance.resourceManager;
+    public RewardManager rewardManager;
+    public static RewardManager RewardManager => Instance.rewardManager;
     private bool loadedUIScreenMain = false;
 
     private void Start()
@@ -35,6 +37,7 @@ public class GameManager : Singleton<GameManager>
         await TimeManager.LoadData();
         await ProfileManager.LoadData();
         await ResourceManager.LoadData();
+        await RewardManager.LoadData();
         await UniTask.DelayFrame(1);
         await UIManager.LoadData();
         Application.targetFrameRate = 60;

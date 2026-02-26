@@ -52,10 +52,10 @@ MonoBehaviour:
   audioManager: {fileID: 3759167222017801634}
   settingManager: {fileID: 5815015994255677611}
   localizationManager: {fileID: 610498059670983967}
-  gamePlayManager: {fileID: 6529217290816052505}
   timeManager: {fileID: 5646809179899716967}
   profileManager: {fileID: 6992060906437429607}
   resourceManager: {fileID: 7356007228697958419}
+  rewardManager: {fileID: 5005377383935353653}
 --- !u!1001 &562120316340066152
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -346,6 +346,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9675c1754db3f744b97a412c914930a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5005377383935353653 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7268345199519926589, guid: c08a3dd7a26056843a48378d07bb04c3, type: 3}
+  m_PrefabInstance: {fileID: 2425458076349934088}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceff6a15c86dbde4e9a7199a6ffc7c87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RewardManager
 --- !u!114 &5646809179899716967 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8067506327337226095, guid: c08a3dd7a26056843a48378d07bb04c3, type: 3}
@@ -366,17 +377,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 23187b996f83ba34cb422c9b412a9007, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6529217290816052505 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8877867882883413777, guid: c08a3dd7a26056843a48378d07bb04c3, type: 3}
-  m_PrefabInstance: {fileID: 2425458076349934088}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8390f63fdb29ed04c875fff1241cced3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &6992060906437429607 stripped

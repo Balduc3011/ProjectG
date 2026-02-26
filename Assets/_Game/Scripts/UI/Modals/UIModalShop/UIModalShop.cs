@@ -22,6 +22,7 @@ namespace Balduu
             await Model.Initialize(args);
             await View.Initialize(args);
             View.CloseBtn?.AddListenerUI(OnClickCloseModal);
+            InitShopPack();
         }
 
         public override UniTask Cleanup(Memory<object> args)
@@ -44,6 +45,15 @@ namespace Balduu
         {
             View.CloseBtn?.onClick.RemoveAllListeners();
         }
+
+        private void InitShopPack()
+        {
+            for (var i = 0; i < View.UiShopPacks.Count; i++)
+            {
+                View.UiShopPacks[i].Init();
+            }
+        }
+        
     }
 
     [System.Serializable]

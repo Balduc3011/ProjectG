@@ -118,4 +118,5 @@ public enum SpecialType
     None = 0,
     NoAds = 1,
     IAP = 2,
+    Ads = 3,
 }

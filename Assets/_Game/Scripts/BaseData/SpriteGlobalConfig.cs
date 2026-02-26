@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 
@@ -55,19 +56,19 @@ public class SpriteGlobalConfig : GlobalConfig<SpriteGlobalConfig>
 public class CurrencySprites
 {
     public CurrencyType type;
-    public Sprite sprite;
+    [PreviewField] public Sprite sprite;
 }
 
 [System.Serializable]
 public class BoosterSprites
 {
     public BoosterType type;
-    public Sprite sprite;
+    [PreviewField] public Sprite sprite;
 }
 
 [System.Serializable]
 public class SpecialSprites
 {
     public SpecialType type;
-    public Sprite sprite;
+    [PreviewField] public Sprite sprite;
 }

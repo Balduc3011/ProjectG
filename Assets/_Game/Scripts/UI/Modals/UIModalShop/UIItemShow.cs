@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIItem : MonoBehaviour
+public class UIItemShow : MonoBehaviour
 {
     public Image icon;
     public TextMeshProUGUI valueTxt;

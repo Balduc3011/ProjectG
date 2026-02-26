@@ -27,15 +27,17 @@ public static class GlobalConfigTemplateCreator
     
     private static string GetGlobalConfigTemplate(string className)
     {
-        return $@"using Sirenix.Utilities;
+        return $@"using Cysharp.Threading.Tasks;
+using Sirenix.Utilities;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = ""{className}"", menuName = ""GlobalConfigs/{className}"")]
 [GlobalConfig(""Assets/Resources/GlobalConfig/"")]
 public class {className} : GlobalConfig<{className}>
 {{
-    private async void FetchData()
+    private async UniTask FetchData()
     {{
+        await UniTask.CompletedTask;
     }}
 }}
 ";

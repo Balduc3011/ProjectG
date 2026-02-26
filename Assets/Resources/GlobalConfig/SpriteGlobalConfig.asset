@@ -31,3 +31,7 @@ MonoBehaviour:
   specialSprites:
   - type: 1
     sprite: {fileID: 21300000, guid: 98fdd601ab36241848c3e55745f1ebe7, type: 3}
+  - type: 3
+    sprite: {fileID: 21300000, guid: 40155fe9a80114d44af4e16367172f54, type: 3}
+  - type: 2
+    sprite: {fileID: 21300000, guid: db0b9fb1ff75be44790dba356c804536, type: 3}

@@ -22,6 +22,42 @@ MonoBehaviour:
       <DefineValue>k__BackingField: 2
       <Value>k__BackingField: 6.99
     gameResources:
+    - <Type>k__BackingField: 1
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 3600
+    - <Type>k__BackingField: 3
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 1
+  - packageID: pack2
+    consumeType: 0
+    title: Pack 2
+    description: pack2
+    price:
+      <Type>k__BackingField: 3
+      <DefineValue>k__BackingField: 2
+      <Value>k__BackingField: 9.99
+    gameResources:
+    - <Type>k__BackingField: 2
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 2
+    - <Type>k__BackingField: 2
+      <DefineValue>k__BackingField: 2
+      <Value>k__BackingField: 2
+    - <Type>k__BackingField: 2
+      <DefineValue>k__BackingField: 3
+      <Value>k__BackingField: 2
+    - <Type>k__BackingField: 2
+      <DefineValue>k__BackingField: 4
+      <Value>k__BackingField: 2
+  - packageID: pack3
+    consumeType: 0
+    title: Pack 3
+    description: pack3
+    price:
+      <Type>k__BackingField: 3
+      <DefineValue>k__BackingField: 2
+      <Value>k__BackingField: 6.99
+    gameResources:
     - <Type>k__BackingField: 2
       <DefineValue>k__BackingField: 1
       <Value>k__BackingField: 1
@@ -34,3 +70,54 @@ MonoBehaviour:
     - <Type>k__BackingField: 2
       <DefineValue>k__BackingField: 4
       <Value>k__BackingField: 1
+    - <Type>k__BackingField: 1
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 1000
+  - packageID: coin1
+    consumeType: 0
+    title: Pack 3
+    description: pack3
+    price:
+      <Type>k__BackingField: 3
+      <DefineValue>k__BackingField: 2
+      <Value>k__BackingField: 0.99
+    gameResources:
+    - <Type>k__BackingField: 1
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 500
+  - packageID: coin2
+    consumeType: 0
+    title: Pack 3
+    description: pack3
+    price:
+      <Type>k__BackingField: 3
+      <DefineValue>k__BackingField: 2
+      <Value>k__BackingField: 1.99
+    gameResources:
+    - <Type>k__BackingField: 1
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 1100
+  - packageID: coin3
+    consumeType: 0
+    title: Pack 3
+    description: pack3
+    price:
+      <Type>k__BackingField: 3
+      <DefineValue>k__BackingField: 2
+      <Value>k__BackingField: 3.99
+    gameResources:
+    - <Type>k__BackingField: 1
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 2300
+  - packageID: coin4
+    consumeType: 0
+    title: Pack 3
+    description: pack3
+    price:
+      <Type>k__BackingField: 3
+      <DefineValue>k__BackingField: 2
+      <Value>k__BackingField: 8.99
+    gameResources:
+    - <Type>k__BackingField: 1
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 6000
