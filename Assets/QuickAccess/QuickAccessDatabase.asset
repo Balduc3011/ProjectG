@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81e8c0e23bb1cd843837d80867a506bb, type: 3}
+  m_Name: QuickAccessDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::QuickAccess.QuickAccessDatabase
+  _sections:
+  - _sectionName: Scene
+    _isBuiltIn: 1
+    _items:
+    - _name: MainScene
+      _target: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
+    - _name: MainScene 1
+      _target: {fileID: 102900000, guid: 8df0c13fb7286fa4495ba4a4574a269e, type: 3}
+  - _sectionName: Prefab
+    _isBuiltIn: 1
+    _items:
+    - _name: UIActivityResource
+      _target: {fileID: 6640239696973383497, guid: c2275bb0c3f2ba849ae384b52704f1b5, type: 3}
+  - _sectionName: SO
+    _isBuiltIn: 1
+    _items: []
