@@ -12,6 +12,7 @@ namespace QuickAccess
     {
         [SerializeField] string _sectionName;
         [SerializeField] bool _isBuiltIn;
+        [SerializeField] bool _itemsExpanded = true;
         [SerializeField] List<QuickAccessItem> _items = new List<QuickAccessItem>();
 
         public string SectionName
@@ -21,6 +22,13 @@ namespace QuickAccess
         }
 
         public bool IsBuiltIn => _isBuiltIn;
+
+        /// <summary>When false, section body (drop zone + item rows) is hidden in Quick Access window.</summary>
+        public bool ItemsExpanded
+        {
+            get => _itemsExpanded;
+            set => _itemsExpanded = value;
+        }
 
         public List<QuickAccessItem> Items => _items;
 

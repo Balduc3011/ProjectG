@@ -15,16 +15,45 @@ MonoBehaviour:
   _sections:
   - _sectionName: Scene
     _isBuiltIn: 1
+    _itemsExpanded: 1
     _items:
     - _name: MainScene
       _target: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
-    - _name: MainScene 1
-      _target: {fileID: 102900000, guid: 8df0c13fb7286fa4495ba4a4574a269e, type: 3}
-  - _sectionName: Prefab
+  - _sectionName: UI
     _isBuiltIn: 1
+    _itemsExpanded: 1
     _items:
+    - _name: DefaultModalBackdrop
+      _target: {fileID: 78457337265729854, guid: 3d4a415cda3636344958998250d1a122, type: 3}
+    - _name: UIActivityAlert
+      _target: {fileID: 5533097492467894523, guid: 6a954a3f19785fd48b2067eb356831b6, type: 3}
+    - _name: UIActivityLoading
+      _target: {fileID: 7080929924181562875, guid: 8cffef3da67c94c4fbbe7c367ae0077a, type: 3}
     - _name: UIActivityResource
       _target: {fileID: 6640239696973383497, guid: c2275bb0c3f2ba849ae384b52704f1b5, type: 3}
-  - _sectionName: SO
+    - _name: UIActivityReward
+      _target: {fileID: 6976504610696565397, guid: 644fddf62a302c9419fbcf41ff44463e, type: 3}
+    - _name: UIModalMenu
+      _target: {fileID: 9092809676529920744, guid: 5719b589df68f454ebddb626ff343eb3, type: 3}
+    - _name: UIModalPause
+      _target: {fileID: 5533097492467894523, guid: 75e6852257fccb44f946517770f10a73, type: 3}
+    - _name: UIModalSetting
+      _target: {fileID: 2718815012066600049, guid: 268fffab27e66d94d8c427833da46a03, type: 3}
+    - _name: UIModalShop
+      _target: {fileID: 9069430615462137864, guid: 14b5ac621cb196b45a49acb9b60de76b, type: 3}
+    - _name: UIModalTestAds
+      _target: {fileID: 821792999282932324, guid: 09713bccbb8654d4184433fb786d9855, type: 3}
+    - _name: UIScreenMain
+      _target: {fileID: 6525739718356212803, guid: cc2592c360e69ca4cb5beeba1ae88ff5, type: 3}
+    - _name: UIScreenPlay
+      _target: {fileID: 7257111915163819019, guid: b059b7734089bcc46a8be8bc3dbe7f3d, type: 3}
+  - _sectionName: Global Config
     _isBuiltIn: 1
-    _items: []
+    _itemsExpanded: 1
+    _items:
+    - _name: DefaultGlobalConfig
+      _target: {fileID: 11400000, guid: 7d0b3cef138566d4398660865be653e3, type: 2}
+    - _name: SpriteGlobalConfig
+      _target: {fileID: 11400000, guid: 6aaf032a09e06ef45b34c2261fdd937a, type: 2}
+    - _name: ShopGlobalConfig
+      _target: {fileID: 11400000, guid: 6420794ebd3336647904cb9f32fd05aa, type: 2}

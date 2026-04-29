@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -7,16 +8,34 @@ using UnityEngine;
 namespace QuickAccess.Editor
 {
     /// <summary>
-    /// Editor window: browse sections, ping/remove items, drag-and-drop and object picker to add entries.
+    /// Editor window: browse sections, ping/remove items, drag-and-drop to add entries.
     /// </summary>
     public sealed class QuickAccessWindow : EditorWindow
     {
         const string MenuPath = "Tools/Quick Access";
 
+        const float SectionHeaderButtonSize = 28f;
+
+        static readonly Color SectionHeaderPenTint = new Color(0.25f, 0.92f, 1f, 1f);
+        static readonly Color SectionHeaderBinTint = new Color(0.95f, 0.28f, 0.28f, 1f);
+
+        const string SectionRenameGlyph = "✏️";
+        const string SectionDeleteGlyph = "💩";
+        const string SectionToggleGlyph = "👀";
+        const string ItemPingGlyph = "🔗";
+        const string ItemDeleteGlyph = "❌";
+
         QuickAccessDatabase _database;
         Vector2 _scroll;
-        int _pickerSectionIndex = -1;
-        int _activeObjectPickerControlId = -1;
+        int _editingSectionNameIndex = -1;
+
+        int _itemReorderSection = -1;
+        int _itemReorderFromIndex = -1;
+        int _itemReorderInsertBefore;
+        readonly List<Rect> _itemReorderRowRects = new List<Rect>(32);
+        readonly List<Rect> _itemReorderCachedRects = new List<Rect>(32);
+
+        GUIStyle _sectionTitleStyle;
 
         [MenuItem(MenuPath)]
         static void Open()
@@ -30,16 +49,42 @@ namespace QuickAccess.Editor
         void OnEnable()
         {
             _database = QuickAccessDatabaseUtility.GetOrCreate();
+            EnsureSectionHeaderStyles();
+        }
+
+        void EnsureSectionHeaderStyles()
+        {
+            if (_sectionTitleStyle == null)
+            {
+                // EditorStyles may not be ready in OnEnable; basis must never be null or GUILayout.Label NREs.
+                var basis = EditorStyles.boldLabel ?? EditorStyles.label ?? new GUIStyle();
+                _sectionTitleStyle = new GUIStyle(basis)
+                {
+                    alignment = TextAnchor.MiddleCenter,
+                    wordWrap = false,
+                };
+            }
+
+            // Keep size / color in sync (skin, DPI) — larger green title, centered in title strip.
+            _sectionTitleStyle.fontSize = 22;
+            _sectionTitleStyle.alignment = TextAnchor.MiddleCenter;
+            var titleGreen = EditorGUIUtility.isProSkin
+                ? new Color(0.45f, 0.98f, 0.58f)
+                : new Color(0.05f, 0.52f, 0.2f);
+            _sectionTitleStyle.normal.textColor = titleGreen;
+            _sectionTitleStyle.active.textColor = titleGreen;
+            _sectionTitleStyle.focused.textColor = titleGreen;
+            _sectionTitleStyle.hover.textColor = titleGreen;
         }
 
         void OnGUI()
         {
+            EnsureSectionHeaderStyles();
+
             if (_database == null)
             {
                 _database = QuickAccessDatabaseUtility.GetOrCreate();
             }
-
-            HandleObjectPickerCommands();
 
             EditorGUILayout.Space(4f);
             using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
@@ -61,105 +106,150 @@ namespace QuickAccess.Editor
             }
 
             EditorGUILayout.EndScrollView();
-        }
-
-        void HandleObjectPickerCommands()
-        {
-            var evt = Event.current;
-            if (evt.type != EventType.ExecuteCommand)
-            {
-                return;
-            }
-
-            if (_activeObjectPickerControlId < 0)
-            {
-                return;
-            }
-
-            if (EditorGUIUtility.GetObjectPickerControlID() != _activeObjectPickerControlId)
-            {
-                return;
-            }
-
-            switch (evt.commandName)
-            {
-                case "ObjectSelectorClosed":
-                    var picked = EditorGUIUtility.GetObjectPickerObject();
-                    if (picked != null && _pickerSectionIndex >= 0)
-                    {
-                        TryAddObjectToSection(_pickerSectionIndex, picked, preferAutoName: true);
-                    }
-
-                    _pickerSectionIndex = -1;
-                    _activeObjectPickerControlId = -1;
-                    evt.Use();
-                    break;
-                case "ObjectSelectorCanceled":
-                    _pickerSectionIndex = -1;
-                    _activeObjectPickerControlId = -1;
-                    evt.Use();
-                    break;
-            }
+            FinishItemReorderIfNeeded();
         }
 
         void DrawSection(int sectionIndex, QuickAccessSection section)
         {
             using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
-                using (new EditorGUILayout.HorizontalScope())
+                if (DrawSectionHeaderRow(sectionIndex, section))
                 {
-                    EditorGUILayout.LabelField("Section", GUILayout.Width(52f));
+                    return;
+                }
+
+                if (section.ItemsExpanded)
+                {
+                    EditorGUILayout.Space(4f);
+                    DrawSectionDropArea(sectionIndex);
+
+                    var items = section.Items;
+                    _itemReorderRowRects.Clear();
+                    for (var j = 0; j < items.Count; j++)
+                    {
+                        _itemReorderRowRects.Add(DrawItemRow(sectionIndex, j, items[j]));
+                    }
+
+                    if (sectionIndex == _itemReorderSection && _itemReorderFromIndex >= 0 && _itemReorderRowRects.Count > 0)
+                    {
+                        _itemReorderCachedRects.Clear();
+                        _itemReorderCachedRects.AddRange(_itemReorderRowRects);
+                        _itemReorderInsertBefore = ComputeInsertBeforeIndex(
+                            _itemReorderRowRects,
+                            Event.current.mousePosition.y);
+                        if (Event.current.type == EventType.Repaint && Input.GetMouseButton(0))
+                        {
+                            DrawReorderInsertIndicator(_itemReorderRowRects, _itemReorderInsertBefore);
+                        }
+                    }
+
+                    if (items.Count == 0)
+                    {
+                        EditorGUILayout.LabelField("No items yet.", EditorStyles.centeredGreyMiniLabel);
+                    }
+                }
+            }
+        }
+
+        /// <returns>True if the section was removed (caller must stop drawing this block).</returns>
+        bool DrawSectionHeaderRow(int sectionIndex, QuickAccessSection section)
+        {
+            var removed = false;
+            using (new EditorGUILayout.HorizontalScope(GUILayout.MinHeight(SectionHeaderButtonSize + 4f)))
+            {
+                if (GUILayout.Button(
+                        new GUIContent(
+                            SectionToggleGlyph,
+                            section.ItemsExpanded ? "Collapse items" : "Expand items"),
+                        GUILayout.Width(SectionHeaderButtonSize),
+                        GUILayout.Height(SectionHeaderButtonSize)))
+                {
+                    section.ItemsExpanded = !section.ItemsExpanded;
+                    if (!section.ItemsExpanded && _itemReorderSection == sectionIndex)
+                    {
+                        _itemReorderSection = -1;
+                        _itemReorderFromIndex = -1;
+                    }
+
+                    SaveDatabase();
+                }
+
+                var title = string.IsNullOrEmpty(section.SectionName) ? "(Untitled)" : section.SectionName;
+
+                if (_editingSectionNameIndex == sectionIndex)
+                {
+                    GUI.SetNextControlName("SectionRename_" + sectionIndex);
                     EditorGUI.BeginChangeCheck();
-                    section.SectionName = EditorGUILayout.TextField(section.SectionName);
+                    section.SectionName = EditorGUILayout.DelayedTextField(
+                        section.SectionName,
+                        GUILayout.ExpandWidth(true),
+                        GUILayout.Height(SectionHeaderButtonSize));
                     if (EditorGUI.EndChangeCheck())
                     {
                         SaveDatabase();
                     }
                 }
-
-                using (new EditorGUILayout.HorizontalScope())
+                else
                 {
-                    if (GUILayout.Button("➕ Add Item", GUILayout.Width(96f)))
-                    {
-                        _pickerSectionIndex = sectionIndex;
-                        _activeObjectPickerControlId = EditorGUIUtility.GetControlID(FocusType.Passive);
-                        EditorGUIUtility.ShowObjectPicker<UnityEngine.Object>(
-                            null,
-                            false,
-                            string.Empty,
-                            _activeObjectPickerControlId);
-                    }
+                    GUILayout.Label(title, _sectionTitleStyle, GUILayout.ExpandWidth(true), GUILayout.Height(SectionHeaderButtonSize + 4f));
+                }
 
-                    EditorGUI.BeginDisabledGroup(section.IsBuiltIn);
-                    if (GUILayout.Button(new GUIContent("❌ Delete Section", "Only custom sections can be removed."), GUILayout.Width(132f)))
+                var oldColor = GUI.color;
+                GUI.color = SectionHeaderPenTint;
+                if (GUILayout.Button(
+                        new GUIContent(SectionRenameGlyph, "Rename section"),
+                        GUILayout.Width(SectionHeaderButtonSize),
+                        GUILayout.Height(SectionHeaderButtonSize)))
+                {
+                    if (_editingSectionNameIndex == sectionIndex)
                     {
+                        _editingSectionNameIndex = -1;
+                        GUI.FocusControl(null);
+                    }
+                    else
+                    {
+                        _editingSectionNameIndex = sectionIndex;
+                        var idx = sectionIndex;
+                        EditorApplication.delayCall += () =>
+                        {
+                            EditorGUI.FocusTextInControl("SectionRename_" + idx);
+                        };
+                    }
+                }
+
+                GUI.color = SectionHeaderBinTint;
+                EditorGUI.BeginDisabledGroup(section.IsBuiltIn);
+                if (GUILayout.Button(
+                        new GUIContent(SectionDeleteGlyph, "Delete section"),
+                        GUILayout.Width(SectionHeaderButtonSize),
+                        GUILayout.Height(SectionHeaderButtonSize)))
+                {
+                    if (EditorUtility.DisplayDialog(
+                            "Delete section",
+                            $"Delete section \"{section.SectionName}\"? This cannot be undone.",
+                            "Delete",
+                            "Cancel"))
+                    {
+                        _editingSectionNameIndex = -1;
                         RemoveSectionAt(sectionIndex);
-                        return;
+                        removed = true;
                     }
-
-                    EditorGUI.EndDisabledGroup();
-                    GUILayout.FlexibleSpace();
                 }
 
-                DrawSectionDropArea(sectionIndex);
-
-                var items = section.Items;
-                for (var j = items.Count - 1; j >= 0; j--)
-                {
-                    DrawItemRow(sectionIndex, j, items[j]);
-                }
-
-                if (items.Count == 0)
-                {
-                    EditorGUILayout.LabelField("No items yet.", EditorStyles.centeredGreyMiniLabel);
-                }
+                EditorGUI.EndDisabledGroup();
+                GUI.color = oldColor;
             }
+
+            return removed;
         }
 
         void DrawSectionDropArea(int sectionIndex)
         {
-            var rect = GUILayoutUtility.GetRect(0f, 24f, GUILayout.ExpandWidth(true));
-            GUI.Box(rect, "Drop assets here", EditorStyles.miniLabel);
+            var dropH = EditorGUIUtility.singleLineHeight + 6f;
+            var rect = GUILayoutUtility.GetRect(0f, dropH, GUILayout.ExpandWidth(true));
+            GUI.Box(rect, GUIContent.none, EditorStyles.textField);
+            var hint = EditorStyles.centeredGreyMiniLabel;
+            GUI.Label(rect, "Drop assets here", hint);
             HandleDragIntoSection(sectionIndex, rect);
         }
 
@@ -206,43 +296,182 @@ namespace QuickAccess.Editor
             }
         }
 
-        void DrawItemRow(int sectionIndex, int itemIndex, QuickAccessItem item)
+        Rect DrawItemRow(int sectionIndex, int itemIndex, QuickAccessItem item)
         {
-            using (new EditorGUILayout.HorizontalScope())
+            const float dragW = 16f;
+            const float kindW = 40f;
+            const float pingW = 28f;
+            const float delW = 28f;
+            const float gap = 2f;
+
+            var full = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight + 4f, GUILayout.ExpandWidth(true));
+            var x = full.x;
+            var y = full.y;
+            var h = full.height;
+            var right = full.xMax;
+
+            var delRect = new Rect(right - delW, y, delW, h);
+            right -= delW;
+            var pingRect = new Rect(right - pingW - 2f, y, pingW, h);
+            right -= pingW;
+            right -= gap;
+
+            var handleRect = new Rect(x, y, dragW, h);
+            x += dragW;
+            var kindRect = new Rect(x, y, kindW, h);
+            x += kindW;
+            var openW = Mathf.Max(40f, right - x);
+            var openRect = new Rect(x - 2f, y, openW, h);
+
+            DrawReorderDragHandle(handleRect, sectionIndex, itemIndex);
+
+            var kind = QuickAccessTypeDetector.Classify(item.Target);
+            var suffix = QuickAccessTypeDetector.KindLabel(kind) ?? string.Empty;
+            EditorGUI.LabelField(kindRect, suffix, EditorStyles.miniLabel);
+
+            var displayLabel = GetItemButtonLabel(item);
+            EditorGUI.BeginDisabledGroup(item.Target == null);
+            if (GUI.Button(openRect, displayLabel))
             {
-                var kind = QuickAccessTypeDetector.Classify(item.Target);
-                var suffix = QuickAccessTypeDetector.KindLabel(kind);
-                if (!string.IsNullOrEmpty(suffix))
-                {
-                    GUILayout.Label(suffix, EditorStyles.miniLabel, GUILayout.Width(40f));
-                }
-                else
-                {
-                    GUILayout.Space(40f);
-                }
+                HandleItemOpen(item);
+            }
 
-                var displayLabel = GetItemButtonLabel(item);
-                EditorGUI.BeginDisabledGroup(item.Target == null);
-                if (GUILayout.Button(displayLabel, GUILayout.MinWidth(80f), GUILayout.ExpandWidth(true)))
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUI.BeginDisabledGroup(item.Target == null);
+            if (GUI.Button(pingRect, ItemPingGlyph))
+            {
+                EditorGUIUtility.PingObject(item.Target);
+            }
+
+            EditorGUI.EndDisabledGroup();
+
+            if (GUI.Button(delRect, ItemDeleteGlyph))
+            {
+                RemoveItemAt(sectionIndex, itemIndex);
+            }
+
+            return full;
+        }
+
+        void DrawReorderDragHandle(Rect rect, int sectionIndex, int itemIndex)
+        {
+            var isSource = _itemReorderSection == sectionIndex && _itemReorderFromIndex == itemIndex;
+            if (isSource && Input.GetMouseButton(0))
+            {
+                EditorGUI.DrawRect(rect, new Color(1f, 1f, 1f, 0.07f));
+            }
+
+            EditorGUI.LabelField(rect, "\u2261", EditorStyles.centeredGreyMiniLabel);
+            EditorGUIUtility.AddCursorRect(rect, MouseCursor.MoveArrow);
+            var evt = Event.current;
+            if (evt.type == EventType.MouseDown && evt.button == 0 && rect.Contains(evt.mousePosition))
+            {
+                _itemReorderSection = sectionIndex;
+                _itemReorderFromIndex = itemIndex;
+                evt.Use();
+            }
+        }
+
+        static int ComputeInsertBeforeIndex(List<Rect> rowRects, float mouseY)
+        {
+            if (rowRects.Count == 0)
+            {
+                return 0;
+            }
+
+            for (var i = 0; i < rowRects.Count; i++)
+            {
+                var midY = rowRects[i].yMin + rowRects[i].height * 0.5f;
+                if (mouseY < midY)
                 {
-                    HandleItemOpen(item);
-                }
-
-                EditorGUI.EndDisabledGroup();
-
-                EditorGUI.BeginDisabledGroup(item.Target == null);
-                if (GUILayout.Button("Ping", GUILayout.Width(44f)))
-                {
-                    EditorGUIUtility.PingObject(item.Target);
-                }
-
-                EditorGUI.EndDisabledGroup();
-
-                if (GUILayout.Button("❌", GUILayout.Width(28f)))
-                {
-                    RemoveItemAt(sectionIndex, itemIndex);
+                    return i;
                 }
             }
+
+            return rowRects.Count;
+        }
+
+        static void DrawReorderInsertIndicator(List<Rect> rowRects, int insertBefore)
+        {
+            if (rowRects.Count == 0)
+            {
+                return;
+            }
+
+            float y;
+            if (insertBefore <= 0)
+            {
+                y = rowRects[0].yMin;
+            }
+            else if (insertBefore >= rowRects.Count)
+            {
+                y = rowRects[rowRects.Count - 1].yMax;
+            }
+            else
+            {
+                y = (rowRects[insertBefore - 1].yMax + rowRects[insertBefore].yMin) * 0.5f;
+            }
+
+            var xMin = rowRects[0].xMin;
+            var xMax = rowRects[rowRects.Count - 1].xMax;
+            EditorGUI.DrawRect(new Rect(xMin, y - 1f, xMax - xMin, 2f), new Color(0.35f, 0.65f, 1f, 0.95f));
+        }
+
+        void FinishItemReorderIfNeeded()
+        {
+            var evt = Event.current;
+            if (evt.type != EventType.MouseUp || _itemReorderFromIndex < 0)
+            {
+                return;
+            }
+
+            if (_database != null &&
+                _itemReorderSection >= 0 &&
+                _itemReorderSection < _database.SectionsMutable.Count)
+            {
+                var list = _database.SectionsMutable[_itemReorderSection].Items;
+                var insertBefore = _itemReorderCachedRects.Count > 0
+                    ? ComputeInsertBeforeIndex(_itemReorderCachedRects, evt.mousePosition.y)
+                    : _itemReorderInsertBefore;
+                if (TryMoveItem(list, _itemReorderFromIndex, insertBefore))
+                {
+                    SaveDatabase();
+                }
+            }
+
+            _itemReorderSection = -1;
+            _itemReorderFromIndex = -1;
+            evt.Use();
+        }
+
+        static bool TryMoveItem(List<QuickAccessItem> list, int fromIndex, int insertBefore)
+        {
+            if (fromIndex < 0 || fromIndex >= list.Count)
+            {
+                return false;
+            }
+
+            if (insertBefore < 0)
+            {
+                insertBefore = 0;
+            }
+
+            if (insertBefore > list.Count)
+            {
+                insertBefore = list.Count;
+            }
+
+            if (insertBefore == fromIndex || insertBefore == fromIndex + 1)
+            {
+                return false;
+            }
+
+            var item = list[fromIndex];
+            list.RemoveAt(fromIndex);
+            var newIndex = insertBefore > fromIndex ? insertBefore - 1 : insertBefore;
+            list.Insert(newIndex, item);
+            return true;
         }
 
         static string GetItemButtonLabel(QuickAccessItem item)
@@ -378,6 +607,15 @@ namespace QuickAccess.Editor
             }
 
             sections.RemoveAt(index);
+            if (_editingSectionNameIndex == index)
+            {
+                _editingSectionNameIndex = -1;
+            }
+            else if (_editingSectionNameIndex > index)
+            {
+                _editingSectionNameIndex--;
+            }
+
             SaveDatabase();
         }
 
