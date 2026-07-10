@@ -1,55 +1,86 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
-using ZBase.UnityScreenNavigator.Core.Activities;
+using Baseduu.UINavigator.Core.Activities;
+using Baseduu.UINavigator.MVPPattern;
 
 namespace Balduu
 {
+    // Thin view class. It only holds the presenter and forwards the lifecycle to it.
     public class SampleActivity : Activity
     {
-        [field: SerializeField] public string ActivityName { get; private set; } = "SampleActivity";
-        [field: SerializeField] public SampleActivityModel Model { get; private set; }
-        [field: SerializeField] public SampleActivityView View { get; private set; }
+        [field: SerializeField] public bool ShowOnTop { get; private set; }
+        [field: SerializeField] public SampleActivityContext.UIPresenter UIPresenter { get; private set; }
 
-        public override async UniTask Initialize(Memory<object> args)
+        // Container-driven UIs are initialized by the navigator (it calls Initialize/Cleanup on
+        // this component); embedded UIs (e.g. a tab hosted inside a screen) are initialized by a
+        // direct Initialize call. Both paths reach these overrides, so the presenter is driven
+        // here instead of via AddLifecycleEvent.
+        public override UniTask Initialize(Memory<object> args)
         {
-            await Model.Initialize(args);
-            await View.Initialize(args);
+            if (ShowOnTop)
+            {
+                transform.SetAsLastSibling();
+            }
+            return UIPresenter.Initialize(args);
         }
 
         public override UniTask Cleanup(Memory<object> args)
         {
-            ClearAction();
-            return UniTask.CompletedTask;
-        }
-        
-        private async UniTask CloseActivity()
-        {
-            await UIManager.CloseActivity(ActivityName, null);
-        }
-
-        private void ClearAction()
-        {
+            return UIPresenter.Cleanup(args);
         }
     }
 
-    [System.Serializable]
-    public class SampleActivityModel
+    [Serializable]
+    public class SampleActivityContext
     {
-        public async UniTask Initialize(Memory<object> args)
+        // Static hub for cross-UI communication.
+        public static class Events
         {
-            await UniTask.CompletedTask;
         }
-    }
 
-    [System.Serializable]
-    public class SampleActivityView
-    {
-        [field: SerializeField] public CanvasGroup CanvasGroup {get; private set;}
-        
-        public async UniTask Initialize(Memory<object> args)
+        [HideLabel]
+        [Serializable]
+        public class UIModel : IAModel
         {
-            await UniTask.CompletedTask;
+            public UniTask Initialize(Memory<object> args)
+            {
+                return UniTask.CompletedTask;
+            }
+        }
+
+        [HideLabel]
+        [Serializable]
+        public class UIView : IAView
+        {
+            [field: Title(nameof(UIView))]
+            [field: SerializeField] public CanvasGroup MainView { get; private set; }
+
+            public UniTask Initialize(Memory<object> args)
+            {
+                return UniTask.CompletedTask;
+            }
+        }
+
+        [HideLabel]
+        [Serializable]
+        public class UIPresenter : IAPresenter, IActivityLifecycleEventSimple
+        {
+            [field: Title(nameof(UIPresenter))]
+            [field: SerializeField] public UIModel Model { get; private set; } = new();
+            [field: SerializeField] public UIView View { get; private set; } = new();
+
+            public async UniTask Initialize(Memory<object> args)
+            {
+                await Model.Initialize(args);
+                await View.Initialize(args);
+            }
+
+            public UniTask Cleanup(Memory<object> args)
+            {
+                return UniTask.CompletedTask;
+            }
         }
     }
 }

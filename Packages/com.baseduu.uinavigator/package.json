@@ -1,0 +1,11 @@
+{
+  "name": "com.baseduu.uinavigator",
+  "displayName": "Baseduu UI Navigator",
+  "version": "1.0.0",
+  "unity": "6000.3",
+  "description": "Screen navigation system for Baseduu. Forked from UnityScreenNavigator by Haruma-K, with improvements from ZBase.",
+  "license": "MIT",
+  "dependencies": {
+    "com.cysharp.unitask": "2.5.10"
+  }
+}

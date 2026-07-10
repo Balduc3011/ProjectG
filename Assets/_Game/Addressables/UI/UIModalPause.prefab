@@ -355,13 +355,15 @@ MonoBehaviour:
   _animationContainer:
     _enterAnimations: []
     _exitAnimations: []
-  <View>k__BackingField:
-    <MainView>k__BackingField: {fileID: 7249358464203491813}
-    <CloseBtn>k__BackingField: {fileID: 2191166553720011499}
-    <BackToMenuBtn>k__BackingField: {fileID: 3314069090653098013}
-    <MusicSwitch>k__BackingField: {fileID: 4350018883031946156}
-    <SoundSwitch>k__BackingField: {fileID: 745766814500247406}
-    <HapticSwitch>k__BackingField: {fileID: 1887688792816530322}
+  <UIPresenter>k__BackingField:
+    <Model>k__BackingField: {}
+    <View>k__BackingField:
+      <MainView>k__BackingField: {fileID: 7249358464203491813}
+      <CloseBtn>k__BackingField: {fileID: 2191166553720011499}
+      <BackToMenuBtn>k__BackingField: {fileID: 3314069090653098013}
+      <MusicSwitch>k__BackingField: {fileID: 4350018883031946156}
+      <SoundSwitch>k__BackingField: {fileID: 745766814500247406}
+      <HapticSwitch>k__BackingField: {fileID: 1887688792816530322}
 --- !u!1 &6800445989581066901
 GameObject:
   m_ObjectHideFlags: 0

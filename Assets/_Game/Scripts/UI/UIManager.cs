@@ -4,10 +4,10 @@ using Cysharp.Threading.Tasks;
 using Demo.Scripts;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using ZBase.UnityScreenNavigator.Core.Activities;
-using ZBase.UnityScreenNavigator.Core.Modals;
-using ZBase.UnityScreenNavigator.Core.Screens;
-using ZBase.UnityScreenNavigator.Core.Views;
+using Baseduu.UINavigator.Core.Activities;
+using Baseduu.UINavigator.Core.Modals;
+using Baseduu.UINavigator.Core.Screens;
+using Baseduu.UINavigator.Core.Views;
 
 public class UIManager : BaseManager
 {

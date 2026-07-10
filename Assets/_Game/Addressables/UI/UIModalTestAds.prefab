@@ -228,14 +228,15 @@ MonoBehaviour:
   _animationContainer:
     _enterAnimations: []
     _exitAnimations: []
-  <ModalName>k__BackingField: UIModalTestAds
-  <View>k__BackingField:
-    <MainView>k__BackingField: {fileID: 7614326778628352215}
-    <CloseBtn>k__BackingField: {fileID: 7997172458302352397}
-    <ShowInterBtn>k__BackingField: {fileID: 4126592848190729698}
-    <ShowRewardBtn>k__BackingField: {fileID: 4538756204417817463}
-    <ShowBannerBtn>k__BackingField: {fileID: 2459462875576774874}
-    <HideBannerBtn>k__BackingField: {fileID: 8642930096936773284}
+  <UIPresenter>k__BackingField:
+    <Model>k__BackingField: {}
+    <View>k__BackingField:
+      <MainView>k__BackingField: {fileID: 7614326778628352215}
+      <CloseBtn>k__BackingField: {fileID: 7997172458302352397}
+      <ShowInterBtn>k__BackingField: {fileID: 4126592848190729698}
+      <ShowRewardBtn>k__BackingField: {fileID: 4538756204417817463}
+      <ShowBannerBtn>k__BackingField: {fileID: 2459462875576774874}
+      <HideBannerBtn>k__BackingField: {fileID: 8642930096936773284}
 --- !u!1 &2199109965301869181
 GameObject:
   m_ObjectHideFlags: 0

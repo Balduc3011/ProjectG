@@ -681,20 +681,21 @@ MonoBehaviour:
       _animationBehaviour: {fileID: 0}
       _animationObject: {fileID: 0}
   <ShowOnTop>k__BackingField: 0
-  <Model>k__BackingField:
-    <GameResources>k__BackingField: []
-  <View>k__BackingField:
-    <MainView>k__BackingField: {fileID: 6846056404484997192}
-    <CloseBtn>k__BackingField: {fileID: 7146066459127149993}
-    <ItemShows>k__BackingField:
-    - {fileID: 7740394141946829179}
-    - {fileID: 2150292045325296405}
-    - {fileID: 5269291343870401766}
-    - {fileID: 2004270925339589082}
-    - {fileID: 6637053027425809902}
-    - {fileID: 5013072320398109121}
-    - {fileID: 569117858209509389}
-    - {fileID: 7317285173672686078}
+  <UIPresenter>k__BackingField:
+    <Model>k__BackingField:
+      <GameResources>k__BackingField: []
+    <View>k__BackingField:
+      <MainView>k__BackingField: {fileID: 6846056404484997192}
+      <CloseBtn>k__BackingField: {fileID: 7146066459127149993}
+      <ItemShows>k__BackingField:
+      - {fileID: 7740394141946829179}
+      - {fileID: 2150292045325296405}
+      - {fileID: 5269291343870401766}
+      - {fileID: 2004270925339589082}
+      - {fileID: 6637053027425809902}
+      - {fileID: 5013072320398109121}
+      - {fileID: 569117858209509389}
+      - {fileID: 7317285173672686078}
 --- !u!1 &7545744587450310369
 GameObject:
   m_ObjectHideFlags: 0

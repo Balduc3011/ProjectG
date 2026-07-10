@@ -62,13 +62,13 @@ public class GameManager : Singleton<GameManager>
         }
         if(loadingBattleModelArgs.IsEmpty)
             loadingBattleModelArgs = new Memory<object>(new object[] { loadingBattleModel });
-        UIActivityResource.Events.ShowContentEvent?.Invoke(false, false);
+        UIActivityResourceContext.Events.ShowContentEvent?.Invoke(false, false);
         await UIManager.ShowActivity(UIActivityLoading.ActivityName, loadingBattleModelArgs);
     }
         
     private async UniTask OpenUIScreenPlay()
     {
-        UIActivityResource.Events.ShowContentEvent?.Invoke(true, false);
+        UIActivityResourceContext.Events.ShowContentEvent?.Invoke(true, false);
         await UIManager.ShowScreen(UIScreenPlay.ScreenName, null);
     }
     

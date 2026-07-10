@@ -187,21 +187,23 @@ MonoBehaviour:
     _pushExitAnimations: []
     _popEnterAnimations: []
     _popExitAnimations: []
-  <View>k__BackingField:
-    <MainView>k__BackingField: {fileID: 5246401385798753949}
-    <MenuNav>k__BackingField: {fileID: 849121524538182056}
-    <MenuModals>k__BackingField:
-    - {fileID: 1253627243244606240}
-    - {fileID: 4249917435547221642}
-    - {fileID: 8075484693772679556}
-    <MainRects>k__BackingField: {fileID: 8974171551392422961}
-    <ModalRects>k__BackingField:
-    - {fileID: 8199522975988958760}
-    - {fileID: 5993774670561487189}
-    - {fileID: 1206590225230179468}
-    <ModalRectsPosX>k__BackingField: []
-    <SwipeControls>k__BackingField: {fileID: 1545600921678178236}
-    <SwipeArea>k__BackingField: {fileID: 6564302554537268781}
+  <UIPresenter>k__BackingField:
+    <Model>k__BackingField: {}
+    <View>k__BackingField:
+      <MainView>k__BackingField: {fileID: 5246401385798753949}
+      <MenuNav>k__BackingField: {fileID: 849121524538182056}
+      <MenuModals>k__BackingField:
+      - {fileID: 1253627243244606240}
+      - {fileID: 4249917435547221642}
+      - {fileID: 8075484693772679556}
+      <MainRects>k__BackingField: {fileID: 8974171551392422961}
+      <ModalRects>k__BackingField:
+      - {fileID: 8199522975988958760}
+      - {fileID: 5993774670561487189}
+      - {fileID: 1206590225230179468}
+      <ModalRectsPosX>k__BackingField: []
+      <SwipeControls>k__BackingField: {fileID: 1545600921678178236}
+      <SwipeArea>k__BackingField: {fileID: 6564302554537268781}
 --- !u!1 &6623571067667592903
 GameObject:
   m_ObjectHideFlags: 0

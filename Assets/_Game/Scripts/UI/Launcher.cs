@@ -1,11 +1,11 @@
-﻿using System;
-using ZBase.UnityScreenNavigator.Core.Screens;
-using ZBase.UnityScreenNavigator.Core;
-using ZBase.UnityScreenNavigator.Core.Views;
+using System;
+using Baseduu.UINavigator.Core.Screens;
+using Baseduu.UINavigator.Core;
+using Baseduu.UINavigator.Core.Views;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using ZBase.UnityScreenNavigator.Core.Windows;
+using Baseduu.UINavigator.Core.Windows;
 
 namespace Balduu
 {

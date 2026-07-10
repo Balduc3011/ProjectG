@@ -475,10 +475,12 @@ MonoBehaviour:
       _animationBehaviour: {fileID: 0}
       _animationObject: {fileID: 0}
   <ShowOnTop>k__BackingField: 0
-  <View>k__BackingField:
-    <MainView>k__BackingField: {fileID: 6832105776713509741}
-    <LoadingSlider>k__BackingField: {fileID: 3504783266855339995}
-    <LoadingValueTxt>k__BackingField: {fileID: 3329926087579232859}
+  <UIPresenter>k__BackingField:
+    <Model>k__BackingField: {}
+    <View>k__BackingField:
+      <MainView>k__BackingField: {fileID: 6832105776713509741}
+      <LoadingSlider>k__BackingField: {fileID: 3504783266855339995}
+      <LoadingValueTxt>k__BackingField: {fileID: 3329926087579232859}
 --- !u!1 &7666263274352145996
 GameObject:
   m_ObjectHideFlags: 0

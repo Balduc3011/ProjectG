@@ -1,114 +1,144 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
-using ZBase.UnityScreenNavigator.Core.Activities;
 using UnityEngine.UI;
+using Baseduu.UINavigator.Core.Activities;
+using Baseduu.UINavigator.MVPPattern;
 
 namespace Balduu
 {
+    // Thin view class. It only holds the presenter and forwards the lifecycle to it.
     public class UIActivityAlert : Activity
     {
-        public static class Events
-        {
-            
-        }
         [field: SerializeField] public bool ShowOnTop { get; private set; }
         [field: SerializeField] public static string ActivityName { get; private set; } = "UIActivityAlert";
-        [field: SerializeField] public UIActivityAlertModel Model { get; private set; }
-        [field: SerializeField] public UIActivityAlertView View { get; private set; }
+        [field: SerializeField] public UIActivityAlertContext.UIPresenter UIPresenter { get; private set; }
 
-        public override async UniTask Initialize(Memory<object> args)
+        // Container-driven UIs are initialized by the navigator (it calls Initialize/Cleanup on
+        // this component); embedded UIs (e.g. a tab hosted inside a screen) are initialized by a
+        // direct Initialize call. Both paths reach these overrides, so the presenter is driven
+        // here instead of via AddLifecycleEvent.
+        public override UniTask Initialize(Memory<object> args)
         {
             if (ShowOnTop)
             {
                 transform.SetAsLastSibling();
             }
-            await Model.Initialize(args);
-            await View.Initialize(args);
-            View.CloseBtn?.AddListenerUI(OnClickCloseActivity);
-            View.ConfirmBtn?.AddListenerUI(OnClickConfirm);
-            View.Init(Model.AlertValue, Model.PositiveConfirm);
+            return UIPresenter.Initialize(args);
         }
 
         public override UniTask Cleanup(Memory<object> args)
         {
-            ClearAction();
-            return UniTask.CompletedTask;
-        }
-
-        private void OnClickCloseActivity()
-        {
-            CloseActivity().Forget();
-        }
-
-        private async UniTask CloseActivity()
-        {
-            await UIManager.CloseActivity(ActivityName, null);
-            Model.DeclineAction?.Invoke();
-        }
-
-        private void ClearAction()
-        {
-            // Clear any listeners or actions here
-        }
-
-        private void OnClickConfirm()
-        {
-            View.MainView.interactable = false;
-            ConfirmAction().Forget();
-        }
-        private async UniTask ConfirmAction()
-        {
-            await UIManager.CloseActivity(ActivityName, null);
-            Model.ConfirmAction?.Invoke();
+            return UIPresenter.Cleanup(args);
         }
     }
 
-    [System.Serializable]
-    public class UIActivityAlertModel
+    [Serializable]
+    public class UIActivityAlertContext
     {
-        [field: SerializeField] public string AlertValue { get; private set; }
-        [field: SerializeField] public Action ConfirmAction { get; private set; }
-        [field: SerializeField] public Action DeclineAction { get; private set; }
-        [field: SerializeField] public bool PositiveConfirm { get; private set; }
-        public async UniTask Initialize(Memory<object> args)
+        public static class Events
         {
-            if (args.Length > 0)
+        }
+
+        [HideLabel]
+        [Serializable]
+        public class UIModel : IAModel
+        {
+            public string AlertValue { get; private set; }
+            public Action ConfirmAction { get; private set; }
+            public Action DeclineAction { get; private set; }
+            public bool PositiveConfirm { get; private set; }
+
+            public UniTask Initialize(Memory<object> args)
             {
-                var data = (args.Span[0]) as UIActivityAlertModelData;
-                if (data != null)
+                if (args.Length > 0)
                 {
-                    AlertValue = data.alertValue;
-                    ConfirmAction = data.confirmAction;
-                    DeclineAction = data.declineAction;
-                    PositiveConfirm = data.positiveConfirm;
+                    var data = args.Span[0] as UIActivityAlertModelData;
+                    if (data != null)
+                    {
+                        AlertValue = data.alertValue;
+                        ConfirmAction = data.confirmAction;
+                        DeclineAction = data.declineAction;
+                        PositiveConfirm = data.positiveConfirm;
+                    }
                 }
+                return UniTask.CompletedTask;
             }
-            await UniTask.CompletedTask;
-        }
-    }
-
-    [System.Serializable]
-    public class UIActivityAlertView
-    {
-        [field: SerializeField] public CanvasGroup MainView { get; private set; }
-        [field: SerializeField] public Button CloseBtn { get; private set; }
-        [field: SerializeField] public Button ConfirmBtn { get; private set; }
-        [field: SerializeField] public Image ConfirmBtnSpr { get; private set; }
-        [field: SerializeField] public Sprite PositiveConfirmBtnSpr { get; private set; }
-        [field: SerializeField] public Sprite NegativeConfirmBtnSpr { get; private set; }
-        [field: SerializeField] public TextMeshProUGUI AlertTxt { get; private set; }
-
-        public async UniTask Initialize(Memory<object> args)
-        {
-            await UniTask.CompletedTask;
         }
 
-        public void Init(string alertValue, bool positiveConfirm)
+        [HideLabel]
+        [Serializable]
+        public class UIView : IAView
         {
-            AlertTxt.ChangeText(alertValue);
-            ConfirmBtnSpr.sprite = positiveConfirm ? PositiveConfirmBtnSpr : NegativeConfirmBtnSpr;
+            [field: Title(nameof(UIView))]
+            [field: SerializeField] public CanvasGroup MainView { get; private set; }
+            [field: SerializeField] public Button CloseBtn { get; private set; }
+            [field: SerializeField] public Button ConfirmBtn { get; private set; }
+            [field: SerializeField] public Image ConfirmBtnSpr { get; private set; }
+            [field: SerializeField] public Sprite PositiveConfirmBtnSpr { get; private set; }
+            [field: SerializeField] public Sprite NegativeConfirmBtnSpr { get; private set; }
+            [field: SerializeField] public TextMeshProUGUI AlertTxt { get; private set; }
+
+            public UniTask Initialize(Memory<object> args)
+            {
+                return UniTask.CompletedTask;
+            }
+
+            public void Init(string alertValue, bool positiveConfirm)
+            {
+                AlertTxt.ChangeText(alertValue);
+                ConfirmBtnSpr.sprite = positiveConfirm ? PositiveConfirmBtnSpr : NegativeConfirmBtnSpr;
+            }
+        }
+
+        [HideLabel]
+        [Serializable]
+        public class UIPresenter : IAPresenter, IActivityLifecycleEventSimple
+        {
+            [field: Title(nameof(UIPresenter))]
+            [field: SerializeField] public UIModel Model { get; private set; } = new();
+            [field: SerializeField] public UIView View { get; private set; } = new();
+
+            public async UniTask Initialize(Memory<object> args)
+            {
+                await Model.Initialize(args);
+                await View.Initialize(args);
+                View.CloseBtn?.AddListenerUI(OnClickCloseActivity);
+                View.ConfirmBtn?.AddListenerUI(OnClickConfirm);
+                View.Init(Model.AlertValue, Model.PositiveConfirm);
+            }
+
+            public UniTask Cleanup(Memory<object> args)
+            {
+                View.CloseBtn?.onClick.RemoveAllListeners();
+                View.ConfirmBtn?.onClick.RemoveAllListeners();
+                return UniTask.CompletedTask;
+            }
+
+            private void OnClickCloseActivity()
+            {
+                CloseActivity().Forget();
+            }
+
+            private async UniTask CloseActivity()
+            {
+                await UIManager.CloseActivity(UIActivityAlert.ActivityName, null);
+                Model.DeclineAction?.Invoke();
+            }
+
+            private void OnClickConfirm()
+            {
+                View.MainView.interactable = false;
+                ConfirmActionAsync().Forget();
+            }
+
+            private async UniTask ConfirmActionAsync()
+            {
+                await UIManager.CloseActivity(UIActivityAlert.ActivityName, null);
+                Model.ConfirmAction?.Invoke();
+            }
         }
     }
 }

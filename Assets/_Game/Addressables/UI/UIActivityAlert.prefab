@@ -364,17 +364,18 @@ MonoBehaviour:
       _animationBehaviour: {fileID: 0}
       _animationObject: {fileID: 0}
   <ShowOnTop>k__BackingField: 0
-  <Model>k__BackingField:
-    <AlertValue>k__BackingField: 
-    <PositiveConfirm>k__BackingField: 0
-  <View>k__BackingField:
-    <MainView>k__BackingField: {fileID: 7249358464203491813}
-    <CloseBtn>k__BackingField: {fileID: 2191166553720011499}
-    <ConfirmBtn>k__BackingField: {fileID: 3314069090653098013}
-    <ConfirmBtnSpr>k__BackingField: {fileID: 7257297169994473701}
-    <PositiveConfirmBtnSpr>k__BackingField: {fileID: 21300000, guid: d32e030341159724889a09573fd30d15, type: 3}
-    <NegativeConfirmBtnSpr>k__BackingField: {fileID: 21300000, guid: 6f3549ae7626649499a559293fbd08e0, type: 3}
-    <AlertTxt>k__BackingField: {fileID: 3892924740932103636}
+  <UIPresenter>k__BackingField:
+    <Model>k__BackingField:
+      <AlertValue>k__BackingField: 
+      <PositiveConfirm>k__BackingField: 0
+    <View>k__BackingField:
+      <MainView>k__BackingField: {fileID: 7249358464203491813}
+      <CloseBtn>k__BackingField: {fileID: 2191166553720011499}
+      <ConfirmBtn>k__BackingField: {fileID: 3314069090653098013}
+      <ConfirmBtnSpr>k__BackingField: {fileID: 7257297169994473701}
+      <PositiveConfirmBtnSpr>k__BackingField: {fileID: 21300000, guid: d32e030341159724889a09573fd30d15, type: 3}
+      <NegativeConfirmBtnSpr>k__BackingField: {fileID: 21300000, guid: 6f3549ae7626649499a559293fbd08e0, type: 3}
+      <AlertTxt>k__BackingField: {fileID: 3892924740932103636}
 --- !u!1 &6586686739778329982
 GameObject:
   m_ObjectHideFlags: 0

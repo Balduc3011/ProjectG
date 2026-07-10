@@ -2,112 +2,143 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Demo.Scripts;
-using LitMotion;
+using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.UI;
-using ZBase.UnityScreenNavigator.Core.Modals;
-using ZBase.UnityScreenNavigator.Core.Views;
+using Baseduu.UINavigator.Core.Modals;
+using Baseduu.UINavigator.Core.Screens;
+using Baseduu.UINavigator.MVPPattern;
+using Screen = Baseduu.UINavigator.Core.Screens.Screen;
 
 namespace Balduu
 {
-    public class UIScreenMain : ZBase.UnityScreenNavigator.Core.Screens.Screen
+    // Thin view class. It only holds the presenter and forwards the lifecycle to it.
+    public class UIScreenMain : Screen
+    {
+        [field: SerializeField] public static string ScreenName { get; private set; } = "UIScreenMain";
+        [field: SerializeField] public UIScreenMainContext.UIPresenter UIPresenter { get; private set; }
+
+        // Container-driven UIs are initialized by the navigator (it calls Initialize/Cleanup on
+        // this component); embedded UIs (e.g. a tab hosted inside a screen) are initialized by a
+        // direct Initialize call. Both paths reach these overrides, so the presenter is driven
+        // here instead of via AddLifecycleEvent.
+        public override UniTask Initialize(Memory<object> args)
+        {
+            return UIPresenter.Initialize(args);
+        }
+
+        public override UniTask Cleanup(Memory<object> args)
+        {
+            return UIPresenter.Cleanup(args);
+        }
+    }
+
+    [Serializable]
+    public class UIScreenMainContext
     {
         public static class Events
         {
             public static Action OnEndDragSwipeEvent;
             public static Action<int> MoveSwipeAreaEvent;
         }
-        [field: SerializeField] public static string ScreenName { get; private set; } = "UIScreenMain";
-        [field: SerializeField] public UIScreenMainModel Model { get; private set; }
-        [field: SerializeField] public UIScreenMainView View { get; private set; }
 
-        public override async UniTask Initialize(Memory<object> args)
+        [HideLabel]
+        [Serializable]
+        public class UIModel : IAModel
         {
-            await Model.Initialize(args);
-            await View.Initialize(args);
-            Events.OnEndDragSwipeEvent += View.OnEndDragSwipe;
-            Events.MoveSwipeAreaEvent += View.MoveSwipeArea;
-        }
-
-        public override UniTask Cleanup(Memory<object> args)
-        {
-            Events.OnEndDragSwipeEvent -= View.OnEndDragSwipe;
-            Events.MoveSwipeAreaEvent -= View.MoveSwipeArea;
-            return UniTask.CompletedTask;
-        }
-    }
-
-    [System.Serializable]
-    public class UIScreenMainModel
-    {
-        public async UniTask Initialize(Memory<object> args)
-        {
-            await UniTask.CompletedTask;
-        }
-    }
-
-    [System.Serializable]
-    public class UIScreenMainView
-    {
-        [field: SerializeField] public CanvasGroup MainView {get; private set;}
-        [field: SerializeField] public MenuNav MenuNav {get; private set;}
-        [field: SerializeField] public List<Modal> MenuModals {get; private set;}
-        [field: SerializeField] public RectTransform MainRects {get; private set;}
-        [field: SerializeField] public List<RectTransform> ModalRects {get; private set;}
-        [field: SerializeField] public List<float> ModalRectsPosX {get; private set;}
-        [field: SerializeField] public SwipeControls SwipeControls {get; private set;}
-        [field: SerializeField] public RectTransform SwipeArea {get; private set;}
-        
-        public async UniTask Initialize(Memory<object> args)
-        {
-            InitializeModal(args).Forget();
-            await UniTask.DelayFrame(10);
-            MenuNav.PreSetup();
-            await UniTask.CompletedTask;
-        }
-        
-        public async UniTask InitializeModal(Memory<object> args)
-        {
-            InitModal(args);
-            await UniTask.CompletedTask;
-        }
-
-        private void InitModal(Memory<object> args)
-        {
-            for (var i = 0; i < MenuModals.Count; i++)
+            public UniTask Initialize(Memory<object> args)
             {
-                MenuModals[i].Initialize(args).Forget();
-            }
-            var rectWidth = MainRects.rect.width;
-            var delta = (ModalRects.Count - 1) / 2;
-            for (var i = 0; i < ModalRects.Count; i++)
-            {
-                var posX = (i - delta) * rectWidth;
-                ModalRects[i].anchoredPosition = new Vector2(posX, 0);
-                ModalRectsPosX.Add(posX);
+                return UniTask.CompletedTask;
             }
         }
 
-        public void OnEndDragSwipe()
+        [HideLabel]
+        [Serializable]
+        public class UIView : IAView
         {
-            var nearestDistance = float.MaxValue;
-            var nearestIndex = 0;
-            for (var i = 0; i < ModalRectsPosX.Count; i++)
+            [field: Title(nameof(UIView))]
+            [field: SerializeField] public CanvasGroup MainView { get; private set; }
+            [field: SerializeField] public MenuNav MenuNav { get; private set; }
+            [field: SerializeField] public List<Modal> MenuModals { get; private set; }
+            [field: SerializeField] public RectTransform MainRects { get; private set; }
+            [field: SerializeField] public List<RectTransform> ModalRects { get; private set; }
+            [field: SerializeField] public List<float> ModalRectsPosX { get; private set; }
+            [field: SerializeField] public SwipeControls SwipeControls { get; private set; }
+            [field: SerializeField] public RectTransform SwipeArea { get; private set; }
+
+            public async UniTask Initialize(Memory<object> args)
             {
-                var distance = Mathf.Abs(SwipeArea.anchoredPosition.x - ModalRectsPosX[i]);
-                if (distance < nearestDistance)
+                InitializeModal(args).Forget();
+                await UniTask.DelayFrame(10);
+                MenuNav.PreSetup();
+            }
+
+            public async UniTask InitializeModal(Memory<object> args)
+            {
+                InitModal(args);
+                await UniTask.CompletedTask;
+            }
+
+            private void InitModal(Memory<object> args)
+            {
+                for (var i = 0; i < MenuModals.Count; i++)
                 {
-                    nearestDistance = distance;
-                    nearestIndex = i;
+                    MenuModals[i].Initialize(args).Forget();
+                }
+                var rectWidth = MainRects.rect.width;
+                var delta = (ModalRects.Count - 1) / 2;
+                for (var i = 0; i < ModalRects.Count; i++)
+                {
+                    var posX = (i - delta) * rectWidth;
+                    ModalRects[i].anchoredPosition = new Vector2(posX, 0);
+                    ModalRectsPosX.Add(posX);
                 }
             }
-            SwipeControls.AutoMoveSwipeArea(SwipeArea.anchoredPosition.x, ModalRectsPosX[nearestIndex]).Forget();
-            MenuNav.SetSelectedTabEvent?.Invoke(ModalRectsPosX.Count - 1 - nearestIndex);
+
+            public void OnEndDragSwipe()
+            {
+                var nearestDistance = float.MaxValue;
+                var nearestIndex = 0;
+                for (var i = 0; i < ModalRectsPosX.Count; i++)
+                {
+                    var distance = Mathf.Abs(SwipeArea.anchoredPosition.x - ModalRectsPosX[i]);
+                    if (distance < nearestDistance)
+                    {
+                        nearestDistance = distance;
+                        nearestIndex = i;
+                    }
+                }
+                SwipeControls.AutoMoveSwipeArea(SwipeArea.anchoredPosition.x, ModalRectsPosX[nearestIndex]).Forget();
+                MenuNav.SetSelectedTabEvent?.Invoke(ModalRectsPosX.Count - 1 - nearestIndex);
+            }
+
+            public void MoveSwipeArea(int tabIndex)
+            {
+                SwipeControls.AutoMoveSwipeArea(SwipeArea.anchoredPosition.x, ModalRectsPosX[ModalRects.Count - 1 - tabIndex]).Forget();
+            }
         }
 
-        public void MoveSwipeArea(int tabIndex)
+        [HideLabel]
+        [Serializable]
+        public class UIPresenter : IAPresenter, IScreenLifecycleEventSimple
         {
-            SwipeControls.AutoMoveSwipeArea(SwipeArea.anchoredPosition.x, ModalRectsPosX[ModalRects.Count - 1 -tabIndex]).Forget();
+            [field: Title(nameof(UIPresenter))]
+            [field: SerializeField] public UIModel Model { get; private set; } = new();
+            [field: SerializeField] public UIView View { get; private set; } = new();
+
+            public async UniTask Initialize(Memory<object> args)
+            {
+                await Model.Initialize(args);
+                await View.Initialize(args);
+                Events.OnEndDragSwipeEvent += View.OnEndDragSwipe;
+                Events.MoveSwipeAreaEvent += View.MoveSwipeArea;
+            }
+
+            public UniTask Cleanup(Memory<object> args)
+            {
+                Events.OnEndDragSwipeEvent -= View.OnEndDragSwipe;
+                Events.MoveSwipeAreaEvent -= View.MoveSwipeArea;
+                return UniTask.CompletedTask;
+            }
         }
     }
 }

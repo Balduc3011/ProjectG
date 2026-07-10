@@ -2,100 +2,124 @@ using System;
 using Cysharp.Threading.Tasks;
 using LitMotion;
 using LitMotion.Extensions;
+using Sirenix.OdinInspector;
 using UnityEngine;
-using ZBase.UnityScreenNavigator.Core.Activities;
+using Baseduu.UINavigator.Core.Activities;
+using Baseduu.UINavigator.MVPPattern;
 
 namespace Balduu
 {
+    // Thin view class. It only holds the presenter and forwards the lifecycle to it.
     public class UIActivityResource : Activity
     {
-        public static class Events
-        {
-            public static Action<bool, bool> ShowContentEvent { get; set; }
-        }
         [field: SerializeField] public bool ShowOnTop { get; private set; }
         [field: SerializeField] public static string ActivityName { get; private set; } = "UIActivityResource";
-        [field: SerializeField] public UIActivityResourceModel Model { get; private set; }
-        [field: SerializeField] public UIActivityResourceView View { get; private set; }
+        [field: SerializeField] public UIActivityResourceContext.UIPresenter UIPresenter { get; private set; }
 
-        public override async UniTask Initialize(Memory<object> args)
+        // Container-driven UIs are initialized by the navigator (it calls Initialize/Cleanup on
+        // this component); embedded UIs (e.g. a tab hosted inside a screen) are initialized by a
+        // direct Initialize call. Both paths reach these overrides, so the presenter is driven
+        // here instead of via AddLifecycleEvent.
+        public override UniTask Initialize(Memory<object> args)
         {
             if (ShowOnTop)
             {
                 transform.SetAsLastSibling();
             }
-            await Model.Initialize(args);
-            await View.Initialize(args);
-            
-            View.UIResourceBarMoney.Init(GameManager.ResourceManager.GetGameResource(ResourceType.Currency, (int)CurrencyType.Money).Value, OnClickOpenShopMoney);
-            View.UIResourceBarLife.Init(GameManager.ResourceManager.GetGameResource(ResourceType.Currency, (int)CurrencyType.Life).Value, OnClickOpenShopLife);
-            
-            Events.ShowContentEvent += ShowContent;
+            return UIPresenter.Initialize(args);
         }
 
         public override UniTask Cleanup(Memory<object> args)
         {
-            ClearAction();
-            return UniTask.CompletedTask;
-        }
-
-        private async UniTask CloseActivity()
-        {
-            await UIManager.CloseActivity(ActivityName, null);
-        }
-
-        private void ClearAction()
-        {
-            Events.ShowContentEvent -= ShowContent;
-        }
-
-        private void ShowContent(bool show, bool anim)
-        {
-            if (anim)
-            {
-                float currentAlpha = View.MainView.alpha;
-                float targetAlpha = show ? 1 : 0;
-                LMotion.Create(currentAlpha, targetAlpha, 0.15f)
-                    .BindToAlpha(View.MainView)
-                    .AddTo(View.MainView);
-            }
-            else
-            {
-                View.MainView.alpha = show ? 1 : 0;
-            }
-        }
-
-        private void OnClickOpenShopMoney()
-        {
-            MenuNav.SetSelectedTabEvent?.Invoke(0);
-            UIScreenMain.Events.MoveSwipeAreaEvent?.Invoke(0);
-        }
-
-        private void OnClickOpenShopLife()
-        {
-            MenuNav.SetSelectedTabEvent?.Invoke(0);
-            UIScreenMain.Events.MoveSwipeAreaEvent?.Invoke(0);
+            return UIPresenter.Cleanup(args);
         }
     }
 
-    [System.Serializable]
-    public class UIActivityResourceModel
+    [Serializable]
+    public class UIActivityResourceContext
     {
-        public async UniTask Initialize(Memory<object> args)
+        public static class Events
         {
-            await UniTask.CompletedTask;
+            public static Action<bool, bool> ShowContentEvent { get; set; }
         }
-    }
 
-    [System.Serializable]
-    public class UIActivityResourceView
-    {
-        [field: SerializeField] public CanvasGroup MainView { get; private set; }
-        [field: SerializeField] public UIResourceBar UIResourceBarMoney { get; private set; }
-        [field: SerializeField] public UIResourceBar UIResourceBarLife { get; private set; }
-        public async UniTask Initialize(Memory<object> args)
+        [HideLabel]
+        [Serializable]
+        public class UIModel : IAModel
         {
-            await UniTask.CompletedTask;
+            public UniTask Initialize(Memory<object> args)
+            {
+                return UniTask.CompletedTask;
+            }
+        }
+
+        [HideLabel]
+        [Serializable]
+        public class UIView : IAView
+        {
+            [field: Title(nameof(UIView))]
+            [field: SerializeField] public CanvasGroup MainView { get; private set; }
+            [field: SerializeField] public UIResourceBar UIResourceBarMoney { get; private set; }
+            [field: SerializeField] public UIResourceBar UIResourceBarLife { get; private set; }
+
+            public UniTask Initialize(Memory<object> args)
+            {
+                return UniTask.CompletedTask;
+            }
+
+            public void ShowContent(bool show, bool anim)
+            {
+                if (anim)
+                {
+                    float currentAlpha = MainView.alpha;
+                    float targetAlpha = show ? 1 : 0;
+                    LMotion.Create(currentAlpha, targetAlpha, 0.15f)
+                        .BindToAlpha(MainView)
+                        .AddTo(MainView);
+                }
+                else
+                {
+                    MainView.alpha = show ? 1 : 0;
+                }
+            }
+        }
+
+        [HideLabel]
+        [Serializable]
+        public class UIPresenter : IAPresenter, IActivityLifecycleEventSimple
+        {
+            [field: Title(nameof(UIPresenter))]
+            [field: SerializeField] public UIModel Model { get; private set; } = new();
+            [field: SerializeField] public UIView View { get; private set; } = new();
+
+            public async UniTask Initialize(Memory<object> args)
+            {
+                await Model.Initialize(args);
+                await View.Initialize(args);
+
+                View.UIResourceBarMoney.Init(GameManager.ResourceManager.GetGameResource(ResourceType.Currency, (int)CurrencyType.Money).Value, OnClickOpenShopMoney);
+                View.UIResourceBarLife.Init(GameManager.ResourceManager.GetGameResource(ResourceType.Currency, (int)CurrencyType.Life).Value, OnClickOpenShopLife);
+
+                Events.ShowContentEvent += View.ShowContent;
+            }
+
+            public UniTask Cleanup(Memory<object> args)
+            {
+                Events.ShowContentEvent -= View.ShowContent;
+                return UniTask.CompletedTask;
+            }
+
+            private void OnClickOpenShopMoney()
+            {
+                MenuNav.SetSelectedTabEvent?.Invoke(0);
+                UIScreenMainContext.Events.MoveSwipeAreaEvent?.Invoke(0);
+            }
+
+            private void OnClickOpenShopLife()
+            {
+                MenuNav.SetSelectedTabEvent?.Invoke(0);
+                UIScreenMainContext.Events.MoveSwipeAreaEvent?.Invoke(0);
+            }
         }
     }
 }

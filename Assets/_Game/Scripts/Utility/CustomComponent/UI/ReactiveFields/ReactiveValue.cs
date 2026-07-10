@@ -1,69 +1,77 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
+using MemoryPack;
 using R3;
+using Sirenix.OdinInspector;
+using UnityEngine;
+
+#if UNITY_EDITOR
+using Sirenix.OdinInspector.Editor;
+#endif
 
 namespace Baseduu.ReactiveFields
 {
+    [MemoryPackable]
     [Serializable]
-    public class ReactiveValue<T>
+    public partial class ReactiveValue<T>
     {
-        [SerializeField]
-        private T value;
-
-        [NonSerialized]
-        private ReactiveProperty<T> _property;
-
-        public ReactiveValue()
+#if UNITY_EDITOR
+        public class ReactiveStructValueDrawer : OdinValueDrawer<ReactiveValue<T>>
         {
-            EnsureProperty();
+            protected override void DrawPropertyLayout(GUIContent label)
+            {
+                ValueEntry.Property.Children.First().Draw(label);
+            }
         }
-
-        public ReactiveValue(T initialValue)
-        {
-            value = initialValue;
-            _property = new ReactiveProperty<T>(initialValue);
-        }
+#endif
+        [OnValueChanged(nameof(OnValueChange))]
+        [Delayed]
+        [SerializeField] private T value;
 
         public T Value
         {
             get => value;
             set
             {
-                if (!EqualityComparer<T>.Default.Equals(value, this.value))
-                {
-                    this.value = value;
-                    EnsureProperty();
-                    _property.Value = value;
-                }
+                this.value = value;
+                _property.Value = value;
             }
         }
 
-        public ReactiveProperty<T> Property
+        [MemoryPackIgnore] public ReactiveProperty<T> _property;
+        [MemoryPackIgnore] public ReactiveProperty<T> Property => InitializeOrReSync();
+
+        public ReactiveValue()
         {
-            get
-            {
-                EnsureProperty();
-                return _property;
-            }
+            _property = new ReactiveProperty<T>(value);
         }
 
-        private void EnsureProperty()
+        [MemoryPackConstructor]
+        public ReactiveValue(T value)
         {
-            if (_property == null)
-                _property = new ReactiveProperty<T>(value);
+            this.value = value;
+            _property = new ReactiveProperty<T>(value);
+            Value = value;
         }
 
-        // 🔥 QUAN TRỌNG
-        public void InternalSetFromInspector(T newValue)
+        public static implicit operator T(ReactiveValue<T> reactiveValue)
         {
-            EnsureProperty();
+            return reactiveValue.Value;
+        }
 
-            if (!EqualityComparer<T>.Default.Equals(_property.Value, newValue))
-            {
-                value = newValue;
-                _property.Value = newValue;
-            }
+        private void OnValueChange()
+        {
+#if UNITY_EDITOR
+            _property.Value = value;
+#endif
+        }
+
+        private ReactiveProperty<T> InitializeOrReSync()
+        {
+            if (_property != null && EqualityComparer<T>.Default.Equals(_property.Value, Value)) return _property;
+            _property = new ReactiveProperty<T>(value);
+            return _property;
         }
     }
 }

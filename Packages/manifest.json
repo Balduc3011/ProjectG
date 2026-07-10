@@ -2,6 +2,7 @@
   "dependencies": {
     "com.annulusgames.lit-motion": "https://github.com/annulusgames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
     "com.boxqkrtm.ide.cursor": "https://github.com/boxqkrtm/com.unity.ide.cursor.git",
+    "com.cysharp.r3": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity#1.3.0",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
     "com.unity.2d.sprite": "1.0.0",
@@ -17,7 +18,6 @@
     "com.unity.timeline": "1.8.12",
     "com.unity.ugui": "2.0.0",
     "com.unity.visualscripting": "1.9.11",
-    "com.zbase.unityscreennavigator": "https://github.com/Zitga-Tech/ZBase.UnityScreenNavigator.git?path=/Packages/ZBase.UnityScreenNavigator",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.adaptiveperformance": "1.0.0",
     "com.unity.modules.ai": "1.0.0",

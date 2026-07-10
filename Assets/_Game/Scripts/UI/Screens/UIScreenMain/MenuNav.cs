@@ -49,12 +49,12 @@ public class MenuNav : MonoBehaviour
     {
         selectedTabIndex += selectedTabIndex < tabBtns.Count - 1 ? 1 : 0;
         SetSelectedTab(selectedTabIndex);
-        UIScreenMain.Events.MoveSwipeAreaEvent?.Invoke(selectedTabIndex);
+        UIScreenMainContext.Events.MoveSwipeAreaEvent?.Invoke(selectedTabIndex);
     }
     public void RightSwipe()
     {
         selectedTabIndex -= selectedTabIndex > 0 ? 1 : 0;
         SetSelectedTab(selectedTabIndex);
-        UIScreenMain.Events.MoveSwipeAreaEvent?.Invoke(selectedTabIndex);
+        UIScreenMainContext.Events.MoveSwipeAreaEvent?.Invoke(selectedTabIndex);
     }
 }

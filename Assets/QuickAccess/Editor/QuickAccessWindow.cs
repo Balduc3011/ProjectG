@@ -24,6 +24,7 @@ namespace QuickAccess.Editor
         const string SectionToggleGlyph = "👀";
         const string ItemPingGlyph = "🔗";
         const string ItemDeleteGlyph = "❌";
+        
 
         QuickAccessDatabase _database;
         Vector2 _scroll;

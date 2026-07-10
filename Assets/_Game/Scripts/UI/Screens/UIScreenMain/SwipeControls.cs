@@ -49,7 +49,7 @@ public class SwipeControls : MonoBehaviour
                 Vector2 inputVector = endTouchPosition - startTouchPosition;
                 if(CheckFastSwipe(inputVector))
                     return;
-                UIScreenMain.Events.OnEndDragSwipeEvent?.Invoke();
+                UIScreenMainContext.Events.OnEndDragSwipeEvent?.Invoke();
             }
             SwipeAreaMove();
         }

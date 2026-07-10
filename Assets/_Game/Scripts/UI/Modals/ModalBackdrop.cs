@@ -1,10 +1,10 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
-using ZBase.UnityScreenNavigator.Core.Views;
-using ZBase.UnityScreenNavigator.Foundation;
+using Baseduu.UINavigator.Core.Views;
+using Baseduu.UINavigator.Foundation;
 
-namespace ZBase.UnityScreenNavigator.Core.Modals
+namespace Baseduu.UINavigator.Core.Modals
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class ModalBackdrop : View

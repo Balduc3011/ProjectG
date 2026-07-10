@@ -650,17 +650,19 @@ MonoBehaviour:
   _animationContainer:
     _enterAnimations: []
     _exitAnimations: []
-  <View>k__BackingField:
-    <MainView>k__BackingField: {fileID: 1568046735459740818}
-    <CloseBtn>k__BackingField: {fileID: 0}
-    <UiShopPacks>k__BackingField:
-    - {fileID: 7146434433676720850}
-    - {fileID: 7674899557077186376}
-    - {fileID: 7317772940855734869}
-    - {fileID: 3599064718200301046}
-    - {fileID: 3995936438982689005}
-    - {fileID: 2713248385640504125}
-    - {fileID: 2804350493535618831}
+  <UIPresenter>k__BackingField:
+    <Model>k__BackingField: {}
+    <View>k__BackingField:
+      <MainView>k__BackingField: {fileID: 1568046735459740818}
+      <CloseBtn>k__BackingField: {fileID: 0}
+      <UiShopPacks>k__BackingField:
+      - {fileID: 7146434433676720850}
+      - {fileID: 7674899557077186376}
+      - {fileID: 7317772940855734869}
+      - {fileID: 3599064718200301046}
+      - {fileID: 3995936438982689005}
+      - {fileID: 2713248385640504125}
+      - {fileID: 2804350493535618831}
 --- !u!1001 &682407470333361751
 PrefabInstance:
   m_ObjectHideFlags: 0

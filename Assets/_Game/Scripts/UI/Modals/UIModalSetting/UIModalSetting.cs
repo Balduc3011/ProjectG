@@ -1,74 +1,96 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
-using ZBase.UnityScreenNavigator.Core.Modals;
+using Baseduu.UINavigator.Core.Modals;
+using Baseduu.UINavigator.MVPPattern;
 
 namespace Balduu
 {
+    // Thin view class. It only holds the presenter and forwards the lifecycle to it.
     public class UIModalSetting : Modal
     {
-        public static class Events
-        {
-            
-        }
-        [field: SerializeField] public string ModalName { get; private set; } = "UIModalSetting";
-        [field: SerializeField] public UIModalSettingModel Model { get; private set; }
-        [field: SerializeField] public UIModalSettingView View { get; private set; }
+        [field: SerializeField] public static string ModalName { get; private set; } = "UIModalSetting";
+        [field: SerializeField] public UIModalSettingContext.UIPresenter UIPresenter { get; private set; }
 
-        public override async UniTask Initialize(Memory<object> args)
+        // Container-driven UIs are initialized by the navigator (it calls Initialize/Cleanup on
+        // this component); embedded UIs (e.g. a tab hosted inside a screen) are initialized by a
+        // direct Initialize call. Both paths reach these overrides, so the presenter is driven
+        // here instead of via AddLifecycleEvent.
+        public override UniTask Initialize(Memory<object> args)
         {
-            await Model.Initialize(args);
-            await View.Initialize(args);
-            View.CloseBtn.AddListenerUI(OnClickCloseModal);
+            return UIPresenter.Initialize(args);
         }
 
         public override UniTask Cleanup(Memory<object> args)
         {
-            return UniTask.CompletedTask;
-        }
-
-        private void OnClickCloseModal()
-        {
-            CloseModal().Forget();
-        }
-
-        private async UniTask CloseModal()
-        {
-            ClearAction();
-            await UIManager.CloseModal(ModalName, null);
-        }
-
-        private void ClearAction()
-        {
-            View.CloseBtn.onClick.RemoveAllListeners();
+            return UIPresenter.Cleanup(args);
         }
     }
 
-    [System.Serializable]
-    public class UIModalSettingModel
+    [Serializable]
+    public class UIModalSettingContext
     {
-        public async UniTask Initialize(Memory<object> args)
+        public static class Events
         {
-            await UniTask.CompletedTask;
         }
-    }
 
-    [System.Serializable]
-    public class UIModalSettingView
-    {
-        [field: SerializeField] public CanvasGroup MainView { get; private set; }
-        [field: SerializeField] public Button CloseBtn { get; private set; }
-        [field: SerializeField] public SettingSwitch MusicSwitch { get; private set; }
-        [field: SerializeField] public SettingSwitch SoundSwitch { get; private set; }
-        [field: SerializeField] public SettingSwitch HapticSwitch { get; private set; }
-        
-        public async UniTask Initialize(Memory<object> args)
+        [HideLabel]
+        [Serializable]
+        public class UIModel : IAModel
         {
-            MusicSwitch.Init(SettingType.Music, GameManager.SettingManager.MusicStatus);
-            SoundSwitch.Init(SettingType.Sound, GameManager.SettingManager.SoundStatus);
-            HapticSwitch.Init(SettingType.Haptic, GameManager.SettingManager.HapticStatus);
-            await UniTask.CompletedTask;
+            public UniTask Initialize(Memory<object> args)
+            {
+                return UniTask.CompletedTask;
+            }
+        }
+
+        [HideLabel]
+        [Serializable]
+        public class UIView : IAView
+        {
+            [field: Title(nameof(UIView))]
+            [field: SerializeField] public CanvasGroup MainView { get; private set; }
+            [field: SerializeField] public Button CloseBtn { get; private set; }
+            [field: SerializeField] public SettingSwitch MusicSwitch { get; private set; }
+            [field: SerializeField] public SettingSwitch SoundSwitch { get; private set; }
+            [field: SerializeField] public SettingSwitch HapticSwitch { get; private set; }
+
+            public UniTask Initialize(Memory<object> args)
+            {
+                MusicSwitch.Init(SettingType.Music, GameManager.SettingManager.MusicStatus);
+                SoundSwitch.Init(SettingType.Sound, GameManager.SettingManager.SoundStatus);
+                HapticSwitch.Init(SettingType.Haptic, GameManager.SettingManager.HapticStatus);
+                return UniTask.CompletedTask;
+            }
+        }
+
+        [HideLabel]
+        [Serializable]
+        public class UIPresenter : IAPresenter, IModalLifecycleEventSimple
+        {
+            [field: Title(nameof(UIPresenter))]
+            [field: SerializeField] public UIModel Model { get; private set; } = new();
+            [field: SerializeField] public UIView View { get; private set; } = new();
+
+            public async UniTask Initialize(Memory<object> args)
+            {
+                await Model.Initialize(args);
+                await View.Initialize(args);
+                View.CloseBtn?.AddListenerUI(OnClickCloseModal);
+            }
+
+            public UniTask Cleanup(Memory<object> args)
+            {
+                View.CloseBtn?.onClick.RemoveAllListeners();
+                return UniTask.CompletedTask;
+            }
+
+            private void OnClickCloseModal()
+            {
+                UIManager.CloseModal(UIModalSetting.ModalName, null).Forget();
+            }
         }
     }
 }

@@ -530,9 +530,11 @@ MonoBehaviour:
     _pushExitAnimations: []
     _popEnterAnimations: []
     _popExitAnimations: []
-  <View>k__BackingField:
-    <MainView>k__BackingField: {fileID: 484149486219048956}
-    <PauseBtn>k__BackingField: {fileID: 8742513159304576678}
+  <UIPresenter>k__BackingField:
+    <Model>k__BackingField: {}
+    <View>k__BackingField:
+      <MainView>k__BackingField: {fileID: 484149486219048956}
+      <PauseBtn>k__BackingField: {fileID: 8742513159304576678}
 --- !u!1 &7443803521240312879
 GameObject:
   m_ObjectHideFlags: 0

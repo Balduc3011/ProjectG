@@ -898,8 +898,10 @@ MonoBehaviour:
   _animationContainer:
     _enterAnimations: []
     _exitAnimations: []
-  <View>k__BackingField:
-    <MainView>k__BackingField: {fileID: 1701095636322792134}
-    <SettingBtn>k__BackingField: {fileID: 4077509312030194133}
-    <TestAdsBtn>k__BackingField: {fileID: 4681493232969782550}
-    <PlayGameBtn>k__BackingField: {fileID: 4349537791754156980}
+  <UIPresenter>k__BackingField:
+    <Model>k__BackingField: {}
+    <View>k__BackingField:
+      <MainView>k__BackingField: {fileID: 1701095636322792134}
+      <SettingBtn>k__BackingField: {fileID: 4077509312030194133}
+      <TestAdsBtn>k__BackingField: {fileID: 4681493232969782550}
+      <PlayGameBtn>k__BackingField: {fileID: 4349537791754156980}
