@@ -10,6 +10,7 @@
   <Project Path="Unity.PerformanceTesting.Editor.csproj" />
   <Project Path="Unity.Burst.csproj" />
   <Project Path="Unity.VisualScripting.Flow.Editor.csproj" />
+  <Project Path="VContainer.csproj" />
   <Project Path="Unity.VisualStudio.Editor.csproj" />
   <Project Path="Unity.InputSystem.csproj" />
   <Project Path="ACTk.Runtime.csproj" />
@@ -27,6 +28,7 @@
   <Project Path="Unity.PerformanceTesting.csproj" />
   <Project Path="ACTk.Examples.Genuine.Runtime.csproj" />
   <Project Path="Unity.Burst.Editor.csproj" />
+  <Project Path="VContainer.Editor.csproj" />
   <Project Path="Unity.Rider.Editor.csproj" />
   <Project Path="Unity.AutoGroupGenerator.Editor.csproj" />
   <Project Path="Unity.VisualScripting.State.csproj" />
