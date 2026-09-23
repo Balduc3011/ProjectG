@@ -33,7 +33,7 @@ public class NavTabBtn : MonoBehaviour
     private void ChangeSelectedTab()
     {
         MenuNav.SetSelectedTabEvent?.Invoke(tabIndex);
-        UIScreenMainContext.Events.MoveSwipeAreaEvent?.Invoke(tabIndex);
+        UIScreenMainContext.Events.MoveSwipeAreaEvent?.Invoke(tabIndex, true);
     }
 
     public void SetCachedWidth(float width, float mul = 1f)

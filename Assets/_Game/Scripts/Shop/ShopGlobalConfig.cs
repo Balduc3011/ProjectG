@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Balduu;
 using Cysharp.Threading.Tasks;
@@ -61,6 +61,11 @@ public class ShopGlobalConfig : GlobalConfig<ShopGlobalConfig>
                         break;
                     case SpecialType.IAP:
                         value = $"${resource.Value}";
+                        break;
+                    case SpecialType.InfiniteLife:
+                        // Value của InfiniteLife là số giây thời hạn, không phải số lượng.
+                        TimeSpan duration = TimeSpan.FromSeconds(resource.Value);
+                        value = duration.TotalHours >= 1 ? $"{(int)duration.TotalHours}h" : $"{(int)duration.TotalMinutes}m";
                         break;
                     default:
                         break;

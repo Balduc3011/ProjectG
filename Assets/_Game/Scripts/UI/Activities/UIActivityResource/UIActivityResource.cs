@@ -112,13 +112,13 @@ namespace Balduu
             private void OnClickOpenShopMoney()
             {
                 MenuNav.SetSelectedTabEvent?.Invoke(0);
-                UIScreenMainContext.Events.MoveSwipeAreaEvent?.Invoke(0);
+                UIScreenMainContext.Events.MoveSwipeAreaEvent?.Invoke(0, true);
             }
 
             private void OnClickOpenShopLife()
             {
                 MenuNav.SetSelectedTabEvent?.Invoke(0);
-                UIScreenMainContext.Events.MoveSwipeAreaEvent?.Invoke(0);
+                UIScreenMainContext.Events.MoveSwipeAreaEvent?.Invoke(0, true);
             }
         }
     }

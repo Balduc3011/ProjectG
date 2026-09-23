@@ -539,6 +539,7 @@ MonoBehaviour:
       <Type>k__BackingField: 0
       <DefineValue>k__BackingField: 0
       <Value>k__BackingField: 0
+      <ExpireTime>k__BackingField: 
     gameResources: []
   titleTxt: {fileID: 0}
   priceTxt: {fileID: 3981371505225874913}
@@ -656,9 +657,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7110219257334842165}
     m_Modifications:
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: defineValue
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: resourceType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2325242387721274518, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Name
-      value: UIItemShow (4)
+      value: UIItemShow Booster2
       objectReference: {fileID: 0}
     - target: {fileID: 2325242387721274518, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_IsActive
@@ -890,9 +899,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7110219257334842165}
     m_Modifications:
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: defineValue
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: resourceType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2325242387721274518, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Name
-      value: UIItemShow (1)
+      value: UIItemShow Energy
       objectReference: {fileID: 0}
     - target: {fileID: 9124894129423224647, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Pivot.x
@@ -1003,9 +1020,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7110219257334842165}
     m_Modifications:
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: defineValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: resourceType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2325242387721274518, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Name
-      value: UIItemShow
+      value: UIItemShow Money
       objectReference: {fileID: 0}
     - target: {fileID: 9124894129423224647, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Pivot.x
@@ -1116,9 +1141,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7110219257334842165}
     m_Modifications:
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: defineValue
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: resourceType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2325242387721274518, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Name
-      value: UIItemShow (6)
+      value: UIItemShow Booster4
       objectReference: {fileID: 0}
     - target: {fileID: 2325242387721274518, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_IsActive
@@ -1233,9 +1266,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7110219257334842165}
     m_Modifications:
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: defineValue
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: resourceType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2325242387721274518, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Name
-      value: UIItemShow (5)
+      value: UIItemShow Booster3
       objectReference: {fileID: 0}
     - target: {fileID: 2325242387721274518, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_IsActive
@@ -1350,9 +1391,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7110219257334842165}
     m_Modifications:
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: defineValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: resourceType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2325242387721274518, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Name
-      value: UIItemShow (3)
+      value: UIItemShow Booster1
       objectReference: {fileID: 0}
     - target: {fileID: 9124894129423224647, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Pivot.x
@@ -1463,9 +1512,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7110219257334842165}
     m_Modifications:
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: defineValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: resourceType
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2325242387721274518, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Name
-      value: UIItemShow (2)
+      value: UIItemShow NoAds
       objectReference: {fileID: 0}
     - target: {fileID: 9124894129423224647, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Pivot.x

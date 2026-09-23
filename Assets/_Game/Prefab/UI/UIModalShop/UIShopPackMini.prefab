@@ -456,6 +456,7 @@ MonoBehaviour:
       <Type>k__BackingField: 0
       <DefineValue>k__BackingField: 0
       <Value>k__BackingField: 0
+      <ExpireTime>k__BackingField: 
     gameResources: []
   titleTxt: {fileID: 0}
   priceTxt: {fileID: 1885431475242003609}
@@ -566,9 +567,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5748382149823664717}
     m_Modifications:
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: defineValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1507360317023863498, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
+      propertyPath: resourceType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2325242387721274518, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Name
-      value: UIItemShow
+      value: UIItemShow Money
       objectReference: {fileID: 0}
     - target: {fileID: 9124894129423224647, guid: ef45ba676b5ba044a958a54febdb11ac, type: 3}
       propertyPath: m_Pivot.x

@@ -10,7 +10,7 @@ using Baseduu.UINavigator.MVPPattern;
 namespace Balduu
 {
     // Thin view class. It only holds the presenter and forwards the lifecycle to it.
-    public class UIModalShop : Modal
+    public class UIModalShop : Modal, IMenuTab
     {
         [field: SerializeField] public static string ModalName { get; private set; } = "UIModalShop";
         [field: SerializeField] public UIModalShopContext.UIPresenter UIPresenter { get; private set; }
@@ -27,6 +27,11 @@ namespace Balduu
         public override UniTask Cleanup(Memory<object> args)
         {
             return UIPresenter.Cleanup(args);
+        }
+
+        public void OnTabLeave()
+        {
+            UIPresenter.OnTabLeave();
         }
     }
 
@@ -54,11 +59,19 @@ namespace Balduu
             [field: Title(nameof(UIView))]
             [field: SerializeField] public CanvasGroup MainView { get; private set; }
             [field: SerializeField] public Button CloseBtn { get; private set; }
+            [field: SerializeField] public ScrollRect PackScrollRect { get; private set; }
             [field: SerializeField] public List<UIShopPack> UiShopPacks { get; private set; }
 
             public UniTask Initialize(Memory<object> args)
             {
                 return UniTask.CompletedTask;
+            }
+
+            public void ResetScrollToTop()
+            {
+                if (PackScrollRect == null) return;
+                PackScrollRect.StopMovement();
+                PackScrollRect.verticalNormalizedPosition = 1f;
             }
 
             public void InitShopPack()
@@ -90,6 +103,11 @@ namespace Balduu
             {
                 View.CloseBtn?.onClick.RemoveAllListeners();
                 return UniTask.CompletedTask;
+            }
+
+            public void OnTabLeave()
+            {
+                View.ResetScrollToTop();
             }
 
             private void OnClickCloseModal()

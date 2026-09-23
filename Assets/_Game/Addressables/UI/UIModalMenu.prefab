@@ -896,10 +896,13 @@ MonoBehaviour:
   _rectTransform: {fileID: 0}
   _canvasGroup: {fileID: 1701095636322792134}
   _animationContainer:
-    _enterAnimations: []
+    _enterAnimations:
+    - _partnerModalIdentifierRegex: 
+      _assetType: 0
+      _animationBehaviour: {fileID: 0}
+      _animationObject: {fileID: 0}
     _exitAnimations: []
   <UIPresenter>k__BackingField:
-    <Model>k__BackingField: {}
     <View>k__BackingField:
       <MainView>k__BackingField: {fileID: 1701095636322792134}
       <SettingBtn>k__BackingField: {fileID: 4077509312030194133}

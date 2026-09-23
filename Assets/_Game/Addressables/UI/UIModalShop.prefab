@@ -245,6 +245,63 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4822557368178264735
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 210212225254339459}
+  - component: {fileID: 2211040362040123782}
+  m_Layer: 5
+  m_Name: Enter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &210212225254339459
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4822557368178264735}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8416137873389158079}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2211040362040123782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4822557368178264735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d44151415c55804dae1c5652e1cb21b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Balduu.UIModalShopTransitionAnimation
+  _duration: 0.5
+  _easeType: 8
+  canvasGroup: {fileID: 1568046735459740818}
+  header: {fileID: 2121514516840137416}
+  headerAppearPos: 100
+  headerIdlePos: -147
+  shopComponent: {fileID: 3837418100352100593}
+  shopComponentAppearPos: -360
+  shopComponentIdlePos: 0
 --- !u!1 &4996748497946523982
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,6 +562,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!1 &7589103122616929751
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8416137873389158079}
+  m_Layer: 5
+  m_Name: ANIM
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8416137873389158079
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7589103122616929751}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 210212225254339459}
+  m_Father: {fileID: 2727565296107915404}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8950359293977141221
 GameObject:
   m_ObjectHideFlags: 0
@@ -610,6 +703,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8416137873389158079}
   - {fileID: 5067984132272280260}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -648,13 +742,17 @@ MonoBehaviour:
   _rectTransform: {fileID: 0}
   _canvasGroup: {fileID: 1568046735459740818}
   _animationContainer:
-    _enterAnimations: []
+    _enterAnimations:
+    - _partnerModalIdentifierRegex: 
+      _assetType: 0
+      _animationBehaviour: {fileID: 2211040362040123782}
+      _animationObject: {fileID: 0}
     _exitAnimations: []
   <UIPresenter>k__BackingField:
-    <Model>k__BackingField: {}
     <View>k__BackingField:
       <MainView>k__BackingField: {fileID: 1568046735459740818}
       <CloseBtn>k__BackingField: {fileID: 0}
+      <PackScrollRect>k__BackingField: {fileID: 6266845077039856357}
       <UiShopPacks>k__BackingField:
       - {fileID: 7146434433676720850}
       - {fileID: 7674899557077186376}

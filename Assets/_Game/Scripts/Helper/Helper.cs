@@ -88,11 +88,6 @@ namespace Balduu
             return string.Format("{0}:{1:00}", timeSpan.Minutes.ToString(), timeSpan.Seconds.ToString());
         }
 
-        public static string GetCurrencyFormat<T>(T value)
-        {
-            return double.Parse(value.ToString()).ToString("#,###", CultureInfo.GetCultureInfo("vi-VN").NumberFormat);
-        }
-
         public static Quaternion GetQuaternion(Vector3 targetPosition, Transform transform)
         {
             Vector3 position = transform.position;
@@ -407,11 +402,13 @@ namespace Balduu
 
         #region Time
 
-        public static double GetTimeBetweenDays(int days)
+        /// <summary>
+        /// <paramref name="from"/> phải là giờ server (GameManager.TimeManager.Now), không dùng clock device.
+        /// </summary>
+        public static double GetTimeBetweenDays(DateTime from, int days)
         {
-            DateTime currentDate = DateTime.Now;
-            DateTime nextDay = currentDate.Date.AddDays(days);
-            TimeSpan timeRemaining = nextDay - currentDate;
+            DateTime nextDay = from.Date.AddDays(days);
+            TimeSpan timeRemaining = nextDay - from;
             return timeRemaining.TotalSeconds;
         }
 
@@ -517,33 +514,14 @@ namespace Balduu
 
         public static DateTime Parse(string s)
         {
-            try
-            {
-                DateTime time = DateTime.Parse(s, new CultureInfo("en-US"));
-                return time;
-            }
-            catch
-            {
-                DateTime time = DateTime.Parse(s);
-                return time;
-            }
+            return DateTime.Parse(s, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
         }
 
         public static string DateTimeToString(DateTime t)
         {
-            return t.ToString(new CultureInfo("en-US"));
+            return t.ToString(CultureInfo.InvariantCulture);
         }
 
-        public static CultureInfo cultureInfor;
-
-        public static CultureInfo GetCultureInfo()
-        {
-            if (cultureInfor == null)
-                cultureInfor = new CultureInfo("en-US");
-
-            return cultureInfor;
-        }
-        
         public static string ConvertTime(TimeSpan timeSpan, float time, ConvertTimeFormat convertTimeFormat)
         {
             timeSpan = TimeSpan.FromSeconds(time);

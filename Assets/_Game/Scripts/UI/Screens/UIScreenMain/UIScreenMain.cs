@@ -11,6 +11,13 @@ using Screen = Baseduu.UINavigator.Core.Screens.Screen;
 
 namespace Balduu
 {
+    // Implemented by the modals hosted as menu tabs so they can reset their state once the swipe
+    // has fully moved them off screen.
+    public interface IMenuTab
+    {
+        void OnTabLeave();
+    }
+
     // Thin view class. It only holds the presenter and forwards the lifecycle to it.
     public class UIScreenMain : Screen
     {
@@ -38,7 +45,9 @@ namespace Balduu
         public static class Events
         {
             public static Action OnEndDragSwipeEvent;
-            public static Action<int> MoveSwipeAreaEvent;
+            // The bool tells whether the tab was picked from the nav bar, which is the only
+            // case that plays the tab's enter animation.
+            public static Action<int, bool> MoveSwipeAreaEvent;
         }
 
         [HideLabel]
@@ -64,6 +73,8 @@ namespace Balduu
             [field: SerializeField] public List<float> ModalRectsPosX { get; private set; }
             [field: SerializeField] public SwipeControls SwipeControls { get; private set; }
             [field: SerializeField] public RectTransform SwipeArea { get; private set; }
+
+            private int currentTabIndex = -1;
 
             public async UniTask Initialize(Memory<object> args)
             {
@@ -92,6 +103,7 @@ namespace Balduu
                     ModalRects[i].anchoredPosition = new Vector2(posX, 0);
                     ModalRectsPosX.Add(posX);
                 }
+                currentTabIndex = MenuNav.selectedTabIndex;
             }
 
             public void OnEndDragSwipe()
@@ -107,13 +119,55 @@ namespace Balduu
                         nearestIndex = i;
                     }
                 }
-                SwipeControls.AutoMoveSwipeArea(SwipeArea.anchoredPosition.x, ModalRectsPosX[nearestIndex]).Forget();
-                MenuNav.SetSelectedTabEvent?.Invoke(ModalRectsPosX.Count - 1 - nearestIndex);
+                var nearestTabIndex = ModalRectsPosX.Count - 1 - nearestIndex;
+                MoveToTab(nearestTabIndex, false).Forget();
+                MenuNav.SetSelectedTabEvent?.Invoke(nearestTabIndex);
             }
 
-            public void MoveSwipeArea(int tabIndex)
+            public void MoveSwipeArea(int tabIndex, bool playAnimation)
             {
-                SwipeControls.AutoMoveSwipeArea(SwipeArea.anchoredPosition.x, ModalRectsPosX[ModalRects.Count - 1 - tabIndex]).Forget();
+                MoveToTab(tabIndex, playAnimation).Forget();
+            }
+
+            // Tabs are never destroyed when left, so they are notified once the slide is done.
+            // MenuModals is indexed by tab, while ModalRectsPosX holds the swipe area position
+            // that brings that tab on screen, hence the mirrored lookup.
+            private async UniTaskVoid MoveToTab(int tabIndex, bool playAnimation)
+            {
+                if (playAnimation && tabIndex != currentTabIndex)
+                {
+                    PlayTabEnterAnimation(tabIndex).Forget();
+                }
+                currentTabIndex = tabIndex;
+                await SwipeControls.AutoMoveSwipeArea(SwipeArea.anchoredPosition.x, ModalRectsPosX[ModalRects.Count - 1 - tabIndex]);
+                for (var i = 0; i < MenuModals.Count; i++)
+                {
+                    if (i != tabIndex && MenuModals[i] is IMenuTab tab)
+                    {
+                        tab.OnTabLeave();
+                    }
+                }
+            }
+
+            // The navigator only plays the modal's enter animation on push, so the tab that comes
+            // on screen is driven here instead.
+            private async UniTaskVoid PlayTabEnterAnimation(int tabIndex)
+            {
+                var modal = MenuModals[tabIndex];
+                var animation = modal.AnimationContainer.GetAnimation(true, null);
+                if (animation == null)
+                {
+                    return;
+                }
+                animation.Setup(modal.RectTransform);
+                var time = 0f;
+                while (time < animation.Duration)
+                {
+                    await UniTask.NextFrame();
+                    time += Time.unscaledDeltaTime;
+                    animation.SetTime(time);
+                }
+                animation.SetTime(animation.Duration);
             }
         }
 

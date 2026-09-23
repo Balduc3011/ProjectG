@@ -1,3 +1,4 @@
+﻿using System;
 using System.Collections.Generic;
 using Baseduu.ReactiveFields;
 using Cysharp.Threading.Tasks;
@@ -57,9 +58,30 @@ public class ResourceManager : BaseManager
     [Button]
     public ReactiveGameResource AddGameResource(ResourceType type, int defineValue, float value)
     {
+        if (IsExpireDurationResource(type, defineValue))
+        {
+            return AddExpireDurationResource(type, defineValue, value);
+        }
         ResourceDataSave.Function.AddGameResource(type, defineValue, value);
         ReactiveGameResource resource = GetGameResource(type, defineValue);
         resource.Value.Value += value;
+        return resource;
+    }
+
+    /// <summary>
+    /// Resource mà value cộng vào là số giây thời hạn chứ không phải số lượng. Hiện chỉ có InfiniteLife.
+    /// </summary>
+    private static bool IsExpireDurationResource(ResourceType type, int defineValue)
+    {
+        return type == ResourceType.Special && defineValue == (int)SpecialType.InfiniteLife;
+    }
+
+    private ReactiveGameResource AddExpireDurationResource(ResourceType type, int defineValue, float seconds)
+    {
+        DateTime nowUtc = GameManager.TimeManager.UtcNow;
+        GameResource saved = ResourceDataSave.Function.AddExpireDuration(type, defineValue, nowUtc, seconds);
+        ReactiveGameResource resource = GetGameResource(type, defineValue);
+        resource.Value.Value = saved.Value;
         return resource;
     }
     
@@ -69,6 +91,41 @@ public class ResourceManager : BaseManager
         {
             var res = resources[i];
             AddGameResource(res.Type, res.DefineValue, res.Value);
+        }
+    }
+
+    private const float EXPIRE_CHECK_INTERVAL = 1f;
+    // Khởi tạo bằng interval để tick đầu tiên chạy ngay, bắt luôn resource hết hạn lúc app đang đóng.
+    private float expireCheckTimer = EXPIRE_CHECK_INTERVAL;
+
+    private void Update()
+    {
+        if (gameResources == null)
+        {
+            return;
+        }
+        expireCheckTimer += Time.deltaTime;
+        if (expireCheckTimer < EXPIRE_CHECK_INTERVAL)
+        {
+            return;
+        }
+        expireCheckTimer = 0f;
+        CheckExpiredResources();
+    }
+
+    private void CheckExpiredResources()
+    {
+        DateTime nowUtc = GameManager.TimeManager.UtcNow;
+        List<GameResource> savedResources = ResourceDataSave.Function.GameResources();
+        for (var i = 0; i < savedResources.Count; i++)
+        {
+            var saved = savedResources[i];
+            if (!saved.HasExpireTime() || saved.GetExpireTime() > nowUtc)
+            {
+                continue;
+            }
+            ResourceDataSave.Function.ExpireResource(saved);
+            GetGameResource(saved.Type, saved.DefineValue).Value.Value = saved.Value;
         }
     }
 }
@@ -119,4 +176,5 @@ public enum SpecialType
     NoAds = 1,
     IAP = 2,
     Ads = 3,
+    InfiniteLife = 4,
 }
