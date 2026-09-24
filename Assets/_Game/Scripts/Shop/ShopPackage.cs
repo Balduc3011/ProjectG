@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using DataSave;
 
 [System.Serializable]
-public class IAPPackage
+public class ShopPackage
 {
     public string packageID;
     public ConsumeType consumeType;

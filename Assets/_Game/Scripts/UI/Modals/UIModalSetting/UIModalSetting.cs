@@ -59,9 +59,9 @@ namespace Balduu
 
             public UniTask Initialize(Memory<object> args)
             {
-                MusicSwitch.Init(SettingType.Music, GameManager.SettingManager.MusicStatus);
-                SoundSwitch.Init(SettingType.Sound, GameManager.SettingManager.SoundStatus);
-                HapticSwitch.Init(SettingType.Haptic, GameManager.SettingManager.HapticStatus);
+                MusicSwitch.Init(SettingType.Music, GameManager.Get<SettingManager>().MusicStatus);
+                SoundSwitch.Init(SettingType.Sound, GameManager.Get<SettingManager>().SoundStatus);
+                HapticSwitch.Init(SettingType.Haptic, GameManager.Get<SettingManager>().HapticStatus);
                 return UniTask.CompletedTask;
             }
         }

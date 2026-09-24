@@ -1,32 +1,8 @@
 #if UNITY_EDITOR
 
-using System.IO;
-using UnityEditor;
-using UnityEngine;
-
 public static class ScreenTemplateCreator
 {
-    [MenuItem("Assets/Create/CustomUI/Screen", priority = -1)]
-    private static void CreateScreenTemplate()
-    {
-        string defaultName = "NewScreen";
-        string selectedPath = GetSelectedPathOrFallback();
-        string path = EditorUtility.SaveFilePanelInProject("Create Screen", defaultName, "cs", "Enter a name for the new screen script", selectedPath);
-
-        if (string.IsNullOrEmpty(path))
-        {
-            // Return if canceled.
-            return;
-        }
-
-        string fileName = Path.GetFileNameWithoutExtension(path);
-        string template = GetScreenTemplate(fileName);
-
-        File.WriteAllText(path, template);
-        AssetDatabase.Refresh();
-    }
-
-    private static string GetScreenTemplate(string className)
+    internal static string GetScreenTemplate(string className)
     {
         return $@"using System;
 using Cysharp.Threading.Tasks;
@@ -121,24 +97,6 @@ namespace Balduu
     }}
 }}
 ";
-    }
-
-    private static string GetSelectedPathOrFallback()
-    {
-        string path = "Assets";
-        foreach (Object obj in Selection.GetFiltered(typeof(Object), SelectionMode.Assets))
-        {
-            path = AssetDatabase.GetAssetPath(obj);
-            if (!string.IsNullOrEmpty(path) && File.Exists(path))
-            {
-                path = Path.GetDirectoryName(path);
-            }
-            if (!string.IsNullOrEmpty(path))
-            {
-                break;
-            }
-        }
-        return path;
     }
 }
 

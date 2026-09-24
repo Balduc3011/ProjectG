@@ -364,7 +364,7 @@ public static class TimeManagerExtensions
     /// <param name="action">Action sẽ được thực thi khi sự kiện xảy ra</param>
     public static void RegisterForNewDay(this string id, UnityAction action)
     {
-        GameManager.TimeManager.RegisterNewDayAction(id, action);
+        GameManager.Get<TimeManager>().RegisterNewDayAction(id, action);
     }
 
     /// <summary>
@@ -373,6 +373,6 @@ public static class TimeManagerExtensions
     /// <param name="id">ID đã sử dụng để đăng ký trước đó</param>
     public static void UnregisterFromNewDay(this string id)
     {
-        GameManager.TimeManager.UnregisterNewDayAction(id);
+        GameManager.Get<TimeManager>().UnregisterNewDayAction(id);
     }
 }

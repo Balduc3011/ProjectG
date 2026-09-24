@@ -1,100 +1,101 @@
 using System;
-using Balduu;
-using Balduu.Utility.DesignPattern;
+using System.Threading;
+using Balduu.Utility.CustomComponent;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class GameManager : Singleton<GameManager>
+/// <summary>
+/// Scope GameInstance (≈ UGameInstanceSubsystem của Unreal): sống từ lúc mở app tới lúc tắt app.
+/// Tự thu thập mọi BaseManager là con của GameObject này và khởi tạo theo thứ tự phụ thuộc
+/// (xem <see cref="ManagerCollection{TBase}"/>). Thêm manager mới: tạo class kế thừa BaseManager,
+/// đặt làm con của GameManager, lấy ra bằng GameManager.Get&lt;T&gt;(). Không sửa file này.
+///
+/// Phụ thuộc một chiều: World → GameInstance. Manager ở đây không được gọi tới WorldSubsystem.
+/// </summary>
+[DefaultExecutionOrder(-1000)]
+public class GameManager : AwaitableCachedMonoBehaviour
 {
-    public UIManager uiManager;
-    public static UIManager UIManager => Instance.uiManager;
-    public AudioManager audioManager;
-    public static AudioManager AudioManager => Instance.audioManager;
-    public SettingManager settingManager;
-    public static SettingManager SettingManager => Instance.settingManager;
-    public LocalizationManager localizationManager;
-    public static LocalizationManager LocalizationManager => Instance.localizationManager;
-    public TimeManager timeManager;
-    public static TimeManager TimeManager => Instance.timeManager;
-    public ProfileManager profileManager;
-    public static ProfileManager ProfileManager => Instance.profileManager;
-    public ResourceManager resourceManager;
-    public static ResourceManager ResourceManager => Instance.resourceManager;
-    public RewardManager rewardManager;
-    public static RewardManager RewardManager => Instance.rewardManager;
-    private bool loadedUIScreenMain = false;
+    public static GameManager Instance { get; private set; }
+
+    /// <summary>True khi mọi manager đã LoadData + PostLoad xong.</summary>
+    public static bool IsReady => Instance != null && Instance.isReady;
+
+    private ManagerCollection<BaseManager> managers;
+    private bool isReady;
+
+    public static T Get<T>() where T : BaseManager
+    {
+        if (Instance == null)
+            throw new InvalidOperationException($"GameManager chưa tồn tại khi lấy {typeof(T).Name}.");
+        return Instance.managers.Get<T>();
+    }
+
+    public static bool TryGet<T>(out T manager) where T : BaseManager
+    {
+        manager = null;
+        if (Instance == null)
+        {
+            Debug.LogError($"GameManager chưa tồn tại khi lấy {typeof(T).Name}.");
+            return false;
+        }
+        if (!Instance.managers.TryGet(out manager))
+        {
+            Debug.LogError($"[GameInstance] Không tìm thấy {typeof(T).Name}. Hãy thêm nó làm con của GameManager.", Instance);
+            return false;
+        }
+        return true;
+    }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+        managers = new ManagerCollection<BaseManager>("GameInstance", GetComponentsInChildren<BaseManager>(true));
+        managers.InitializeAll();
+    }
 
     private void Start()
     {
-        LoadData().Forget();
+        if (Instance != this) return;
+        BootAsync(OnDestroyCancellationToken).Forget();
     }
 
-    private async UniTask LoadData()
+    private async UniTaskVoid BootAsync(CancellationToken ct)
     {
-        await AudioManager.LoadData();
-        await SettingManager.LoadData();
-        await LocalizationManager.LoadData();
-        await TimeManager.LoadData();
-        await ProfileManager.LoadData();
-        await ResourceManager.LoadData();
-        await RewardManager.LoadData();
-        await UniTask.DelayFrame(1);
-        await UIManager.LoadData();
-        Application.targetFrameRate = 60;
-    }
-
-    #region Navigation
-    private UIActivityLoadingModel loadingBattleModel;
-    private Memory<object> loadingBattleModelArgs;
-    private UIActivityLoadingModel loadingBackModel;
-    private Memory<object> loadingBackModelArgs;
-    
-    public async UniTask OpenBattleScene()
-    {
-        GamePlayManager.Instance.OpenBattleScene();
-        if (loadingBattleModel == null)
+        try
         {
-            loadingBattleModel = new UIActivityLoadingModel
-            {
-                WaitAction = OpenUIScreenPlay,
-                DoneAction = null
-            };
+            await managers.LoadAll(ct);
+            await UniTask.DelayFrame(1, cancellationToken: ct);
+            await managers.PostLoadAll(ct);
+            Application.targetFrameRate = 60;
+            isReady = true;
         }
-        if(loadingBattleModelArgs.IsEmpty)
-            loadingBattleModelArgs = new Memory<object>(new object[] { loadingBattleModel });
-        UIActivityResourceContext.Events.ShowContentEvent?.Invoke(false, false);
-        await UIManager.ShowActivity(UIActivityLoading.ActivityName, loadingBattleModelArgs);
-    }
-        
-    private async UniTask OpenUIScreenPlay()
-    {
-        UIActivityResourceContext.Events.ShowContentEvent?.Invoke(true, false);
-        await UIManager.ShowScreen(UIScreenPlay.ScreenName, null);
-    }
-    
-    public async UniTaskVoid BackToMenu()
-    {
-        GamePlayManager.Instance.OpenBattleScene();
-        loadedUIScreenMain = false;
-        if (loadingBackModel == null)
+        catch (OperationCanceledException)
         {
-            loadingBackModel = new UIActivityLoadingModel
-            {
-                WaitAction = WaitForFirstUI,
-                DoneAction = null
-            };
+            // GameManager bị huỷ giữa chừng (tắt app / thoát Play Mode).
         }
-        if(loadingBackModelArgs.IsEmpty) 
-            loadingBackModelArgs = new Memory<object>(new object[] { loadingBackModel });
-        await UIManager.ShowActivity(UIActivityLoading.ActivityName, loadingBackModelArgs);
-        await UIManager.CloseScreen(UIScreenPlay.ScreenName, null);
-        loadedUIScreenMain = true;
-    }
-    
-    private async UniTask WaitForFirstUI()
-    {
-        await UniTask.WaitUntil(() => loadedUIScreenMain);
     }
 
-    #endregion
+    protected override void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            isReady = false;
+            managers?.DeinitializeAll();
+            Instance = null;
+        }
+        base.OnDestroy();
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        // Giữ đúng khi tắt Domain Reload (Enter Play Mode Options).
+        Instance = null;
+    }
 }

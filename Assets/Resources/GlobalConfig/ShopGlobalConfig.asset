@@ -12,112 +12,178 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e3d50844a9f4be439df0b186678ebe7, type: 3}
   m_Name: ShopGlobalConfig
   m_EditorClassIdentifier: Assembly-CSharp::ShopGlobalConfig
-  iapPackages:
+  shopPackages:
   - packageID: pack1
     consumeType: 0
     title: Pack 1
-    description: pack1
+    description: Pack 1
     price:
       <Type>k__BackingField: 3
       <DefineValue>k__BackingField: 2
       <Value>k__BackingField: 6.99
+      <ExpireTime>k__BackingField: 
     gameResources:
     - <Type>k__BackingField: 1
       <DefineValue>k__BackingField: 1
-      <Value>k__BackingField: 3600
-    - <Type>k__BackingField: 3
+      <Value>k__BackingField: 1000
+      <ExpireTime>k__BackingField: 
+    - <Type>k__BackingField: 2
       <DefineValue>k__BackingField: 1
-      <Value>k__BackingField: 1
+      <Value>k__BackingField: 2
+      <ExpireTime>k__BackingField: 
+    - <Type>k__BackingField: 2
+      <DefineValue>k__BackingField: 2
+      <Value>k__BackingField: 2
+      <ExpireTime>k__BackingField: 
+    - <Type>k__BackingField: 2
+      <DefineValue>k__BackingField: 3
+      <Value>k__BackingField: 2
+      <ExpireTime>k__BackingField: 
+    - <Type>k__BackingField: 2
+      <DefineValue>k__BackingField: 4
+      <Value>k__BackingField: 2
+      <ExpireTime>k__BackingField: 
   - packageID: pack2
     consumeType: 0
     title: Pack 2
-    description: pack2
+    description: Pack 2
     price:
       <Type>k__BackingField: 3
       <DefineValue>k__BackingField: 2
       <Value>k__BackingField: 9.99
+      <ExpireTime>k__BackingField: 
     gameResources:
+    - <Type>k__BackingField: 1
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 2000
+      <ExpireTime>k__BackingField: 
     - <Type>k__BackingField: 2
       <DefineValue>k__BackingField: 1
-      <Value>k__BackingField: 2
+      <Value>k__BackingField: 4
+      <ExpireTime>k__BackingField: 
     - <Type>k__BackingField: 2
       <DefineValue>k__BackingField: 2
-      <Value>k__BackingField: 2
+      <Value>k__BackingField: 4
+      <ExpireTime>k__BackingField: 
     - <Type>k__BackingField: 2
       <DefineValue>k__BackingField: 3
-      <Value>k__BackingField: 2
+      <Value>k__BackingField: 4
+      <ExpireTime>k__BackingField: 
     - <Type>k__BackingField: 2
       <DefineValue>k__BackingField: 4
-      <Value>k__BackingField: 2
+      <Value>k__BackingField: 4
+      <ExpireTime>k__BackingField: 
   - packageID: pack3
     consumeType: 0
     title: Pack 3
-    description: pack3
+    description: Pack 3
     price:
       <Type>k__BackingField: 3
       <DefineValue>k__BackingField: 2
-      <Value>k__BackingField: 6.99
+      <Value>k__BackingField: 16.99
+      <ExpireTime>k__BackingField: 
     gameResources:
-    - <Type>k__BackingField: 2
-      <DefineValue>k__BackingField: 1
-      <Value>k__BackingField: 1
-    - <Type>k__BackingField: 2
-      <DefineValue>k__BackingField: 2
-      <Value>k__BackingField: 1
-    - <Type>k__BackingField: 2
-      <DefineValue>k__BackingField: 3
-      <Value>k__BackingField: 1
-    - <Type>k__BackingField: 2
-      <DefineValue>k__BackingField: 4
-      <Value>k__BackingField: 1
     - <Type>k__BackingField: 1
       <DefineValue>k__BackingField: 1
-      <Value>k__BackingField: 1000
+      <Value>k__BackingField: 5000
+      <ExpireTime>k__BackingField: 
+    - <Type>k__BackingField: 2
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 8
+      <ExpireTime>k__BackingField: 
+    - <Type>k__BackingField: 2
+      <DefineValue>k__BackingField: 2
+      <Value>k__BackingField: 8
+      <ExpireTime>k__BackingField: 
+    - <Type>k__BackingField: 2
+      <DefineValue>k__BackingField: 3
+      <Value>k__BackingField: 8
+      <ExpireTime>k__BackingField: 
+    - <Type>k__BackingField: 2
+      <DefineValue>k__BackingField: 4
+      <Value>k__BackingField: 8
+      <ExpireTime>k__BackingField: 
   - packageID: coin1
     consumeType: 0
-    title: Pack 3
-    description: pack3
+    title: Coin 1
+    description: Coin 1
     price:
       <Type>k__BackingField: 3
       <DefineValue>k__BackingField: 2
       <Value>k__BackingField: 0.99
+      <ExpireTime>k__BackingField: 
     gameResources:
     - <Type>k__BackingField: 1
       <DefineValue>k__BackingField: 1
       <Value>k__BackingField: 500
+      <ExpireTime>k__BackingField: 
   - packageID: coin2
     consumeType: 0
-    title: Pack 3
-    description: pack3
+    title: Coin 2
+    description: Coin 2
     price:
       <Type>k__BackingField: 3
       <DefineValue>k__BackingField: 2
-      <Value>k__BackingField: 1.99
+      <Value>k__BackingField: 4.99
+      <ExpireTime>k__BackingField: 
     gameResources:
     - <Type>k__BackingField: 1
       <DefineValue>k__BackingField: 1
-      <Value>k__BackingField: 1100
+      <Value>k__BackingField: 5000
+      <ExpireTime>k__BackingField: 
   - packageID: coin3
     consumeType: 0
-    title: Pack 3
-    description: pack3
+    title: Coin 3
+    description: Coin 3
     price:
       <Type>k__BackingField: 3
       <DefineValue>k__BackingField: 2
-      <Value>k__BackingField: 3.99
+      <Value>k__BackingField: 9.99
+      <ExpireTime>k__BackingField: 
     gameResources:
     - <Type>k__BackingField: 1
       <DefineValue>k__BackingField: 1
-      <Value>k__BackingField: 2300
+      <Value>k__BackingField: 10000
+      <ExpireTime>k__BackingField: 
   - packageID: coin4
     consumeType: 0
-    title: Pack 3
-    description: pack3
+    title: Coin 4
+    description: Coin 4
     price:
       <Type>k__BackingField: 3
       <DefineValue>k__BackingField: 2
-      <Value>k__BackingField: 8.99
+      <Value>k__BackingField: 14.99
+      <ExpireTime>k__BackingField: 
     gameResources:
     - <Type>k__BackingField: 1
       <DefineValue>k__BackingField: 1
-      <Value>k__BackingField: 6000
+      <Value>k__BackingField: 15000
+      <ExpireTime>k__BackingField: 
+  - packageID: coin5
+    consumeType: 0
+    title: Coin 5
+    description: Coin 5
+    price:
+      <Type>k__BackingField: 3
+      <DefineValue>k__BackingField: 2
+      <Value>k__BackingField: 19.99
+      <ExpireTime>k__BackingField: 
+    gameResources:
+    - <Type>k__BackingField: 1
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 20000
+      <ExpireTime>k__BackingField: 
+  - packageID: coin6
+    consumeType: 0
+    title: Coin 6
+    description: Coin 6
+    price:
+      <Type>k__BackingField: 3
+      <DefineValue>k__BackingField: 2
+      <Value>k__BackingField: 29.99
+      <ExpireTime>k__BackingField: 
+    gameResources:
+    - <Type>k__BackingField: 1
+      <DefineValue>k__BackingField: 1
+      <Value>k__BackingField: 35000
+      <ExpireTime>k__BackingField: 

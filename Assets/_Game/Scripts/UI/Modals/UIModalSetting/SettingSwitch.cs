@@ -14,7 +14,7 @@ public class SettingSwitch : MonoBehaviour
     public void Init(SettingType type, ReactiveValue<bool> val)
     {
         settingType = type;
-        titleTxt.text = GameManager.LocalizationManager.GetTextBySample(settingType.ToString());
+        titleTxt.text = GameManager.Get<LocalizationManager>().GetTextBySample(settingType.ToString());
         value = val;
         uiSwitch.Init(value.Value);
         uiSwitch.onValueChange = onValueChange;

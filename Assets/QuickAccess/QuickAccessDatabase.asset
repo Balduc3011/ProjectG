@@ -19,6 +19,8 @@ MonoBehaviour:
     _items:
     - _name: MainScene
       _target: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
+    - _name: SampleWorldScene
+      _target: {fileID: 102900000, guid: fa44a87ee0d2464b9965511639363c1f, type: 3}
   - _sectionName: UI
     _isBuiltIn: 1
     _itemsExpanded: 1

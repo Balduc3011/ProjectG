@@ -403,7 +403,7 @@ namespace Balduu
         #region Time
 
         /// <summary>
-        /// <paramref name="from"/> phải là giờ server (GameManager.TimeManager.Now), không dùng clock device.
+        /// <paramref name="from"/> phải là giờ server (GameManager.Get<TimeManager>().Now), không dùng clock device.
         /// </summary>
         public static double GetTimeBetweenDays(DateTime from, int days)
         {

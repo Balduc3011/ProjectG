@@ -9,10 +9,16 @@ public class RewardManager : BaseManager
 {
     private UIActivityRewardModel uiActivityRewardModel;
     private Memory<object> uiActivityRewardModelArgs;
-    
+    private ResourceManager resourceManager;
+
+    protected internal override void Initialize(ManagerCollection<BaseManager> managers)
+    {
+        resourceManager = managers.InitializeDependency<ResourceManager>();
+    }
+
     public void AddReward(List<GameResource> rewards, bool showRewardActivity = true)
     {
-        GameManager.ResourceManager.AddGameResources(rewards);
+        resourceManager.AddGameResources(rewards);
         if (showRewardActivity)
         {
             if(uiActivityRewardModel == null)

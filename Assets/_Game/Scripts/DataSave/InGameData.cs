@@ -8,10 +8,10 @@ namespace DataSave
     [System.Serializable]
     public partial class InGameData
     {
-        [MemoryPackOrder(0)] [field: SerializeField] public SettingDataSave SettingDataSave { get; set; }= new();
-        [MemoryPackOrder(1)] [field: SerializeField] public ProfileDataSave ProfileDataSave { get; set; }= new();
-        [MemoryPackOrder(2)] [field: SerializeField] public ResourceDataSave ResourceDataSave { get; set; }= new();
-        [MemoryPackOrder(3)] [field: SerializeField] public ShopDataSave ShopDataSave { get; set; }= new();
+        [field: SerializeField] public SettingDataSave SettingDataSave { get; set; }= new();
+        [field: SerializeField] public ProfileDataSave ProfileDataSave { get; set; }= new();
+        [field: SerializeField] public ResourceDataSave ResourceDataSave { get; set; }= new();
+        [field: SerializeField] public ShopDataSave ShopDataSave { get; set; }= new();
         
         [MemoryPackOnSerialized]
         void OnSerialized()

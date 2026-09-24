@@ -24,7 +24,7 @@ public class UILocalizeTxt : MonoBehaviour
         txt ??= GetComponent<TextMeshProUGUI>();
         if (string.IsNullOrEmpty(key))
         {
-            key = txt != null ? GameManager.LocalizationManager.GetKeyBySample(txt.text) : "";
+            key = txt != null ? GameManager.Get<LocalizationManager>().GetKeyBySample(txt.text) : "";
         }
     }
 }

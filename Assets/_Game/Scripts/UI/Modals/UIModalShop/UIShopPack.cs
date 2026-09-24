@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class UIShopPack : MonoBehaviour
 {
     public string packageId;
-    public IAPPackage package;
+    public ShopPackage package;
     public TextMeshProUGUI titleTxt;
     public TextMeshProUGUI priceTxt;
     public Button purchaseBtn;
@@ -22,7 +22,7 @@ public class UIShopPack : MonoBehaviour
 
     public void Init()
     {
-        package = ShopGlobalConfig.Instance.GetIAPPackage(packageId);
+        package = ShopGlobalConfig.Instance.GetShopPackage(packageId);
         if (!IsPackageAvailable())
         {
             gameObject.SetActive(false);
@@ -80,6 +80,6 @@ public class UIShopPack : MonoBehaviour
     
     private void PurchasePackage()
     {
-        GameManager.RewardManager.AddReward(package.gameResources);
+        GameManager.Get<ShopManager>().PurchasePackage(packageId);
     }
 }

@@ -1,16 +1,25 @@
-using UnityEngine;
+using Balduu.Utility;
 
-public class ShopManager : MonoBehaviour
+public class ShopManager : BaseManager
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private RewardManager rewardManager;
+
+    protected internal override void Initialize(ManagerCollection<BaseManager> managers)
     {
-        
+        // Chỉ dùng lúc runtime (bấm mua), không cần RewardManager load trước.
+        rewardManager = managers.Get<RewardManager>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void PurchasePackage(string packageId)
     {
-        
+        ShopPackage package = ShopGlobalConfig.Instance.GetShopPackage(packageId);
+        if (package == null)
+        {
+            DebugAds.LogWarning($"ShopManager: không tìm thấy package {packageId}");
+            return;
+        }
+
+        // TODO: kiểm tra điều kiện mua + thanh toán (currency / IAP) trước khi trao thưởng.
+        rewardManager.AddReward(package.gameResources);
     }
 }

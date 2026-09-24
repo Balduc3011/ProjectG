@@ -1,31 +1,100 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Balduu;
 using Cysharp.Threading.Tasks;
 using DataSave;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "ShopGlobalConfig", menuName = "GlobalConfigs/ShopGlobalConfig")]
 [GlobalConfig("Assets/Resources/GlobalConfig/")]
 public class ShopGlobalConfig : GlobalConfig<ShopGlobalConfig>
 {
     [BoxGroup("Packages Config")]
-    public List<IAPPackage> iapPackages = new List<IAPPackage>();
+    [FormerlySerializedAs("iapPackages")]
+    public List<ShopPackage> shopPackages = new List<ShopPackage>();
     [BoxGroup("Packages Config"), Button]
     private async void FetchData()
     {
-        iapPackages.Clear();
-        await UniTask.CompletedTask;
+        try
+        {
+            List<Dictionary<string, string>> rows = await GoogleSheetHelper.FetchTableAsync(DefaultGlobalConfig.linkSheetID, "ShopData");
+            List<ShopPackage> packages = new List<ShopPackage>();
+            Dictionary<string, ShopPackage> packageById = new Dictionary<string, ShopPackage>();
+
+            for (int i = 0; i < rows.Count; i++)
+            {
+                Dictionary<string, string> row = rows[i];
+                string packageId = row["PackageID"].Trim();
+                if (string.IsNullOrEmpty(packageId)) continue;
+
+                // Dòng đầu tiên của 1 PackageID chứa thông tin gói, các dòng sau chỉ thêm reward
+                if (!packageById.TryGetValue(packageId, out ShopPackage package))
+                {
+                    ResourceType priceType = ParseEnum<ResourceType>(row["PriceResourceType"]);
+                    package = new ShopPackage
+                    {
+                        packageID = packageId,
+                        consumeType = ParseEnum<ConsumeType>(row["ConsumeType"]),
+                        title = row["Title"],
+                        description = row["Description"],
+                        price = new GameResource(priceType, ParseDefineValue(priceType, row["PriceDefineValue"]), ParseFloat(row["PriceValue"])),
+                        gameResources = new List<GameResource>(),
+                    };
+                    packageById.Add(packageId, package);
+                    packages.Add(package);
+                }
+
+                if (string.IsNullOrWhiteSpace(row["RewardResourceType"])) continue;
+                ResourceType rewardType = ParseEnum<ResourceType>(row["RewardResourceType"]);
+                package.gameResources.Add(new GameResource(rewardType, ParseDefineValue(rewardType, row["RewardDefineValue"]), ParseFloat(row["RewardValue"])));
+            }
+
+            shopPackages = packages;
+#if UNITY_EDITOR
+            UnityEditor.EditorUtility.SetDirty(this);
+#endif
+            Debug.Log($"[ShopGlobalConfig] Fetched {shopPackages.Count} packages");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[ShopGlobalConfig] FetchData failed: {e}");
+        }
     }
 
-    public IAPPackage GetIAPPackage(string packageId)
+    private static T ParseEnum<T>(string value) where T : struct, Enum
     {
-        for (var i = 0; i < iapPackages.Count; i++)
+        if (string.IsNullOrWhiteSpace(value)) return default;
+        if (Enum.TryParse(value.Trim(), true, out T result)) return result;
+        throw new FormatException($"Invalid {typeof(T).Name}: '{value}'");
+    }
+
+    private static int ParseDefineValue(ResourceType type, string value)
+    {
+        return type switch
         {
-            if(iapPackages[i].packageID == packageId)
-                return iapPackages[i];
+            ResourceType.Currency => (int)ParseEnum<CurrencyType>(value),
+            ResourceType.Booster => (int)ParseEnum<BoosterType>(value),
+            ResourceType.Special => (int)ParseEnum<SpecialType>(value),
+            _ => 0,
+        };
+    }
+
+    private static float ParseFloat(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return 0;
+        return float.Parse(value.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture);
+    }
+
+    public ShopPackage GetShopPackage(string packageId)
+    {
+        for (var i = 0; i < shopPackages.Count; i++)
+        {
+            if(shopPackages[i].packageID == packageId)
+                return shopPackages[i];
         }
 
         return null;

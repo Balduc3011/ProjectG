@@ -1,32 +1,8 @@
 #if UNITY_EDITOR
 
-using System.IO;
-using UnityEditor;
-using UnityEngine;
-
 public static class ModalTemplateCreator
 {
-    [MenuItem("Assets/Create/CustomUI/Modal", priority = -1)]
-    private static void CreateModalTemplate()
-    {
-        string defaultName = "NewModal";
-        string selectedPath = GetSelectedPathOrFallback();
-        string path = EditorUtility.SaveFilePanelInProject("Create Modal", defaultName, "cs", "Enter a name for the new modal script", selectedPath);
-
-        if (string.IsNullOrEmpty(path))
-        {
-            // Return if canceled.
-            return;
-        }
-
-        string fileName = Path.GetFileNameWithoutExtension(path);
-        string template = GetModalTemplate(fileName);
-
-        File.WriteAllText(path, template);
-        AssetDatabase.Refresh();
-    }
-
-    private static string GetModalTemplate(string className)
+    internal static string GetModalTemplate(string className)
     {
         return $@"using System;
 using Cysharp.Threading.Tasks;
@@ -120,24 +96,6 @@ namespace Balduu
     }}
 }}
 ";
-    }
-
-    private static string GetSelectedPathOrFallback()
-    {
-        string path = "Assets";
-        foreach (Object obj in Selection.GetFiltered(typeof(Object), SelectionMode.Assets))
-        {
-            path = AssetDatabase.GetAssetPath(obj);
-            if (!string.IsNullOrEmpty(path) && File.Exists(path))
-            {
-                path = Path.GetDirectoryName(path);
-            }
-            if (!string.IsNullOrEmpty(path))
-            {
-                break;
-            }
-        }
-        return path;
     }
 }
 

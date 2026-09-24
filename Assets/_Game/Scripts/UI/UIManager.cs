@@ -14,7 +14,9 @@ public class UIManager : BaseManager
     #region Statup
     [BoxGroup("Loading")] public bool loadedUIScreenMain = false;
     [BoxGroup("Loading")] public GameObject tempLoadingObj;
-    public override async UniTask LoadData()
+    [BoxGroup("FirstScreen")] public string firstScene = "UIScreenMain";
+    // Hiện UI đầu tiên khi MỌI manager đã load xong (trước đây dựa vào việc được gọi cuối trong GameManager).
+    protected internal override async UniTask PostLoad()
     {
         UIActivityLoadingModel loadingModel = new UIActivityLoadingModel
         {
@@ -23,7 +25,7 @@ public class UIManager : BaseManager
         };
         await ShowActivity(UIActivityLoading.ActivityName, new Memory<object>(new object[] { loadingModel }));
         tempLoadingObj.SetActive(false);
-        await ShowScreen(UIScreenMain.ScreenName, null);
+        await ShowScreen(firstScene, null);
         loadedUIScreenMain = true;
     }
 

@@ -76,7 +76,7 @@ namespace Balduu
                 await View.Initialize(args);
                 View.SettingBtn?.AddListenerUI(OnClickSettingBtn);
                 View.TestAdsBtn?.AddListenerUI(OnClickTestAdsBtn);
-                View.PlayGameBtn?.AddListenerUI(GameManager.Instance.OpenBattleScene);
+                View.PlayGameBtn?.AddListenerUI(GameManager.Get<GameSceneManager>().OpenWorldScene);
             }
 
             public UniTask Cleanup(Memory<object> args)

@@ -97,8 +97,8 @@ namespace Balduu
                 await Model.Initialize(args);
                 await View.Initialize(args);
 
-                View.UIResourceBarMoney.Init(GameManager.ResourceManager.GetGameResource(ResourceType.Currency, (int)CurrencyType.Money).Value, OnClickOpenShopMoney);
-                View.UIResourceBarLife.Init(GameManager.ResourceManager.GetGameResource(ResourceType.Currency, (int)CurrencyType.Life).Value, OnClickOpenShopLife);
+                View.UIResourceBarMoney.Init(GameManager.Get<ResourceManager>().GetGameResource(ResourceType.Currency, (int)CurrencyType.Money).Value, OnClickOpenShopMoney);
+                View.UIResourceBarLife.Init(GameManager.Get<ResourceManager>().GetGameResource(ResourceType.Currency, (int)CurrencyType.Life).Value, OnClickOpenShopLife);
 
                 Events.ShowContentEvent += View.ShowContent;
             }

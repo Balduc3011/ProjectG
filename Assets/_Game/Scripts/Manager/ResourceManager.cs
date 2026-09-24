@@ -11,6 +11,13 @@ using UnityEngine;
 public class ResourceManager : BaseManager
 {
     public List<ReactiveGameResource> gameResources;
+    private TimeManager timeManager;
+
+    protected internal override void Initialize(ManagerCollection<BaseManager> managers)
+    {
+        // Check resource hết hạn cần mốc thời gian đáng tin → TimeManager phải LoadData trước.
+        timeManager = managers.InitializeDependency<TimeManager>();
+    }
 
     public override async UniTask LoadData()
     {
@@ -78,7 +85,7 @@ public class ResourceManager : BaseManager
 
     private ReactiveGameResource AddExpireDurationResource(ResourceType type, int defineValue, float seconds)
     {
-        DateTime nowUtc = GameManager.TimeManager.UtcNow;
+        DateTime nowUtc = timeManager.UtcNow;
         GameResource saved = ResourceDataSave.Function.AddExpireDuration(type, defineValue, nowUtc, seconds);
         ReactiveGameResource resource = GetGameResource(type, defineValue);
         resource.Value.Value = saved.Value;
@@ -115,7 +122,7 @@ public class ResourceManager : BaseManager
 
     private void CheckExpiredResources()
     {
-        DateTime nowUtc = GameManager.TimeManager.UtcNow;
+        DateTime nowUtc = timeManager.UtcNow;
         List<GameResource> savedResources = ResourceDataSave.Function.GameResources();
         for (var i = 0; i < savedResources.Count; i++)
         {

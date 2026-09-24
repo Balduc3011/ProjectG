@@ -63,9 +63,9 @@ namespace Balduu
 
             public UniTask Initialize(Memory<object> args)
             {
-                MusicSwitch.Init(SettingType.Music, GameManager.SettingManager.MusicStatus);
-                SoundSwitch.Init(SettingType.Sound, GameManager.SettingManager.SoundStatus);
-                HapticSwitch.Init(SettingType.Haptic, GameManager.SettingManager.HapticStatus);
+                MusicSwitch.Init(SettingType.Music, GameManager.Get<SettingManager>().MusicStatus);
+                SoundSwitch.Init(SettingType.Sound, GameManager.Get<SettingManager>().SoundStatus);
+                HapticSwitch.Init(SettingType.Haptic, GameManager.Get<SettingManager>().HapticStatus);
                 return UniTask.CompletedTask;
             }
         }
@@ -123,7 +123,7 @@ namespace Balduu
             // Back To Menu Alert
             private void ConfirmBackToMenu()
             {
-                GameManager.Instance.BackToMenu().Forget();
+                GameManager.Get<GameSceneManager>().BackToMenu().Forget();
             }
 
             private void DeclineBackToMenu()

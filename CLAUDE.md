@@ -65,8 +65,8 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 **Luôn dùng giờ server. Luôn parse/format bằng InvariantCulture.**
 
 - Không dùng `DateTime.Now` / `DateTime.UtcNow` / `DateTime.Today` trong game code. Nguồn giờ duy nhất là `TimeManager` (nó tự fallback về clock device khi chưa sync được).
-  - Lưu / so sánh mốc hết hạn → `GameManager.TimeManager.UtcNow`, lưu xuống save dạng **UTC**.
-  - Hiển thị cho user, logic theo ngày lịch (reset 0h, daily) → `GameManager.TimeManager.Now`.
+  - Lưu / so sánh mốc hết hạn → `GameManager.Get<TimeManager>().UtcNow`, lưu xuống save dạng **UTC**.
+  - Hiển thị cho user, logic theo ngày lịch (reset 0h, daily) → `GameManager.Get<TimeManager>().Now`.
 - Mọi chỗ parse hoặc format `DateTime`/`TimeSpan` **phải** truyền `CultureInfo.InvariantCulture`. Không dùng culture của máy, không hardcode `new CultureInfo("en-US")`.
   - Parse: `DateTime.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var t)`.
   - Format khi lưu: `t.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture)`.
@@ -96,6 +96,21 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
     ```
   - `.AddTo(gameObject)` / `.AddTo(transform)` để motion tự huỷ khi object bị destroy.
   - `await` motion trong async method → truyền `CancellationToken` (`gameObject.GetCancellationTokenOnDestroy()`) để không callback vào object đã chết.
+
+## 7. Manager System
+
+**Hai scope: GameInstance (`GameManager` + `BaseManager`) và World (`WorldSubsystem` + `BaseWorldManager`). Phụ thuộc chỉ một chiều World → GameInstance.**
+
+- Manager mới: kế thừa đúng base, đặt làm con của scope. Không sửa `GameManager.cs` / `WorldSubsystem.cs`.
+- Phụ thuộc giữa manager khai báo trong `Initialize()` bằng `managers.InitializeDependency<T>()`, không gọi static.
+- Chi tiết: xem [GUIDE/ManagerSystem.md](GUIDE/ManagerSystem.md).
+
+## 8. Duyệt List / Array
+
+**Editor dùng LINQ / `foreach` cho gọn. Runtime dùng `for` để tránh alloc GC.**
+
+- Code chỉ chạy trên Editor (thư mục `Editor/`, block `#if UNITY_EDITOR`, custom inspector, menu tool, `OnValidate`) → được dùng LINQ, `foreach`.
+- Code chạy runtime (gameplay, UI, manager, `Update`...) → dùng `for (int i = 0; i < list.Count; i++)`. Không dùng LINQ, không dùng `foreach`.
 
 ---
 
