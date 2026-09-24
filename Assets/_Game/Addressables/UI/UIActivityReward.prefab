@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Confim
+  m_text: Confirm
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a0846e9db6c136c44baa5f729a80cfea, type: 2}
   m_sharedMaterial: {fileID: 8883829856776055800, guid: a0846e9db6c136c44baa5f729a80cfea, type: 2}
@@ -151,9 +151,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   txt: {fileID: 6955302170212974597}
-  key: 
-  additionalText: 
-  additionalTextType: 0
+  key: txt_confirm
+  subString: 
+  subStringType: 0
 --- !u!1 &1776289280737583973
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,8 +682,6 @@ MonoBehaviour:
       _animationObject: {fileID: 0}
   <ShowOnTop>k__BackingField: 0
   <UIPresenter>k__BackingField:
-    <Model>k__BackingField:
-      <GameResources>k__BackingField: []
     <View>k__BackingField:
       <MainView>k__BackingField: {fileID: 6846056404484997192}
       <CloseBtn>k__BackingField: {fileID: 7146066459127149993}

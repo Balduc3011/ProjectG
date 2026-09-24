@@ -56,6 +56,7 @@ namespace Balduu
             [field: SerializeField] public SettingSwitch MusicSwitch { get; private set; }
             [field: SerializeField] public SettingSwitch SoundSwitch { get; private set; }
             [field: SerializeField] public SettingSwitch HapticSwitch { get; private set; }
+            [field: SerializeField] public Button LanguageBtn { get; private set; }
 
             public UniTask Initialize(Memory<object> args)
             {
@@ -79,12 +80,19 @@ namespace Balduu
                 await Model.Initialize(args);
                 await View.Initialize(args);
                 View.CloseBtn?.AddListenerUI(OnClickCloseModal);
+                View.LanguageBtn?.AddListenerUI(OnClickLanguage);
             }
 
             public UniTask Cleanup(Memory<object> args)
             {
                 View.CloseBtn?.onClick.RemoveAllListeners();
+                View.LanguageBtn?.onClick.RemoveAllListeners();
                 return UniTask.CompletedTask;
+            }
+
+            private void OnClickLanguage()
+            {
+                UIManager.ShowActivity(UIActivityLocalize.ActivityName, null).Forget();
             }
 
             private void OnClickCloseModal()

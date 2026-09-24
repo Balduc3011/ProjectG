@@ -1528,6 +1528,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Navigator
       objectReference: {fileID: 0}
+    - target: {fileID: 6818757344086871426, guid: 55d51eba7f23b7647a2142d9a8419bf0, type: 3}
+      propertyPath: key
+      value: txt_collection
+      objectReference: {fileID: 0}
     - target: {fileID: 7969393174473377198, guid: 55d51eba7f23b7647a2142d9a8419bf0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

@@ -1,0 +1,495 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f320e86c18b43fc4ea8e55c5885f7927, type: 3}
+  m_Name: LocalizeGlobalConfig
+  m_EditorClassIdentifier: Assembly-CSharp::LocalizeGlobalConfig
+  entries:
+  - key: txt_language_key
+    texts:
+    - language: 0
+      text: English
+    - language: 1
+      text: "Ti\u1EBFng Vi\u1EC7t"
+    - language: 2
+      text: "Fran\xE7ais"
+    - language: 3
+      text: Deutsch
+    - language: 4
+      text: "Espa\xF1ol"
+    - language: 5
+      text: Italiano
+    - language: 6
+      text: "Portugu\xEAs"
+    - language: 7
+      text: "\u65E5\u672C\u8A9E"
+    - language: 8
+      text: "\uD55C\uAD6D\uC5B4"
+    - language: 9
+      text: Indonesia
+    - language: 10
+      text: Melayu
+    - language: 11
+      text: Filipino
+    - language: 12
+      text: "\u0E44\u0E17\u0E22"
+    - language: 13
+      text: "\u4E2D\u6587"
+  - key: txt_sample
+    texts:
+    - language: 0
+      text: Card
+    - language: 1
+      text: "Th\u1EBB"
+    - language: 2
+      text: Carte
+    - language: 3
+      text: Karte
+    - language: 4
+      text: Tarjeta
+    - language: 5
+      text: Carta
+    - language: 6
+      text: "Cart\xE3o"
+    - language: 7
+      text: "\u30AB\u30FC\u30C9"
+    - language: 8
+      text: "\uCE74\uB4DC"
+    - language: 9
+      text: Kartu
+    - language: 10
+      text: Kad
+    - language: 11
+      text: Kard
+    - language: 12
+      text: "\u0E01\u0E32\u0E23\u0E4C\u0E14"
+    - language: 13
+      text: "\u5361\u7247"
+  - key: txt_menu
+    texts:
+    - language: 0
+      text: Menu
+    - language: 1
+      text: "Th\u1EF1c \u0111\u01A1n"
+    - language: 2
+      text: Menu
+    - language: 3
+      text: Speisekarte
+    - language: 4
+      text: "Men\xFA"
+    - language: 5
+      text: Menu
+    - language: 6
+      text: Menu
+    - language: 7
+      text: "\u30E1\u30CB\u30E5\u30FC"
+    - language: 8
+      text: "\uBA54\uB274"
+    - language: 9
+      text: Menu
+    - language: 10
+      text: Menu
+    - language: 11
+      text: Menu
+    - language: 12
+      text: "\u0E40\u0E21\u0E19\u0E39"
+    - language: 13
+      text: "\u83DC\u5355"
+  - key: txt_collection
+    texts:
+    - language: 0
+      text: Collection
+    - language: 1
+      text: "B\u1ED9 s\u01B0u t\u1EADp"
+    - language: 2
+      text: Collection
+    - language: 3
+      text: Sammlung
+    - language: 4
+      text: "Recopilaci\xF3n"
+    - language: 5
+      text: Collezione
+    - language: 6
+      text: "Cole\xE7\xE3o"
+    - language: 7
+      text: "\u30B3\u30EC\u30AF\u30B7\u30E7\u30F3"
+    - language: 8
+      text: "\uC218\uC9D1"
+    - language: 9
+      text: Koleksi
+    - language: 10
+      text: Koleksi
+    - language: 11
+      text: Koleksyon
+    - language: 12
+      text: "\u0E02\u0E2D\u0E07\u0E2A\u0E30\u0E2A\u0E21"
+    - language: 13
+      text: "\u6536\u85CF"
+  - key: txt_shop
+    texts:
+    - language: 0
+      text: Shop
+    - language: 1
+      text: "C\u1EEDa h\xE0ng"
+    - language: 2
+      text: Boutique
+    - language: 3
+      text: "Gesch\xE4ft"
+    - language: 4
+      text: Comercio
+    - language: 5
+      text: Negozio
+    - language: 6
+      text: Comprar
+    - language: 7
+      text: "\u5E97"
+    - language: 8
+      text: "\uAC00\uAC8C"
+    - language: 9
+      text: Toko
+    - language: 10
+      text: Kedai
+    - language: 11
+      text: Tindahan
+    - language: 12
+      text: "\u0E23\u0E49\u0E32\u0E19\u0E04\u0E49\u0E32"
+    - language: 13
+      text: "\u5E97\u94FA"
+  - key: txt_play
+    texts:
+    - language: 0
+      text: Play
+    - language: 1
+      text: "Ch\u01A1i"
+    - language: 2
+      text: Jouer
+    - language: 3
+      text: Spielen
+    - language: 4
+      text: Jugar
+    - language: 5
+      text: Giocare
+    - language: 6
+      text: Jogar
+    - language: 7
+      text: "\u904A\u3076"
+    - language: 8
+      text: "\uB180\uB2E4"
+    - language: 9
+      text: Bermain
+    - language: 10
+      text: Main
+    - language: 11
+      text: Maglaro
+    - language: 12
+      text: "\u0E40\u0E25\u0E48\u0E19"
+    - language: 13
+      text: "\u73A9"
+  - key: txt_setting
+    texts:
+    - language: 0
+      text: Setting
+    - language: 1
+      text: "C\xE0i \u0111\u1EB7t"
+    - language: 2
+      text: "Param\xE8tre"
+    - language: 3
+      text: Einstellung
+    - language: 4
+      text: "Configuraci\xF3n"
+    - language: 5
+      text: Collocamento
+    - language: 6
+      text: Contexto
+    - language: 7
+      text: "\u8A2D\u5B9A"
+    - language: 8
+      text: "\uD658\uACBD"
+    - language: 9
+      text: Pengaturan
+    - language: 10
+      text: Tetapan
+    - language: 11
+      text: Pagtatakda
+    - language: 12
+      text: "\u0E01\u0E32\u0E23\u0E15\u0E31\u0E49\u0E07\u0E04\u0E48\u0E32"
+    - language: 13
+      text: "\u73AF\u5883"
+  - key: txt_alert
+    texts:
+    - language: 0
+      text: Alert
+    - language: 1
+      text: "B\xE1o \u0111\u1ED9ng"
+    - language: 2
+      text: Alerte
+    - language: 3
+      text: Alarm
+    - language: 4
+      text: Alerta
+    - language: 5
+      text: Avviso
+    - language: 6
+      text: Alerta
+    - language: 7
+      text: "\u8B66\u544A"
+    - language: 8
+      text: "\uC54C\uB9AC\uB2E4"
+    - language: 9
+      text: Peringatan
+    - language: 10
+      text: Amaran
+    - language: 11
+      text: Alerto
+    - language: 12
+      text: "\u0E40\u0E15\u0E37\u0E2D\u0E19"
+    - language: 13
+      text: "\u8B66\u62A5"
+  - key: txt_close
+    texts:
+    - language: 0
+      text: Close
+    - language: 1
+      text: "\u0110\xF3ng"
+    - language: 2
+      text: Fermer
+    - language: 3
+      text: "Schlie\xDFen"
+    - language: 4
+      text: Cerca
+    - language: 5
+      text: Vicino
+    - language: 6
+      text: Fechar
+    - language: 7
+      text: "\u8FD1\u3044"
+    - language: 8
+      text: "\uB2EB\uB2E4"
+    - language: 9
+      text: Menutup
+    - language: 10
+      text: Tutup
+    - language: 11
+      text: Isara
+    - language: 12
+      text: "\u0E1B\u0E34\u0E14"
+    - language: 13
+      text: "\u5173\u95ED"
+  - key: txt_confirm
+    texts:
+    - language: 0
+      text: Confirm
+    - language: 1
+      text: "X\xE1c nh\u1EADn"
+    - language: 2
+      text: Confirmer
+    - language: 3
+      text: "Best\xE4tigen"
+    - language: 4
+      text: Confirmar
+    - language: 5
+      text: Confermare
+    - language: 6
+      text: Confirmar
+    - language: 7
+      text: "\u78BA\u8A8D\u3059\u308B"
+    - language: 8
+      text: "\uD655\uC778\uD558\uB2E4"
+    - language: 9
+      text: Mengonfirmasi
+    - language: 10
+      text: Sahkan
+    - language: 11
+      text: Kumpirmahin
+    - language: 12
+      text: "\u0E22\u0E37\u0E19\u0E22\u0E31\u0E19"
+    - language: 13
+      text: "\u786E\u8BA4"
+  - key: txt_backmenu
+    texts:
+    - language: 0
+      text: Back to Menu
+    - language: 1
+      text: "Tr\u1EDF l\u1EA1i Menu"
+    - language: 2
+      text: Retour au menu
+    - language: 3
+      text: "Zur\xFCck zum Men\xFC"
+    - language: 4
+      text: "Volver al men\xFA"
+    - language: 5
+      text: Torna al menu
+    - language: 6
+      text: Voltar ao menu
+    - language: 7
+      text: "\u30E1\u30CB\u30E5\u30FC\u306B\u623B\u308B"
+    - language: 8
+      text: "\uBA54\uB274\uB85C \uB3CC\uC544\uAC00\uAE30"
+    - language: 9
+      text: Kembali ke Menu
+    - language: 10
+      text: Kembali ke Menu
+    - language: 11
+      text: Bumalik sa Menu
+    - language: 12
+      text: "\u0E01\u0E25\u0E31\u0E1A\u0E2A\u0E39\u0E48\u0E40\u0E21\u0E19\u0E39"
+    - language: 13
+      text: "\u8FD4\u56DE\u83DC\u5355"
+  - key: txt_pause
+    texts:
+    - language: 0
+      text: Pause
+    - language: 1
+      text: "T\u1EA1m d\u1EEBng"
+    - language: 2
+      text: Pause
+    - language: 3
+      text: Pause
+    - language: 4
+      text: Pausa
+    - language: 5
+      text: Pausa
+    - language: 6
+      text: Pausa
+    - language: 7
+      text: "\u4E00\u6642\u505C\u6B62"
+    - language: 8
+      text: "\uC815\uC9C0\uC2DC\uD0A4\uB2E4"
+    - language: 9
+      text: Berhenti sebentar
+    - language: 10
+      text: Jeda
+    - language: 11
+      text: Ihinto
+    - language: 12
+      text: "\u0E2B\u0E22\u0E38\u0E14\u0E0A\u0E31\u0E48\u0E27\u0E04\u0E23\u0E32\u0E27"
+    - language: 13
+      text: "\u6682\u505C"
+  - key: txt_music
+    texts:
+    - language: 0
+      text: Music
+    - language: 1
+      text: "\xC2m nh\u1EA1c"
+    - language: 2
+      text: Musique
+    - language: 3
+      text: Musik
+    - language: 4
+      text: "M\xFAsica"
+    - language: 5
+      text: Musica
+    - language: 6
+      text: "M\xFAsica"
+    - language: 7
+      text: "\u97F3\u697D"
+    - language: 8
+      text: "\uC74C\uC545"
+    - language: 9
+      text: Musik
+    - language: 10
+      text: Muzik
+    - language: 11
+      text: Musika
+    - language: 12
+      text: "\u0E14\u0E19\u0E15\u0E23\u0E35"
+    - language: 13
+      text: "\u97F3\u4E50"
+  - key: txt_sound
+    texts:
+    - language: 0
+      text: Sound
+    - language: 1
+      text: "\xC2m thanh"
+    - language: 2
+      text: Son
+    - language: 3
+      text: Klang
+    - language: 4
+      text: Sonido
+    - language: 5
+      text: Suono
+    - language: 6
+      text: Som
+    - language: 7
+      text: "\u97F3"
+    - language: 8
+      text: "\uC18C\uB9AC"
+    - language: 9
+      text: Suara
+    - language: 10
+      text: Bunyi
+    - language: 11
+      text: Tunog
+    - language: 12
+      text: "\u0E40\u0E2A\u0E35\u0E22\u0E07"
+    - language: 13
+      text: "\u58F0\u97F3"
+  - key: txt_haptic
+    texts:
+    - language: 0
+      text: Haptic
+    - language: 1
+      text: "Ph\u1EA3n h\u1ED3i x\xFAc gi\xE1c"
+    - language: 2
+      text: Haptique
+    - language: 3
+      text: Haptik
+    - language: 4
+      text: "H\xE1ptico"
+    - language: 5
+      text: Tatto
+    - language: 6
+      text: "H\xE1ptico"
+    - language: 7
+      text: "\u89E6\u899A"
+    - language: 8
+      text: "\uD585\uD2F1"
+    - language: 9
+      text: Haptik
+    - language: 10
+      text: Haptik
+    - language: 11
+      text: Haptic
+    - language: 12
+      text: "\u0E2A\u0E31\u0E21\u0E1C\u0E31\u0E2A"
+    - language: 13
+      text: "\u89E6\u89C9"
+  - key: txt_language
+    texts:
+    - language: 0
+      text: Language
+    - language: 1
+      text: "Ng\xF4n ng\u1EEF"
+    - language: 2
+      text: Langue
+    - language: 3
+      text: Sprache
+    - language: 4
+      text: Idioma
+    - language: 5
+      text: Lingua
+    - language: 6
+      text: Linguagem
+    - language: 7
+      text: "\u8A00\u8A9E"
+    - language: 8
+      text: "\uC5B8\uC5B4"
+    - language: 9
+      text: Bahasa
+    - language: 10
+      text: Bahasa
+    - language: 11
+      text: Wika
+    - language: 12
+      text: "\u0E20\u0E32\u0E29\u0E32"
+    - language: 13
+      text: "\u8BED\u8A00"

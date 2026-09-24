@@ -162,7 +162,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Confim
+  m_text: Confirm
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a0846e9db6c136c44baa5f729a80cfea, type: 2}
   m_sharedMaterial: {fileID: 8883829856776055800, guid: a0846e9db6c136c44baa5f729a80cfea, type: 2}
@@ -247,9 +247,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   txt: {fileID: 7381491470237753245}
-  key: 
-  additionalText: 
-  additionalTextType: 0
+  key: txt_confirm
+  subString: 
+  subStringType: 0
 --- !u!1 &5288485500710378595
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,9 +365,6 @@ MonoBehaviour:
       _animationObject: {fileID: 0}
   <ShowOnTop>k__BackingField: 0
   <UIPresenter>k__BackingField:
-    <Model>k__BackingField:
-      <AlertValue>k__BackingField: 
-      <PositiveConfirm>k__BackingField: 0
     <View>k__BackingField:
       <MainView>k__BackingField: {fileID: 7249358464203491813}
       <CloseBtn>k__BackingField: {fileID: 2191166553720011499}
@@ -996,9 +993,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3383675100053676822}
     m_Modifications:
+    - target: {fileID: 1811452782366217268, guid: a9aa5317a656c274285e5753bb9f94fd, type: 3}
+      propertyPath: key
+      value: txt_alert
+      objectReference: {fileID: 0}
     - target: {fileID: 2394095344618951401, guid: a9aa5317a656c274285e5753bb9f94fd, type: 3}
       propertyPath: m_text
       value: Alert
+      objectReference: {fileID: 0}
+    - target: {fileID: 2411604581575183058, guid: a9aa5317a656c274285e5753bb9f94fd, type: 3}
+      propertyPath: key
+      value: txt_alert
       objectReference: {fileID: 0}
     - target: {fileID: 3482587021422026738, guid: a9aa5317a656c274285e5753bb9f94fd, type: 3}
       propertyPath: m_Name

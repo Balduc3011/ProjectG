@@ -910,6 +910,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2121514516840137416}
     m_Modifications:
+    - target: {fileID: 1811452782366217268, guid: a9aa5317a656c274285e5753bb9f94fd, type: 3}
+      propertyPath: key
+      value: txt_shop
+      objectReference: {fileID: 0}
     - target: {fileID: 2394095344618951401, guid: a9aa5317a656c274285e5753bb9f94fd, type: 3}
       propertyPath: m_text
       value: Shop

@@ -60,6 +60,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afc8305efabf2794a9da23814abd2c6c
+    m_Address: UIActivityLocalize
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b059b7734089bcc46a8be8bc3dbe7f3d
     m_Address: UIScreenPlay
     m_ReadOnly: 0

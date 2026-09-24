@@ -200,6 +200,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -246,9 +247,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   txt: {fileID: 7381491470237753245}
-  key: 
-  additionalText: 
-  additionalTextType: 0
+  key: txt_backmenu
+  subString: 
+  subStringType: 0
 --- !u!1 &5288485500710378595
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,7 +357,8 @@ MonoBehaviour:
     _enterAnimations: []
     _exitAnimations: []
   <UIPresenter>k__BackingField:
-    <Model>k__BackingField: {}
+    <Model>k__BackingField:
+      <LastPauseGame>k__BackingField: 0
     <View>k__BackingField:
       <MainView>k__BackingField: {fileID: 7249358464203491813}
       <CloseBtn>k__BackingField: {fileID: 2191166553720011499}
@@ -787,6 +789,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5491541471357823289}
     m_Modifications:
+    - target: {fileID: 1010595859914826713, guid: 8c20c71aa43e3d24a81f848114650b33, type: 3}
+      propertyPath: settingType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1189731326990564889, guid: 8c20c71aa43e3d24a81f848114650b33, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -900,6 +906,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5491541471357823289}
     m_Modifications:
+    - target: {fileID: 1010595859914826713, guid: 8c20c71aa43e3d24a81f848114650b33, type: 3}
+      propertyPath: settingType
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1189731326990564889, guid: 8c20c71aa43e3d24a81f848114650b33, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1013,6 +1023,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5491541471357823289}
     m_Modifications:
+    - target: {fileID: 1010595859914826713, guid: 8c20c71aa43e3d24a81f848114650b33, type: 3}
+      propertyPath: settingType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1189731326990564889, guid: 8c20c71aa43e3d24a81f848114650b33, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1126,6 +1140,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3383675100053676822}
     m_Modifications:
+    - target: {fileID: 1811452782366217268, guid: a9aa5317a656c274285e5753bb9f94fd, type: 3}
+      propertyPath: key
+      value: txt_pause
+      objectReference: {fileID: 0}
     - target: {fileID: 2394095344618951401, guid: a9aa5317a656c274285e5753bb9f94fd, type: 3}
       propertyPath: m_text
       value: Pause

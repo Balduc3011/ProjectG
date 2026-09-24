@@ -12,10 +12,13 @@ namespace DataSave
         public static SettingDataSave Instance => InGameDataManager.Instance.InGameData.SettingDataSave;
         [MemoryPackOrder(0)]
         public List<SettingData> settingData;
-        
+        [MemoryPackOrder(1)]
+        public LanguageType language;
+
         [MemoryPackConstructor]
         public SettingDataSave()
         {
+            language = LanguageType.EN;
             settingData = new()
             {
                 new SettingData(SettingType.Music, true),
@@ -55,6 +58,17 @@ namespace DataSave
                 settingData.isOn = isOn;
                 InGameDataManager.Instance.SaveData();
                 return settingData;
+            }
+
+            public static LanguageType GetLanguage()
+            {
+                return SettingDataSave.language;
+            }
+
+            public static void ChangeLanguage(LanguageType language)
+            {
+                SettingDataSave.language = language;
+                InGameDataManager.Instance.SaveData();
             }
         }
     }
