@@ -12,6 +12,7 @@ namespace DataSave
         [field: SerializeField] public ProfileDataSave ProfileDataSave { get; set; }= new();
         [field: SerializeField] public ResourceDataSave ResourceDataSave { get; set; }= new();
         [field: SerializeField] public ShopDataSave ShopDataSave { get; set; }= new();
+        // @DataSaveCreator:Property - DO NOT DELETE THIS LINE
         
         [MemoryPackOnSerialized]
         void OnSerialized()
@@ -21,6 +22,7 @@ namespace DataSave
             ProfileDataSave ??= new ProfileDataSave();
             ResourceDataSave ??= new ResourceDataSave();
             ShopDataSave ??= new ShopDataSave();
+            // @DataSaveCreator:Init - DO NOT DELETE THIS LINE
         }
      
         [MemoryPackOnDeserialized]
@@ -31,6 +33,7 @@ namespace DataSave
             ProfileDataSave ??= new ProfileDataSave();
             ResourceDataSave ??= new ResourceDataSave();
             ShopDataSave ??= new ShopDataSave();
+            // @DataSaveCreator:Init - DO NOT DELETE THIS LINE
         }
         
         public void Load()
@@ -39,6 +42,7 @@ namespace DataSave
             ProfileDataSave ??= new ProfileDataSave();
             ResourceDataSave ??= new ResourceDataSave();
             ShopDataSave ??= new ShopDataSave();
+            // @DataSaveCreator:Init - DO NOT DELETE THIS LINE
         }
     }
 }
