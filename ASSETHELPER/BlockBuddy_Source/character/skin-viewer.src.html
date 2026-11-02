@@ -1,0 +1,730 @@
+<title>Minecraft Skin Viewer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Pixelify+Sans:wght@500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one-screen app — 3D stage fills the left, control rail on the right; stacks on phones */
+:root {
+  --sky-top: #bfe0f5;
+  --sky-bottom: #eef6ea;
+  --ground: #6f9a4a;
+  --panel: #fbfaf6;
+  --line: #ddd8cc;
+  --fg: #22261f;
+  --muted: #6a6f62;
+  --accent: #3f7d2a;
+  --accent-ink: #ffffff;
+  --chip: #eeebe2;
+  --chip-hover: #e3dfd2;
+  --focus: #2f6fb3;
+  --font-display: "Pixelify Sans", "Courier New", monospace;
+  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --sky-top: #0d1630; --sky-bottom: #1d2a3c; --ground: #2f4a26;
+    --panel: #171a1f; --line: #2c3139; --fg: #e8eae4; --muted: #9aa197;
+    --accent: #7cc25a; --accent-ink: #10200a; --chip: #232830; --chip-hover: #2d333d; --focus: #79b2ee;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --sky-top: #0d1630; --sky-bottom: #1d2a3c; --ground: #2f4a26;
+  --panel: #171a1f; --line: #2c3139; --fg: #e8eae4; --muted: #9aa197;
+  --accent: #7cc25a; --accent-ink: #10200a; --chip: #232830; --chip-hover: #2d333d; --focus: #79b2ee;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+[hidden] { display: none !important; }
+body {
+  background: var(--panel); color: var(--fg); font-family: var(--font-body); font-size: 14px;
+  overflow: hidden;
+}
+.app { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 340px; }
+.stage {
+  position: relative; min-width: 0; min-height: 0;
+  background: linear-gradient(180deg, var(--sky-top), var(--sky-bottom) 70%);
+  touch-action: none; cursor: grab; overflow: hidden;
+}
+.stage:active { cursor: grabbing; }
+.stage canvas { display: block; width: 100%; height: 100%; }
+.stage-head {
+  position: absolute; top: 14px; left: max(16px, env(safe-area-inset-left, 0px)); right: 16px;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; pointer-events: none;
+}
+.brand { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: .02em; line-height: 1; }
+.brand small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 12px; color: var(--muted); letter-spacing: 0; margin-top: 6px; }
+.now {
+  font-family: var(--font-mono); font-size: 12px; padding: 6px 10px; border-radius: 6px;
+  background: color-mix(in srgb, var(--panel) 80%, transparent); border: 1px solid var(--line);
+}
+.hint { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; font-size: 12px; color: var(--muted); pointer-events: none; }
+.drop-veil {
+  position: absolute; inset: 12px; border: 3px dashed var(--accent); border-radius: 12px;
+  display: grid; place-items: center; font-weight: 600; font-size: 16px;
+  background: color-mix(in srgb, var(--panel) 70%, transparent); pointer-events: none;
+}
+
+.rail {
+  border-left: 1px solid var(--line); overflow-y: auto; min-width: 0;
+  padding-block: 18px 24px;
+  padding-left: 18px; padding-right: max(18px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 22px;
+}
+section { display: flex; flex-direction: column; gap: 10px; }
+h2 { margin: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); }
+
+.skin-card { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; align-items: center; }
+.skin-card canvas {
+  width: 96px; height: 96px; image-rendering: pixelated; border-radius: 6px; border: 1px solid var(--line);
+  background-color: var(--chip);
+  background-image: linear-gradient(45deg, var(--line) 25%, transparent 25%, transparent 75%, var(--line) 75%),
+                    linear-gradient(45deg, var(--line) 25%, transparent 25%, transparent 75%, var(--line) 75%);
+  background-size: 12px 12px; background-position: 0 0, 6px 6px;
+}
+.skin-meta { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.skin-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.skin-info { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.btn {
+  font: inherit; font-weight: 600; border: 1px solid transparent; border-radius: 8px; padding: 9px 12px;
+  cursor: pointer; background: var(--chip); color: var(--fg);
+}
+.btn:hover { background: var(--chip-hover); }
+.pick { text-align: center; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0 0 0 0); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.08); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.small { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.5; }
+.err { color: #c0392b; }
+
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--chip); border-radius: 8px; padding: 3px; gap: 3px; }
+.seg button { font: inherit; font-weight: 500; border: 0; border-radius: 6px; padding: 7px 4px; background: transparent; color: var(--fg); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--panel); box-shadow: 0 1px 2px rgba(0,0,0,.15); font-weight: 700; }
+
+.anims { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.anim {
+  font: inherit; border: 1px solid var(--line); background: var(--panel); color: var(--fg);
+  border-radius: 8px; padding: 10px 6px 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.anims.box { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+h2.sub { margin-top: 4px; }
+.anim:hover { background: var(--chip); }
+.anim[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--panel)); }
+.anim b { font-weight: 600; font-size: 13px; }
+.anim kbd { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+
+.row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.row label { font-weight: 500; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.val { font-family: var(--font-mono); font-size: 12px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.switch { appearance: none; width: 36px; height: 20px; border-radius: 10px; background: var(--line); position: relative; cursor: pointer; flex: none; transition: background .15s; }
+.switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.switch:checked { background: var(--accent); }
+.switch:checked::after { transform: translateX(16px); }
+.buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+@media (max-width: 760px) {
+  body { overflow: auto; }
+  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: 58vh auto; height: auto; min-height: 100%; }
+  .rail { border-left: 0; border-top: 1px solid var(--line); overflow: visible; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+}
+@media (prefers-reduced-motion: reduce) { .switch, .switch::after { transition: none; } }
+</style>
+
+<div class="app">
+  <div class="stage" id="stage">
+    <div class="stage-head">
+      <div class="brand">Skin Viewer<small>Kéo để xoay · cuộn / chụm để zoom</small></div>
+      <div class="now" id="now">Đứng yên</div>
+    </div>
+    <div class="drop-veil" id="veil" hidden>Thả file PNG skin vào đây</div>
+    <div class="hint">Có thể kéo thả hoặc dán (Ctrl+V) ảnh skin trực tiếp</div>
+  </div>
+
+  <aside class="rail">
+    <section>
+      <h2>Skin</h2>
+      <div class="skin-card">
+        <canvas id="skinPreview" width="64" height="64" aria-label="Ảnh texture skin"></canvas>
+        <div class="skin-meta">
+          <div class="skin-name" id="skinName">Skin mẫu (ông già đeo quai quần)</div>
+          <div class="skin-info" id="skinInfo">64×64 · slim</div>
+          <p class="small err" id="skinErr" hidden></p>
+        </div>
+      </div>
+      <div class="buttons">
+        <label class="btn primary pick" id="pickBtn" for="file" tabindex="0">Chọn file skin…</label>
+        <button class="btn" id="resetSkin" type="button">Dùng skin mẫu</button>
+      </div>
+      <input type="file" id="file" accept="image/png,image/*" class="visually-hidden">
+      <p class="small">Hỗ trợ PNG 64×64, 64×32 (định dạng cũ) và skin HD 128×128 trở lên.</p>
+    </section>
+
+    <section>
+      <h2>Kiểu tay</h2>
+      <div class="seg" role="group" aria-label="Kiểu tay" id="armSeg">
+        <button type="button" data-arm="auto" aria-pressed="true">Tự động</button>
+        <button type="button" data-arm="classic" aria-pressed="false">Classic 4px</button>
+        <button type="button" data-arm="slim" aria-pressed="false">Slim 3px</button>
+      </div>
+      <div class="row"><label for="layer2">Lớp phủ ngoài (tóc, áo khoác…)</label><input class="switch" type="checkbox" id="layer2" checked></div>
+    </section>
+
+    <section>
+      <h2>Animation</h2>
+      <div class="anims" id="anims"></div>
+      <h2 class="sub">Boxing</h2>
+      <div class="anims box" id="boxAnims"></div>
+      <div class="row"><label for="speed">Tốc độ</label><span class="val" id="speedVal">1.0×</span></div>
+      <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
+      <div class="buttons">
+        <button class="btn" id="pauseBtn" type="button">Tạm dừng</button>
+        <button class="btn" id="camBtn" type="button">Đặt lại camera</button>
+      </div>
+      <div class="row"><label for="autorot">Tự xoay camera</label><input class="switch" type="checkbox" id="autorot"></div>
+    </section>
+  </aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  const DEFAULT_SKIN = "data:image/png;base64,__SKIN__";
+
+  // ---------- renderer / scene ----------
+  const stage = document.getElementById("stage");
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.setClearColor(0x000000, 0);
+  stage.prepend(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, 1, 1000);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.62));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.5);
+  sun.position.set(30, 60, 50);
+  scene.add(sun);
+  const rim = new THREE.DirectionalLight(0xffffff, 0.15);
+  rim.position.set(-40, 20, -40);
+  scene.add(rim);
+
+  // soft ground shadow
+  (() => {
+    const c = document.createElement("canvas"); c.width = c.height = 128;
+    const g = c.getContext("2d");
+    const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    grd.addColorStop(0, "rgba(0,0,0,0.35)"); grd.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = grd; g.fillRect(0, 0, 128, 128);
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(26, 26), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false }));
+    m.rotation.x = -Math.PI / 2; m.position.y = 0.01;
+    scene.add(m);
+    window.__shadow = m;
+  })();
+
+  // ---------- skin texture ----------
+  const skinCanvas = document.createElement("canvas");
+  skinCanvas.width = skinCanvas.height = 64;
+  const texture = new THREE.CanvasTexture(skinCanvas);
+  texture.magFilter = THREE.NearestFilter;
+  texture.minFilter = THREE.NearestFilter;
+  texture.generateMipmaps = false;
+  texture.encoding = THREE.sRGBEncoding;
+
+  const matBase = new THREE.MeshLambertMaterial({ map: texture });
+  const matOver = new THREE.MeshLambertMaterial({ map: texture, alphaTest: 0.5, side: THREE.DoubleSide });
+
+  // UV mapping on the standard 64×64 layout. Character faces +Z, its right side is -X.
+  // split=true cuts the four side faces into 1 px rows so the limb can bend at y=0 (elbow / knee).
+  function boxGeometry(w, h, d, tu, tv, inflate, split) {
+    const x = w / 2 + inflate, y = h / 2 + inflate, z = d / 2 + inflate;
+    const faces = [
+      // corners BL, BR, TR, TL seen from outside, texture rect [u0, v0, u1, v1] in pixels, side face?
+      [[-x,-y, z],[ x,-y, z],[ x, y, z],[-x, y, z], [tu+d, tv+d, tu+d+w, tv+d+h], 1],          // front
+      [[ x,-y,-z],[-x,-y,-z],[-x, y,-z],[ x, y,-z], [tu+2*d+w, tv+d, tu+2*d+2*w, tv+d+h], 1],  // back
+      [[-x,-y,-z],[-x,-y, z],[-x, y, z],[-x, y,-z], [tu, tv+d, tu+d, tv+d+h], 1],              // right side
+      [[ x,-y, z],[ x,-y,-z],[ x, y,-z],[ x, y, z], [tu+d+w, tv+d, tu+2*d+w, tv+d+h], 1],      // left side
+      [[-x, y, z],[ x, y, z],[ x, y,-z],[-x, y,-z], [tu+d, tv, tu+d+w, tv+d], 0],              // top
+      [[-x,-y,-z],[ x,-y,-z],[ x,-y, z],[-x,-y, z], [tu+d+w, tv, tu+d+2*w, tv+d], 0],          // bottom
+    ];
+    const pos = [], uv = [], idx = [];
+    const quad = (cs, uvs) => {
+      const b = pos.length / 3;
+      for (let k = 0; k < 4; k++) { pos.push(...cs[k]); uv.push(uvs[k][0] / 64, 1 - uvs[k][1] / 64); }
+      idx.push(b, b + 1, b + 2, b, b + 2, b + 3);
+    };
+    for (const f of faces) {
+      const [u0, v0, u1, v1] = f[4];
+      if (split && f[5]) {
+        // one row per skin pixel so the elbow / knee can bend smoothly
+        const lerp3 = (A, B, t) => A.map((v, i) => v + (B[i] - v) * t), rows = Math.round(v1 - v0);
+        for (let r = 0; r < rows; r++) {
+          const ta = 1 - r / rows, tb = 1 - (r + 1) / rows;
+          const va = v0 + (v1 - v0) * r / rows, vb = v0 + (v1 - v0) * (r + 1) / rows;
+          const L0 = lerp3(f[0], f[3], tb), R0 = lerp3(f[1], f[2], tb), L1 = lerp3(f[0], f[3], ta), R1 = lerp3(f[1], f[2], ta);
+          quad([L0, R0, R1, L1], [[u0, vb], [u1, vb], [u1, va], [u0, va]]);
+        }
+      } else {
+        quad(f.slice(0, 4), [[u0, v1], [u1, v1], [u1, v0], [u0, v0]]);
+      }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+    g.setIndex(idx);
+    g.computeVertexNormals();
+    g.userData.rest = Float32Array.from(pos);
+    return g;
+  }
+
+  // ---------- model ----------
+  // Arms and legs have two joints: shoulder/hip (the group's rotation) and elbow/knee
+  // (a bend in the middle of the box). Same skinning as the Unity model: the joint ring turns
+  // by half the bend, the weight slides to the upper / lower part over 2 px, beyond that it is rigid.
+  const parts = {};
+  const overlays = [];
+  let player = null;
+
+  function part(parent, name, pivot, w, h, d, offset, base, over, inflate, bendDir) {
+    const grp = new THREE.Group(); grp.name = name;
+    grp.position.set(...pivot);
+    const split = !!bendDir;
+    const inner = new THREE.Mesh(boxGeometry(w, h, d, base[0], base[1], 0, split), matBase);
+    inner.position.set(...offset);
+    const outer = new THREE.Mesh(boxGeometry(w, h, d, over[0], over[1], inflate, split), matOver);
+    outer.position.set(...offset);
+    outer.visible = layer2.checked;
+    overlays.push(outer);
+    grp.add(inner, outer);
+    grp.userData = { meshes: [inner, outer], bendDir: bendDir || 0, bend: 0 };
+    parent.add(grp);
+    parts[name] = grp;
+    return grp;
+  }
+
+  function bendLimb(grp, bend) {
+    if (Math.abs(grp.userData.bend - bend) < 1e-5) return;
+    grp.userData.bend = bend;
+    const a = grp.userData.bendDir * bend, c = Math.cos(a), s = Math.sin(a), c2 = Math.cos(a / 2), s2 = Math.sin(a / 2);
+    for (const m of grp.userData.meshes) {
+      const rest = m.geometry.userData.rest, attr = m.geometry.attributes.position, pos = attr.array;
+      for (let i = 0; i < rest.length; i += 3) {
+        const y = rest[i + 1], z = rest[i + 2];
+        const hy = y * c2 - z * s2, hz = y * s2 + z * c2;          // half bend (joint)
+        let ey = y, ez = z;                                         // upper part: no bend
+        if (y < 0) { ey = y * c - z * s; ez = y * s + z * c; }      // lower part: full bend
+        const w = Math.min(1, Math.abs(y) / 2);
+        pos[i + 1] = hy + (ey - hy) * w;
+        pos[i + 2] = hz + (ez - hz) * w;
+      }
+      attr.needsUpdate = true;
+      m.geometry.computeVertexNormals();
+    }
+  }
+
+  function buildModel(slim) {
+    if (player) {
+      scene.remove(player);
+      player.traverse(o => o.geometry && o.geometry.dispose());
+    }
+    overlays.length = 0;
+    const aw = slim ? 3 : 4;
+    player = new THREE.Group();
+    const body = part(player, "body", [0, 12, 0], 8, 12, 4, [0, 6, 0], [16, 16], [16, 32], 0.25);
+    part(body, "head", [0, 12, 0], 8, 8, 8, [0, 4, 0], [0, 0], [32, 0], 0.5);
+    // elbows bend forward (-1), knees bend backward (+1)
+    part(body, "rArm", [-(4 + aw / 2), 10, 0], aw, 12, 4, [0, -4, 0], [40, 16], [40, 32], 0.25, -1);
+    part(body, "lArm", [4 + aw / 2, 10, 0], aw, 12, 4, [0, -4, 0], [32, 48], [48, 48], 0.25, -1);
+    part(player, "rLeg", [-2, 12, 0], 4, 12, 4, [0, -6, 0], [0, 16], [0, 32], 0.25, 1);
+    part(player, "lLeg", [2, 12, 0], 4, 12, 4, [0, -6, 0], [16, 48], [0, 48], 0.25, 1);
+    scene.add(player);
+  }
+
+  // ---------- skin loading ----------
+  const layer2 = document.getElementById("layer2");
+  const preview = document.getElementById("skinPreview");
+  const skinName = document.getElementById("skinName");
+  const skinInfo = document.getElementById("skinInfo");
+  const skinErr = document.getElementById("skinErr");
+  let armMode = "auto", detectedSlim = true, currentSlim = null, lastSize = "64×64", legacy = false;
+
+  function flipCopy(ctx, src, sx, sy, w, h, dx, dy, s) {
+    ctx.save();
+    ctx.translate((dx + w) * s, dy * s);
+    ctx.scale(-1, 1);
+    ctx.drawImage(src, sx * s, sy * s, w * s, h * s, 0, 0, w * s, h * s);
+    ctx.restore();
+  }
+  // legacy 64×32: build left arm/leg by mirroring the right ones (like Minecraft does)
+  function convertLegacy(ctx, src, s) {
+    const limb = (u, v, nu, nv) => {
+      flipCopy(ctx, src, u + 4, v, 4, 4, nu + 4, nv, s);        // top
+      flipCopy(ctx, src, u + 8, v, 4, 4, nu + 8, nv, s);        // bottom
+      flipCopy(ctx, src, u, v + 4, 4, 12, nu + 8, nv + 4, s);   // right side -> left side
+      flipCopy(ctx, src, u + 4, v + 4, 4, 12, nu + 4, nv + 4, s); // front
+      flipCopy(ctx, src, u + 8, v + 4, 4, 12, nu, nv + 4, s);   // left side -> right side
+      flipCopy(ctx, src, u + 12, v + 4, 4, 12, nu + 12, nv + 4, s); // back
+    };
+    limb(0, 16, 16, 48);
+    limb(40, 16, 32, 48);
+  }
+  function areaTransparent(ctx, x, y, w, h, s) {
+    const d = ctx.getImageData(x * s, y * s, w * s, h * s).data;
+    for (let i = 3; i < d.length; i += 4) if (d[i] !== 0) return false;
+    return true;
+  }
+  function areaBlack(ctx, x, y, w, h, s) {
+    const d = ctx.getImageData(x * s, y * s, w * s, h * s).data;
+    for (let i = 0; i < d.length; i += 4) if (d[i] || d[i + 1] || d[i + 2] || d[i + 3] !== 255) return false;
+    return true;
+  }
+  function areaOpaque(ctx, x, y, w, h, s) {
+    const d = ctx.getImageData(x * s, y * s, w * s, h * s).data;
+    for (let i = 3; i < d.length; i += 4) if (d[i] !== 255) return false;
+    return true;
+  }
+
+  function applyImage(img, name) {
+    const W = img.naturalWidth, H = img.naturalHeight;
+    if (W < 64 || W % 64 !== 0 || !(H === W || H * 2 === W)) {
+      skinErr.textContent = `Kích thước ${W}×${H} không phải skin Minecraft. Cần 64×64, 64×32 hoặc bội số của chúng.`;
+      skinErr.hidden = false;
+      return;
+    }
+    skinErr.hidden = true;
+    const s = W / 64;
+    legacy = H * 2 === W;
+    skinCanvas.width = skinCanvas.height = W;
+    const ctx = skinCanvas.getContext("2d", { willReadFrequently: true });
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, W, W);
+    ctx.drawImage(img, 0, 0);
+    if (legacy) {
+      convertLegacy(ctx, img, s);
+      if (areaOpaque(ctx, 32, 0, 32, 16, s)) ctx.clearRect(32 * s, 0, 32 * s, 16 * s); // old skins with solid hat area
+    }
+    detectedSlim = !legacy && (areaTransparent(ctx, 50, 16, 2, 4, s) && areaTransparent(ctx, 54, 20, 2, 12, s)
+      || areaBlack(ctx, 50, 16, 2, 4, s) && areaBlack(ctx, 54, 20, 2, 12, s));
+    texture.image = skinCanvas;
+    texture.needsUpdate = true;
+    lastSize = `${W}×${H}`;
+    skinName.textContent = name;
+    const p = preview.getContext("2d");
+    preview.width = preview.height = W;
+    p.imageSmoothingEnabled = false;
+    p.clearRect(0, 0, W, W);
+    p.drawImage(skinCanvas, 0, 0);
+    refreshModel();
+  }
+  function refreshModel() {
+    const slim = armMode === "auto" ? detectedSlim : armMode === "slim";
+    if (slim !== currentSlim) { buildModel(slim); currentSlim = slim; }
+    skinInfo.textContent = `${lastSize}${legacy ? " (cũ)" : ""} · ${slim ? "slim" : "classic"}${armMode === "auto" ? " (tự nhận)" : ""}`;
+  }
+  function loadSrc(src, name) {
+    const img = new Image();
+    img.onload = () => applyImage(img, name);
+    img.onerror = () => { skinErr.textContent = "Không đọc được ảnh này. Hãy dùng file PNG."; skinErr.hidden = false; };
+    img.src = src;
+  }
+  function showErr(msg) { skinErr.textContent = msg; skinErr.hidden = false; }
+  // Read as a data: URL (blob: URLs can be blocked inside sandboxed pages)
+  function loadFile(file) {
+    if (!file) return;
+    const okType = !file.type || file.type.startsWith("image/") || /\.png$/i.test(file.name || "");
+    if (!okType) { showErr("File không phải ảnh. Hãy chọn file PNG skin."); return; }
+    const reader = new FileReader();
+    reader.onload = () => loadSrc(reader.result, file.name || "Ảnh dán");
+    reader.onerror = () => showErr("Không đọc được file. Thử lưu lại skin dạng PNG rồi chọn lại.");
+    reader.readAsDataURL(file);
+  }
+
+  const fileInput = document.getElementById("file");
+  fileInput.addEventListener("change", () => { loadFile(fileInput.files[0]); fileInput.value = ""; });
+  document.getElementById("pickBtn").addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInput.click(); }
+  });
+  document.getElementById("resetSkin").addEventListener("click", () => loadSrc(DEFAULT_SKIN, "Skin mẫu (ông già đeo quai quần)"));
+  const veil = document.getElementById("veil");
+  let dragDepth = 0;
+  window.addEventListener("dragenter", e => { e.preventDefault(); dragDepth++; veil.hidden = false; });
+  window.addEventListener("dragleave", e => { e.preventDefault(); if (--dragDepth <= 0) { dragDepth = 0; veil.hidden = true; } });
+  window.addEventListener("dragover", e => e.preventDefault());
+  window.addEventListener("drop", e => {
+    e.preventDefault(); dragDepth = 0; veil.hidden = true;
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) { loadFile(f); return; }
+    const uri = (e.dataTransfer.getData("text/uri-list") || e.dataTransfer.getData("text/plain") || "").trim();
+    if (uri.startsWith("data:image/")) { loadSrc(uri, "Ảnh kéo thả"); return; }
+    if (uri) showErr("Ảnh kéo từ trang web khác không đọc được. Hãy tải file PNG về máy rồi kéo file vào, hoặc chuột phải ảnh → Copy image rồi Ctrl+V.");
+  });
+  window.addEventListener("paste", e => {
+    const item = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith("image/"));
+    if (item) loadFile(item.getAsFile());
+  });
+  document.getElementById("armSeg").addEventListener("click", e => {
+    const b = e.target.closest("button[data-arm]"); if (!b) return;
+    armMode = b.dataset.arm;
+    for (const x of e.currentTarget.children) x.setAttribute("aria-pressed", String(x === b));
+    refreshModel();
+  });
+  layer2.addEventListener("change", () => overlays.forEach(o => (o.visible = layer2.checked)));
+
+  // ---------- animations ----------
+  // A pose holds rotations (radians) per part. Limbs are [x, y, z, bend]:
+  // bend > 0 folds the elbow forward or the knee backward. y / z / ry move the whole player (pixels).
+  const S = Math.sin, C = Math.cos, PI = Math.PI, max0 = v => Math.max(0, v);
+  const LIMBS = ["rArm", "lArm", "rLeg", "lLeg"], ALL = ["body", "head", ...LIMBS];
+  const zero = () => ({ body: [0,0,0], head: [0,0,0], rArm: [0,0,0,0], lArm: [0,0,0,0], rLeg: [0,0,0,0], lLeg: [0,0,0,0], y: 0, z: 0, ry: 0 });
+  const ANIMS = [
+    { id: "idle", name: "Đứng yên", f: t => { const p = zero(), br = C(t * 1.8);
+        p.rArm = [S(t * 1.35) * 0.05, 0, -(br * 0.05 + 0.06), 0.14 + br * 0.03];
+        p.lArm = [-S(t * 1.35) * 0.05, 0, br * 0.05 + 0.06, 0.14 + br * 0.03];
+        p.rLeg[3] = 0.04; p.lLeg[3] = 0.04;
+        p.head[1] = S(t * 0.5) * 0.25; p.head[0] = S(t * 0.37) * 0.06; return p; } },
+    { id: "walk", name: "Đi bộ", f: t => { const p = zero(), ph = t * 5.5, a = S(ph) * 0.6;
+        p.rLeg = [a, 0, 0, 0.08 + max0(-C(ph)) * 0.85];
+        p.lLeg = [-a, 0, 0, 0.08 + max0(C(ph)) * 0.85];
+        p.rArm = [-a * 0.85, 0, -0.05, 0.2 + max0(a) * 0.7];
+        p.lArm = [a * 0.85, 0, 0.05, 0.2 + max0(-a) * 0.7];
+        p.body[1] = a * 0.08; p.head[1] = -a * 0.06;
+        p.y = Math.abs(C(ph)) * 0.5 - 0.2; return p; } },
+    { id: "run", name: "Chạy", f: t => { const p = zero(), ph = t * 9, a = S(ph);
+        p.rLeg = [a * 0.95 - 0.15, 0, 0, 0.25 + max0(-C(ph)) * 1.7];
+        p.lLeg = [-a * 0.95 - 0.15, 0, 0, 0.25 + max0(C(ph)) * 1.7];
+        p.rArm = [-a * 0.95, 0, -0.1, 1.45];
+        p.lArm = [a * 0.95, 0, 0.1, 1.45];
+        p.body = [0.22, a * 0.12, 0]; p.head = [-0.22, -a * 0.1, 0];
+        p.y = Math.abs(C(ph)) * 1.4 - 0.4; return p; } },
+    { id: "sneak", name: "Lén lút", f: t => { const p = zero(), ph = t * 3.5, a = S(ph) * 0.35;
+        p.body[0] = 0.5; p.head[0] = -0.4;
+        p.rArm = [-a - 0.25, 0, -0.05, 0.6]; p.lArm = [a - 0.25, 0, 0.05, 0.6];
+        p.rLeg = [a - 0.45, 0, 0, 0.75 + max0(-C(ph)) * 0.5];
+        p.lLeg = [-a - 0.45, 0, 0, 0.75 + max0(C(ph)) * 0.5];
+        p.y = -2.4; p.z = -1.2; return p; } },
+    { id: "wave", name: "Vẫy tay", f: t => { const p = zero();
+        p.rArm = [-PI / 2, 0, -1.3, 1.65 + S(t * 9) * 0.45];   // upper arm out to the side, forearm up
+        p.lArm = [0, 0, 0.06, 0.15];
+        p.head = [0, -0.18, -0.12 + S(t * 2) * 0.04];
+        p.body[1] = S(t * 4.5) * 0.04; p.rLeg[3] = 0.04; p.lLeg[3] = 0.04; return p; } },
+    { id: "jump", name: "Nhảy", f: t => { const p = zero(), ph = t % 1.1;
+        const crouch = ph < 0.25 ? S(ph / 0.25 * PI) : 0;               // load before take-off
+        const air = ph >= 0.25 && ph < 0.95 ? S((ph - 0.25) / 0.7 * PI) : 0;
+        const land = ph >= 0.95 ? S((ph - 0.95) / 0.15 * PI) * 0.6 : 0; // absorb the landing
+        const c = crouch + land;
+        p.y = air * 11 - c * 2.6;
+        p.body[0] = 0.35 * c;
+        p.rArm = [0.55 * c - 2.4 * air, 0, -0.25 * air, 0.3 + 0.2 * c];
+        p.lArm = [0.55 * c - 2.4 * air, 0, 0.25 * air, 0.3 + 0.2 * c];
+        p.rLeg = [-0.55 * c - 0.7 * air, 0, 0, 1.1 * c + 1.1 * air];
+        p.lLeg = [-0.55 * c - 0.35 * air, 0, 0, 1.1 * c + 0.7 * air]; return p; } },
+    { id: "attack", name: "Đánh", f: t => { const p = zero(), ph = (t % 0.6) / 0.6;
+        const up = ph < 0.25 ? S(ph / 0.25 * PI / 2) : ph < 0.55 ? C((ph - 0.25) / 0.3 * PI / 2) : 0; // raise, then chop
+        const sw = ph >= 0.25 && ph < 0.75 ? S((ph - 0.25) / 0.5 * PI) : 0;
+        p.body[1] = sw * 0.45 - up * 0.15; p.head[1] = -sw * 0.3;
+        p.rArm = [-2.3 * up - 1.3 * sw - 0.1, sw * 0.4, sw * 0.2, 0.2 + 1.1 * up];
+        p.lArm = [0.25 * sw, 0, 0.1, 0.4];
+        p.rLeg = [-0.15, 0, 0, 0.2]; p.lLeg = [0.15, 0, 0, 0.1]; return p; } },
+    { id: "dance", name: "Nhảy múa", f: t => { const p = zero(), b = t * 6, k = S(b);
+        p.y = Math.abs(k) * 1.4 - 0.5; p.ry = S(t * 1.5) * 0.6;
+        p.body[2] = k * 0.08; p.head = [C(b * 2) * 0.08, 0, S(b + 1) * 0.18];
+        p.rArm = [-0.3, 0, -1.3 - k * 0.7, 1.4 + k * 0.5];
+        p.lArm = [-0.3, 0, 1.3 - k * 0.7, 1.4 - k * 0.5];
+        p.rLeg = [max0(k) * -0.9, 0, -0.06, max0(k) * 1.5 + 0.1];
+        p.lLeg = [max0(-k) * -0.9, 0, 0.06, max0(-k) * 1.5 + 0.1]; return p; } },
+    { id: "sit", name: "Ngồi", f: t => { const p = zero();   // on the ground, arms around the knees
+        p.y = -10.3; p.body[0] = 0.18; p.head = [-0.05 + S(t * 0.9) * 0.05, S(t * 0.6) * 0.35, 0];
+        p.rLeg = [-2.3, 0.12, 0, 2.6]; p.lLeg = [-2.3, -0.12, 0, 2.6];
+        p.rArm = [-0.85, 0, 0.12, 0.95]; p.lArm = [-0.85, 0, -0.12, 0.95]; return p; } },
+    // ---- boxing (orthodox stance: left foot and left hand in front) ----
+    { id: "guard", group: "box", key: "Q", name: "Thủ thế", f: t => guard(t) },
+    { id: "jabL", group: "box", key: "W", name: "Đấm trái", f: t => { const p = guard(t);
+        jabL(p, punchK(((t % 1.1) - 0.15) / 0.45)); return p; } },
+    { id: "crossR", group: "box", key: "E", name: "Đấm phải", f: t => { const p = guard(t);
+        crossR(p, punchK(((t % 1.2) - 0.15) / 0.5)); return p; } },
+    { id: "combo", group: "box", key: "R", name: "Combo", f: t => { const p = guard(t), c = t % 2.8;
+        jabL(p, punchK((c - 0.10) / 0.42));          // jab trái
+        crossR(p, punchK((c - 0.45) / 0.48));        // đấm thẳng phải
+        hookL(p, punchK((c - 1.00) / 0.60));         // móc ngang trái
+        uppercutR(p, (c - 1.6) / 0.85);               // móc lên phải
+        return p; } },
+  ];
+
+  // guard: elbows flared out to the sides, forearms up and angled in so the fists sit beside the face
+  function guard(t) {
+    const p = zero(), bob = S(t * 4.2), sway = S(t * 2.1);
+    p.y = -1.1 + bob * 0.35;
+    p.body = [0.1, -0.32 + sway * 0.05, sway * 0.03];
+    p.head = [0.14, 0.28 - sway * 0.04, 0];
+    p.rArm = [-0.76 + bob * 0.04, 0.44, -0.58, 2.04];
+    p.lArm = [-0.82 - bob * 0.04, -0.51, 0.54, 1.9];
+    p.lLeg = [-0.38, 0, -0.05, 0.35 + bob * 0.05];
+    p.rLeg = [0.12, 0, 0.06, 0.4 + bob * 0.05];
+    return p;
+  }
+  // 0 → 1 fast (strike), short hold, then ease back to 0 (retract)
+  function punchK(q) {
+    if (q <= 0 || q >= 1) return 0;
+    if (q < 0.28) return 1 - Math.pow(1 - q / 0.28, 3);
+    if (q < 0.42) return 1;
+    const k = (q - 0.42) / 0.58;
+    return 1 - k * k * (3 - 2 * k);
+  }
+  function toward(arr, target, k) { for (let i = 0; i < target.length; i++) arr[i] = lerp(arr[i], target[i], k); }
+  function jabL(p, k) {
+    if (!k) return;
+    toward(p.lArm, [-1.55, 0.05, -0.08, 0.08], k);   // elbow snaps straight
+    p.body[1] -= 0.3 * k; p.head[1] += 0.24 * k;
+    p.rArm[0] -= 0.08 * k; p.z += 0.9 * k;
+    p.lLeg[3] += 0.15 * k;
+  }
+  function crossR(p, k) {
+    if (!k) return;
+    toward(p.rArm, [-1.55, -0.05, 0.1, 0.08], k);
+    p.body[1] += 0.75 * k; p.head[1] -= 0.6 * k; p.body[0] += 0.08 * k;
+    p.rLeg[0] -= 0.1 * k; p.rLeg[1] += 0.3 * k; p.lLeg[3] += 0.2 * k;   // pivot on the back foot
+    p.z += 1.2 * k; p.y -= 0.3 * k;
+  }
+  function hookL(p, k) {
+    if (!k) return;
+    toward(p.lArm, [0.01, -0.71, 1.53, 1.71], k);       // upper arm level, elbow at 90°, swing with the hips
+    p.body[1] += 0.6 * k; p.head[1] -= 0.45 * k;
+    p.lLeg[1] += 0.35 * k; p.lLeg[3] += 0.2 * k; p.y -= 0.4 * k;
+  }
+  // takes the raw phase q (0..1): drop the fist and dip at the knees, then drive up
+  function uppercutR(p, q) {
+    if (q <= 0 || q >= 1) return;
+    const dip = q < 0.32 ? S(q / 0.32 * PI) : 0, k = punchK((q - 0.2) / 0.8);
+    toward(p.rArm, [-0.06, 0.13, -0.37, 1.78], dip);
+    p.body[0] += 0.2 * dip; p.body[1] += 0.25 * dip; p.y -= 1.2 * dip;
+    p.rLeg[3] += 0.4 * dip; p.lLeg[3] += 0.4 * dip;
+    toward(p.rArm, [-0.93, 0.2, -0.21, 1.84], k);
+    p.body[1] += 0.45 * k; p.body[0] -= 0.12 * k; p.head[1] -= 0.35 * k; p.head[0] -= 0.1 * k;
+    p.y += 1.0 * k; p.z += 0.6 * k;
+    p.rLeg[3] -= 0.2 * k; p.lLeg[3] -= 0.2 * k;
+  }
+
+  const animWrap = document.getElementById("anims");
+  const boxWrap = document.getElementById("boxAnims");
+  let n = 0;
+  ANIMS.forEach((a, i) => {
+    if (!a.key) a.key = String(++n);
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "anim"; b.dataset.id = a.id;
+    b.innerHTML = `<b>${a.name}</b><kbd>${a.key}</kbd>`;
+    b.setAttribute("aria-pressed", String(i === 0));
+    b.addEventListener("click", () => setAnim(a.id));
+    (a.group === "box" ? boxWrap : animWrap).append(b);
+  });
+
+  let current = ANIMS[0], previous = null, blend = 1, animTime = 0, paused = false, speed = 1;
+  let curStart = 0, prevStart = 0;
+  const nowEl = document.getElementById("now");
+  function setAnim(id) {
+    const next = ANIMS.find(a => a.id === id);
+    if (!next || next === current) return;
+    previous = current; prevStart = curStart; current = next; curStart = animTime; blend = 0;
+    nowEl.textContent = next.name;
+    for (const b of document.querySelectorAll(".anim")) b.setAttribute("aria-pressed", String(b.dataset.id === id));
+    if (paused) togglePause();
+  }
+  window.addEventListener("keydown", e => {
+    if (e.target.closest("input, textarea")) return;
+    const a = ANIMS.find(x => x.key === e.key.toUpperCase());
+    if (a && !e.ctrlKey && !e.metaKey && !e.altKey) setAnim(a.id);
+    if (e.key === " " && !e.target.closest("button")) { e.preventDefault(); togglePause(); }
+  });
+
+  const speedEl = document.getElementById("speed"), speedVal = document.getElementById("speedVal");
+  speedEl.addEventListener("input", () => { speed = parseFloat(speedEl.value); speedVal.textContent = speed.toFixed(1) + "×"; });
+  const pauseBtn = document.getElementById("pauseBtn");
+  function togglePause() { paused = !paused; pauseBtn.textContent = paused ? "Tiếp tục" : "Tạm dừng"; }
+  pauseBtn.addEventListener("click", togglePause);
+
+  const lerp = (a, b, k) => a + (b - a) * k;
+  function applyPose(p) {
+    for (const k of ALL) parts[k].rotation.set(p[k][0], p[k][1], p[k][2]);
+    for (const k of LIMBS) bendLimb(parts[k], Math.max(0, p[k][3]));
+    player.position.set(0, p.y, p.z);
+    player.rotation.y = p.ry;
+    window.__shadow.scale.setScalar(Math.max(0.55, 1 - Math.max(0, p.y) / 22));
+  }
+  function mix(a, b, k) {
+    const o = zero();
+    for (const key of ALL) for (let i = 0; i < o[key].length; i++) o[key][i] = lerp(a[key][i], b[key][i], k);
+    o.y = lerp(a.y, b.y, k); o.z = lerp(a.z, b.z, k); o.ry = lerp(a.ry, b.ry, k);
+    return o;
+  }
+
+  // ---------- camera orbit ----------
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cam = { yaw: -0.5, pitch: 0.12, dist: 82, target: new THREE.Vector3(0, 15, 0) };
+  const autorot = document.getElementById("autorot");
+  function placeCamera() {
+    const cp = Math.cos(cam.pitch);
+    camera.position.set(cam.target.x + Math.sin(cam.yaw) * cp * cam.dist, cam.target.y + Math.sin(cam.pitch) * cam.dist, cam.target.z + Math.cos(cam.yaw) * cp * cam.dist);
+    camera.lookAt(cam.target);
+  }
+  document.getElementById("camBtn").addEventListener("click", () => { cam.yaw = -0.5; cam.pitch = 0.12; cam.dist = 82; });
+  const pointers = new Map();
+  let pinchStart = 0, distStart = 0;
+  renderer.domElement.addEventListener("pointerdown", e => {
+    renderer.domElement.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) { const [a, b] = [...pointers.values()]; pinchStart = Math.hypot(a.x - b.x, a.y - b.y); distStart = cam.dist; }
+  });
+  renderer.domElement.addEventListener("pointermove", e => {
+    const p = pointers.get(e.pointerId); if (!p) return;
+    if (pointers.size === 1) {
+      cam.yaw -= (e.clientX - p.x) * 0.008;
+      cam.pitch = Math.max(-0.6, Math.min(1.2, cam.pitch + (e.clientY - p.y) * 0.006));
+    }
+    p.x = e.clientX; p.y = e.clientY;
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pinchStart) cam.dist = Math.max(35, Math.min(160, distStart * pinchStart / d));
+    }
+  });
+  const up = e => { pointers.delete(e.pointerId); if (pointers.size < 2) pinchStart = 0; };
+  renderer.domElement.addEventListener("pointerup", up);
+  renderer.domElement.addEventListener("pointercancel", up);
+  renderer.domElement.addEventListener("wheel", e => { e.preventDefault(); cam.dist = Math.max(35, Math.min(160, cam.dist * (1 + Math.sign(e.deltaY) * 0.08))); }, { passive: false });
+
+  function resize() {
+    const r = stage.getBoundingClientRect();
+    renderer.setSize(r.width, r.height, false);
+    camera.aspect = r.width / Math.max(1, r.height);
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(stage);
+
+  // ---------- loop ----------
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (!paused) animTime += dt * speed * (reduceMotion ? 0.5 : 1);
+    if (autorot.checked) cam.yaw += dt * 0.5;
+    if (player) {
+      let pose = current.f(animTime - curStart);
+      if (blend < 1 && previous) {
+        blend = Math.min(1, blend + dt / 0.3);
+        const k = blend * blend * (3 - 2 * blend);
+        pose = mix(previous.f(animTime - prevStart), pose, k);
+      }
+      applyPose(pose);
+    }
+    placeCamera();
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+
+  buildModel(true); currentSlim = true;
+  resize();
+  loadSrc(DEFAULT_SKIN, "Skin mẫu (ông già đeo quai quần)");
+  requestAnimationFrame(frame);
+})();
+</script>

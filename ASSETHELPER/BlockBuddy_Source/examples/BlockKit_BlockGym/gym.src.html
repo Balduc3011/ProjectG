@@ -1,0 +1,390 @@
+<title>Block Gym</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Be+Vietnam+Pro:wght@400;600&display=swap">
+<style>
+/* Layout: full-screen isometric stage, a small control strip pinned to the bottom-left */
+:root {
+  --bg: #d9e3ea;
+  --panel: #fbfaf6;
+  --line: #d6d2c6;
+  --fg: #22261f;
+  --muted: #6a6f62;
+  --accent: #c0392b;
+  --accent-ink: #ffffff;
+  --chip: #eeebe2;
+  --focus: #2f6fb3;
+  --font-display: "Pixelify Sans", "Courier New", monospace;
+  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161a20; --panel: #1e232a; --line: #323941; --fg: #e8eae4; --muted: #9aa197;
+    --accent: #e4553f; --accent-ink: #1a0d0a; --chip: #2a313a; --focus: #79b2ee; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161a20; --panel: #1e232a; --line: #323941; --fg: #e8eae4; --muted: #9aa197;
+  --accent: #e4553f; --accent-ink: #1a0d0a; --chip: #2a313a; --focus: #79b2ee; color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 14px; overflow: hidden; }
+#stage { position: absolute; inset: 0; touch-action: none; cursor: grab; }
+#stage:active { cursor: grabbing; }
+#stage canvas { display: block; width: 100%; height: 100%; }
+.head {
+  position: absolute; top: 14px; left: max(16px, env(safe-area-inset-left, 0px)); pointer-events: none;
+}
+.brand { font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1; }
+.brand small { display: block; font-family: var(--font-body); font-weight: 400; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.bar {
+  position: absolute; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); left: max(16px, env(safe-area-inset-left, 0px));
+  right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+}
+.btn {
+  font: inherit; font-weight: 600; font-size: 13px; border: 1px solid var(--line); border-radius: 8px; padding: 7px 11px;
+  cursor: pointer; background: var(--panel); color: var(--fg);
+}
+.btn:hover { background: var(--chip); }
+.btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+.sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.hint { font-size: 12px; color: var(--muted); margin-left: auto; }
+@media (max-width: 600px) { .hint { display: none; } }
+</style>
+
+<div id="stage"></div>
+<div class="head"><div class="brand">Block Gym<small>Phòng gym boxing với các BlockBuddy · góc nhìn isometric</small></div></div>
+<div class="bar">
+  <button class="btn" data-view="0" aria-pressed="true" type="button">Góc 1</button>
+  <button class="btn" data-view="1" aria-pressed="false" type="button">Góc 2</button>
+  <button class="btn" data-view="2" aria-pressed="false" type="button">Góc 3</button>
+  <button class="btn" data-view="3" aria-pressed="false" type="button">Góc 4</button>
+  <span class="sep"></span>
+  <button class="btn" id="spin" aria-pressed="false" type="button">Tự xoay</button>
+  <span class="hint">Kéo để xoay · cuộn để zoom</span>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  // ---------- palette (kept small on purpose) ----------
+  const P = {
+    woodA: 0xb5824e, woodB: 0xa3703f, woodC: 0xc4905a, woodLine: 0x7a5230,
+    brickA: 0xa8584a, brickB: 0x985042, brickC: 0xb3655a, mortar: 0xcfc5b4,
+    trim: 0x5a3f2b, dark: 0x2c2f33, steel: 0x8e959c, steelDark: 0x5c6369,
+    red: 0xc0392b, blue: 0x2d6fb5, white: 0xf1efe8, cream: 0xe9e2cc, black: 0x1d1f22,
+    rubber: 0x3a3e43, teal: 0x2bb1a3, yellow: 0xe5b43c, green: 0x58a65c, leather: 0x7a2e2a, lockerBlue: 0x5b7a99,
+  };
+
+  // ---------- renderer / scene ----------
+  const stage = document.getElementById("stage");
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
+  renderer.setClearColor(0x000000, 0);
+  stage.appendChild(renderer.domElement);
+  const scene = new THREE.Scene();
+
+  scene.add(new THREE.HemisphereLight(0xdfe8f2, 0x6b5a48, 0.75));
+  const sun = new THREE.DirectionalLight(0xfff2dc, 0.85);
+  sun.position.set(-14, 26, 10);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  Object.assign(sun.shadow.camera, { left: -22, right: 22, top: 22, bottom: -22, near: 1, far: 80 });
+  sun.shadow.bias = -0.0006;
+  scene.add(sun);
+
+  // ---------- pixel textures ----------
+  function pixelCanvas(w, h, draw) {
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    const g = c.getContext("2d"); draw(g, w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.magFilter = t.minFilter = THREE.NearestFilter; t.generateMipmaps = false;
+    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+  const hex = n => "#" + n.toString(16).padStart(6, "0");
+  // 4x4 blocks per tile, 16 px per block: planks 1 block wide, 4 blocks long, staggered rows
+  const woodTex = pixelCanvas(64, 64, (g) => {
+    const shades = [P.woodA, P.woodB, P.woodC, P.woodA];
+    for (let row = 0; row < 4; row++) {
+      const off = (row % 2) * 32;
+      for (let k = -1; k < 2; k++) {
+        const x = off + k * 64;
+        g.fillStyle = hex(shades[(row + k + 4) % 4]); g.fillRect(x, row * 16, 64, 16);
+        g.fillStyle = hex(P.woodLine); g.fillRect(x, row * 16, 1, 16); g.fillRect(x, row * 16 + 15, 64, 1);
+        // a couple of grain pixels
+        g.fillStyle = hex(P.woodB); g.fillRect(x + 12, row * 16 + 6, 10, 1); g.fillRect(x + 36, row * 16 + 10, 14, 1);
+      }
+    }
+  });
+  // 2x2 blocks per tile: bricks 1 block long, half block tall
+  const brickTex = pixelCanvas(32, 32, (g) => {
+    g.fillStyle = hex(P.mortar); g.fillRect(0, 0, 32, 32);
+    const shades = [P.brickA, P.brickB, P.brickC];
+    for (let row = 0; row < 4; row++) {
+      const off = (row % 2) * 8;
+      for (let k = -1; k < 3; k++) {
+        g.fillStyle = hex(shades[(row * 3 + k + 3) % 3]);
+        g.fillRect(off + k * 16 + 1, row * 8 + 1, 14, 6);
+      }
+    }
+  });
+
+  // ---------- helpers ----------
+  const mats = {};
+  const mat = (color) => mats[color] || (mats[color] = new THREE.MeshLambertMaterial({ color }));
+  function box(w, h, d, color, x, y, z, parent = scene, opts = {}) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), opts.material || mat(color));
+    m.position.set(x, y + h / 2, z);   // y is the bottom
+    m.castShadow = opts.shadow !== false; m.receiveShadow = true;
+    m.userData.box = { w, h, d, color, tex: opts.tex || null, tile: opts.tile || 1 };
+    parent.add(m);
+    return m;
+  }
+  const group = (x = 0, y = 0, z = 0, ry = 0, parent = scene) => { const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = ry; parent.add(g); return g; };
+  // Every piece of furniture is a reusable MODEL (one FBX). A model can have named PARTS with their own
+  // pivot (bags on a rack, barbell on a bench). A PLACEMENT puts an instance of a model into the room.
+  const MODELS = {}, props = [], defModel = (name, build) => (MODELS[name] = build);
+  function place(model, name, x, y, z, ry, parent = scene) {
+    const g = group(x, y, z, ry, parent); g.name = name; g.userData.model = model;
+    MODELS[model](g); props.push(g); return g;
+  }
+  function part(parent, name, x, y, z, build) { const g = group(x, y, z, 0, parent); g.name = name; g.userData.part = true; build(g); return g; }
+  const parts = g => { const o = {}; g.traverse(c => { if (c.userData.part) o[c.name] = c; }); return o; };
+
+  // ---------- room ----------
+  const W = 24, D = 24, H = 7;
+  woodTex.repeat.set(W / 4, D / 4);
+  defModel("Floor", g => box(W, 0.5, D, P.woodA, 0, -0.5, 0, g, { material: new THREE.MeshLambertMaterial({ map: woodTex }), tex: "wood", tile: 4 }));
+  place("Floor", "Floor", 0, 0, 0, 0);
+
+  const brickWall = brickTex.clone(); brickWall.needsUpdate = true; brickWall.repeat.set(W / 2, H / 2);
+  defModel("Wall", g => {
+    box(W, H, 0.5, P.brickA, 0, 0, 0, g, { material: new THREE.MeshLambertMaterial({ map: brickWall }), tex: "brick", tile: 2 });
+    box(W, 0.35, 0.56, P.trim, 0, 0, 0, g);
+  });
+  const walls = [];
+  function wall(name, nx, nz, x, z, ry) { const g = place("Wall", name, x, 0, z, ry); g.userData.normal = new THREE.Vector3(nx, 0, nz); walls.push(g); return g; }
+  wall("Wall_North", 0, -1, 0, -D / 2 - 0.25, 0);
+  wall("Wall_West", -1, 0, -W / 2 - 0.25, 0, Math.PI / 2);
+  wall("Wall_South", 0, 1, 0, D / 2 + 0.25, 0);
+  wall("Wall_East", 1, 0, W / 2 + 0.25, 0, Math.PI / 2);
+
+  // wall decoration (north + west only; they are the ones usually in view)
+  const posterModel = (c1, c2) => g => {
+    box(1.6, 2.0, 0.08, c1, 0, -1.0, 0, g); box(1.1, 0.9, 0.1, c2, 0, -0.25, 0, g);
+    box(0.9, 0.18, 0.1, P.white, 0, -0.65, 0, g); box(0.6, 0.18, 0.1, P.white, 0, -0.9, 0, g);
+  };
+  defModel("Poster_Red", posterModel(P.red, P.black)); defModel("Poster_Blue", posterModel(P.blue, P.white)); defModel("Poster_Black", posterModel(P.black, P.yellow));
+  defModel("Clock", g => { box(1.1, 1.1, 0.08, P.white, 0, -0.55, 0, g); box(0.08, 0.4, 0.1, P.black, 0, 0, 0, g); box(0.3, 0.08, 0.1, P.black, 0.13, 0, 0, g); });
+  defModel("Window", g => { box(3.2, 2.2, 0.1, 0xbfe3f0, 0, 0, 0, g); box(3.4, 0.14, 0.14, P.white, 0, -0.07, 0, g); box(3.4, 0.14, 0.14, P.white, 0, 2.13, 0, g); box(0.14, 2.2, 0.14, P.white, -1.63, 0, 0, g); box(0.14, 2.2, 0.14, P.white, 1.63, 0, 0, g); box(0.1, 2.2, 0.12, P.white, 0, 0, 0, g); });
+  const deco = [
+    place("Poster_Red", "Poster_Red", -4, 4.2, -D / 2 + 0.05, 0),
+    place("Poster_Blue", "Poster_Blue", -1.6, 4.2, -D / 2 + 0.05, 0),
+    place("Poster_Black", "Poster_Black", -W / 2 + 0.05, 4.2, 6, Math.PI / 2),
+    place("Clock", "Clock", 2.5, 5.75, -D / 2 + 0.05, 0),
+    place("Window", "Window", -W / 2 + 0.05, 3.4, -3, Math.PI / 2),
+  ];
+  deco[0].userData.wall = walls[0]; deco[1].userData.wall = walls[0]; deco[3].userData.wall = walls[0]; deco[2].userData.wall = walls[1]; deco[4].userData.wall = walls[1];
+
+  // ---------- boxing ring ----------
+  defModel("BoxingRing", g => {
+    box(9, 0.75, 9, P.leather, 0, 0, 0, g);                 // apron
+    box(8.6, 0.12, 8.6, P.cream, 0, 0.75, 0, g);             // canvas
+    box(0.9, 0.9, 1.0, P.dark, 0, 0, 5.0, g); box(0.9, 0.45, 1.0, P.dark, 0, 0, 6.0, g);   // steps on +Z
+    const posts = [[-4, -4, P.red], [4, 4, P.red], [-4, 4, P.blue], [4, -4, P.blue]];
+    for (const [x, z, c] of posts) { box(0.3, 2.3, 0.3, P.steel, x, 0.75, z, g); box(0.5, 1.3, 0.5, c, x, 1.35, z, g); }
+    const ropeC = [P.red, P.white, P.blue];
+    [1.35, 1.85, 2.35].forEach((y, i) => {
+      box(8, 0.1, 0.1, ropeC[i], 0, y, -4, g); box(8, 0.1, 0.1, ropeC[i], 0, y, 4, g);
+      box(0.1, 0.1, 8, ropeC[i], -4, y, 0, g); box(0.1, 0.1, 8, ropeC[i], 4, y, 0, g);
+    });
+    for (const [x, z] of [[0, -4], [0, 4], [-4, 0], [4, 0]]) box(0.12, 1.25, 0.12, P.white, x, 1.3, z, g);
+  });
+  place("BoxingRing", "BoxingRing", 0, 0, 0, 0);
+
+  // ---------- heavy bag rack: frame + 3 bags, each bag is a part pivoting at its hook ----------
+  defModel("HeavyBagRack", g => {
+    box(0.3, 4.0, 0.3, P.steelDark, -3.5, 0, 0, g); box(0.3, 4.0, 0.3, P.steelDark, 3.5, 0, 0, g);
+    box(7.3, 0.3, 0.3, P.steelDark, 0, 4.0, 0, g);
+    box(0.3, 0.3, 1.6, P.steelDark, -3.5, 0, 0, g); box(0.3, 0.3, 1.6, P.steelDark, 3.5, 0, 0, g);
+    [[-2.3, P.red], [0, P.black], [2.3, P.red]].forEach(([x, c], i) => part(g, "HeavyBag_" + (i + 1), x, 4.0, 0, pivot => {
+      box(0.1, 0.7, 0.1, P.steel, 0, -0.7, 0, pivot);
+      box(1.0, 2.4, 1.0, c, 0, -3.1, 0, pivot);
+      box(1.04, 0.3, 1.04, P.dark, 0, -1.0, 0, pivot); box(1.04, 0.3, 1.04, P.dark, 0, -3.1, 0, pivot);
+      box(1.06, 0.12, 1.06, P.white, 0, -2.0, 0, pivot);
+    }));
+  });
+  const bagRack = place("HeavyBagRack", "HeavyBagRack", 6.5, 0, -8.5, 0), bagParts = parts(bagRack);
+  const bags = [bagParts.HeavyBag_1, bagParts.HeavyBag_2, bagParts.HeavyBag_3];
+
+  // ---------- speed bag: wall platform + swinging bag part ----------
+  defModel("SpeedBag", g => {
+    box(0.3, 0.3, 1.4, P.steelDark, 0, 3.6, 0.7, g); box(1.6, 0.14, 1.6, P.trim, 0, 3.35, 1.4, g);
+    part(g, "SpeedBag_Ball", 0, 3.35, 1.4, b => { box(0.08, 0.3, 0.08, P.steel, 0, -0.3, 0, b); box(0.45, 0.6, 0.45, P.red, 0, -0.9, 0, b); box(0.25, 0.2, 0.25, P.red, 0, -0.3, 0, b); });
+  });
+  const speedBag = parts(place("SpeedBag", "SpeedBag", -8.5, 0, -D / 2 + 0.3, 0)).SpeedBag_Ball;
+
+  // ---------- treadmill (used twice) ----------
+  defModel("Treadmill", g => {
+    box(1.1, 0.3, 2.6, P.dark, 0, 0, 0, g);
+    box(0.8, 0.06, 2.3, P.black, 0, 0.3, 0.1, g);
+    box(0.12, 1.4, 0.12, P.steel, -0.5, 0.3, -1.1, g); box(0.12, 1.4, 0.12, P.steel, 0.5, 0.3, -1.1, g);
+    box(1.1, 0.5, 0.25, P.dark, 0, 1.7, -1.1, g);
+    box(0.7, 0.3, 0.1, P.teal, 0, 1.8, -1.0, g);
+    box(0.1, 0.1, 1.0, P.steel, -0.6, 1.5, -0.6, g); box(0.1, 0.1, 1.0, P.steel, 0.6, 1.5, -0.6, g);
+  });
+  const treadmills = [place("Treadmill", "Treadmill_1", 9.5, 0, -1.2, Math.PI / 2), place("Treadmill", "Treadmill_2", 9.5, 0, 1.2, Math.PI / 2)];
+
+  defModel("ExerciseBike", g => {
+    box(0.2, 0.15, 1.4, P.dark, 0, 0, 0, g); box(1.0, 0.15, 0.2, P.dark, 0, 0, -0.55, g); box(1.0, 0.15, 0.2, P.dark, 0, 0, 0.55, g);
+    box(0.2, 1.0, 0.2, P.steel, 0, 0.15, 0.35, g); box(0.5, 0.15, 0.35, P.black, 0, 1.15, 0.35, g);
+    box(0.2, 1.3, 0.2, P.steel, 0, 0.15, -0.45, g); box(0.8, 0.12, 0.12, P.black, 0, 1.45, -0.45, g);
+    box(0.6, 0.7, 0.3, P.red, 0, 0.15, -0.05, g);
+  });
+  place("ExerciseBike", "ExerciseBike", 9.5, 0, 4.4, Math.PI / 2);
+
+  // ---------- free-weight area ----------
+  defModel("RubberMat", g => box(7, 0.06, 8, P.rubber, 0, 0, 0, g, { shadow: false }));
+  place("RubberMat", "RubberMat", -8.3, 0, 3, 0);
+  // bench + barbell part (pivot at the centre of the bar, resting in the rack)
+  defModel("BenchPress", g => {
+    box(0.5, 0.3, 0.2, P.steel, 0, 0, 0.75, g); box(0.5, 0.3, 0.2, P.steel, 0, 0, -0.6, g);
+    box(0.6, 0.2, 1.9, P.red, 0, 0.3, 0.05, g);
+    box(0.15, 1.3, 0.15, P.steelDark, -0.9, 0, -0.8, g); box(0.15, 1.3, 0.15, P.steelDark, 0.9, 0, -0.8, g);
+    box(0.15, 0.08, 0.3, P.steelDark, -0.9, 1.14, -0.68, g); box(0.15, 0.08, 0.3, P.steelDark, 0.9, 1.14, -0.68, g);
+    part(g, "Barbell", 0, 1.24, -0.72, b => {
+      box(2.4, 0.08, 0.08, P.steel, 0, -0.04, 0, b);
+      for (const s of [-1, 1]) { box(0.12, 0.6, 0.6, P.black, s * 1.0, -0.3, 0, b); box(0.1, 0.45, 0.45, P.dark, s * 1.13, -0.225, 0, b); }
+    });
+  });
+  const benchBar = parts(place("BenchPress", "BenchPress", -8.5, 0, 4.5, 0)).Barbell;
+  defModel("DumbbellRack", g => {
+    box(3.2, 0.5, 0.9, P.steelDark, 0, 0, 0, g); box(3.2, 0.15, 0.6, P.steelDark, 0, 0.9, -0.3, g);
+    box(0.15, 0.5, 0.6, P.steelDark, -1.5, 0.4, -0.3, g); box(0.15, 0.5, 0.6, P.steelDark, 1.5, 0.4, -0.3, g);
+    const colors = [P.yellow, P.green, P.blue, P.red, P.black];
+    for (let tier = 0; tier < 2; tier++) for (let i = 0; i < 5; i++) {
+      const x = -1.2 + i * 0.6, y = tier ? 1.05 : 0.5, z = tier ? -0.3 : 0.1, s = 0.16 + i * 0.03 + tier * 0.04;
+      const d = group(x, y, z, 0, g);
+      box(0.3, 0.07, 0.07, P.steel, 0, s / 2 - 0.035, 0, d);
+      box(s, s, s, colors[i], -0.2, 0, 0, d); box(s, s, s, colors[i], 0.2, 0, 0, d);
+    }
+  });
+  place("DumbbellRack", "DumbbellRack", -11.0, 0, 0.8, Math.PI / 2);
+  defModel("SquatRack", g => {
+    for (const [x, z] of [[-1, -0.6], [1, -0.6], [-1, 0.6], [1, 0.6]]) box(0.15, 2.6, 0.15, P.steelDark, x, 0, z, g);
+    box(2.15, 0.15, 0.15, P.steelDark, 0, 2.6, -0.6, g); box(2.15, 0.15, 0.15, P.steelDark, 0, 2.6, 0.6, g);
+    box(0.15, 0.15, 1.35, P.steelDark, -1, 2.6, 0, g); box(0.15, 0.15, 1.35, P.steelDark, 1, 2.6, 0, g);
+    box(0.15, 0.1, 0.3, P.steel, -1, 1.5, -0.4, g); box(0.15, 0.1, 0.3, P.steel, 1, 1.5, -0.4, g);
+    box(2.6, 0.08, 0.08, P.steel, 0, 1.6, -0.4, g);
+    for (const s of [-1, 1]) box(0.14, 0.7, 0.7, P.black, s * 1.1, 1.29, -0.4, g);
+  });
+  place("SquatRack", "SquatRack", -8.5, 0, 9.5, 0);
+  defModel("PlateTree", g => {
+    box(1.0, 0.12, 1.0, P.steelDark, 0, 0, 0, g); box(0.15, 1.6, 0.15, P.steelDark, 0, 0, 0, g);
+    [[0.45, P.black, 0.8], [0.36, P.dark, 0.45], [0.28, P.red, 0.6]].forEach(([r, c, y], a) => {
+      const px = [0.35, -0.35, 0][a], pz = [0, 0, 0.35][a];
+      box(0.4, 0.08, 0.08, P.steel, px, y + 0.2, pz, g);
+      for (let k = 0; k < 3; k++) { const m = box(0.1, r * 2, r * 2, c, px + (a === 2 ? 0 : (a ? -1 : 1) * (0.05 + k * 0.11)), y + 0.24 - r, pz + (a === 2 ? 0.05 + k * 0.11 : 0), g); if (a === 2) m.rotation.y = Math.PI / 2; }
+    });
+  });
+  place("PlateTree", "PlateTree", -5.0, 0, 9.0, 0);
+  defModel("Kettlebells", g => [[-0.5, P.black], [0, P.dark], [0.5, P.red]].forEach(([x, c], i) => {
+    const s = 0.34 + i * 0.03;
+    part(g, "Kettlebell_" + (i + 1), x, 0, 0, k => { box(s, s, s, c, 0, 0, 0, k); box(0.07, 0.25, 0.07, c, -0.12, s, 0, k); box(0.07, 0.25, 0.07, c, 0.12, s, 0, k); box(0.31, 0.07, 0.07, c, 0, s + 0.22, 0, k); });
+  }));
+  place("Kettlebells", "Kettlebells", -5.3, 0, 1.0, 0);
+  defModel("MedicineBalls", g => { box(0.5, 0.5, 0.5, P.blue, 0, 0, 0, g); box(0.42, 0.42, 0.42, P.yellow, 0, 0.5, 0, g); box(0.46, 0.46, 0.46, P.green, 0.6, 0, 0.3, g); });
+  place("MedicineBalls", "MedicineBalls", -4.2, 0, 1.0, 0);
+
+  defModel("Lockers", g => {
+    for (let i = 0; i < 4; i++) {
+      const x = -1.5 + i;
+      box(0.96, 2.2, 0.6, P.lockerBlue, x, 0, 0, g);
+      box(0.6, 0.05, 0.04, P.dark, x, 1.8, 0.31, g); box(0.6, 0.05, 0.04, P.dark, x, 1.65, 0.31, g); box(0.6, 0.05, 0.04, P.dark, x, 1.5, 0.31, g);
+      box(0.08, 0.3, 0.06, P.steel, x + 0.33, 1.0, 0.31, g);
+    }
+    box(4.2, 0.1, 0.7, P.dark, 0, 2.2, 0, g);
+  });
+  place("Lockers", "Lockers", -2.5, 0, -D / 2 + 0.6, 0);
+
+  defModel("WaterCooler", g => { box(0.6, 1.1, 0.6, P.white, 0, 0, 0, g); box(0.42, 0.65, 0.42, 0x9fd3ea, 0, 1.1, 0, g); box(0.2, 0.15, 0.1, P.blue, 0, 0.75, 0.32, g); });
+  place("WaterCooler", "WaterCooler", 10.5, 0, 9.5, 0);
+  defModel("Bench", b => {
+    box(0.15, 0.45, 0.4, P.dark, -0.8, 0, 0, b); box(0.15, 0.45, 0.4, P.dark, 0.8, 0, 0, b); box(2.0, 0.15, 0.5, P.woodC, 0, 0.45, 0, b);
+    box(0.4, 0.3, 0.25, P.red, -0.5, 0.6, 0, b); box(0.3, 0.4, 0.2, P.white, 0.4, 0.6, 0.02, b);
+  });
+  place("Bench", "Bench", 7.9, 0, 9.5, 0);
+  defModel("StretchMat", g => box(2.2, 0.06, 1.2, P.blue, 0, 0, 0, g));
+  place("StretchMat", "StretchMat_1", 4.5, 0, 9.5, 0); place("StretchMat", "StretchMat_2", 7.0, 0, 9.5, 0);
+  defModel("SparePlates", g => { box(0.35, 0.35, 0.35, P.black, 0, 0, 0, g); box(0.35, 0.35, 0.35, P.black, 0, 0.35, 0, g); });
+  place("SparePlates", "SparePlates", 5.5, 0.06, 7.8, 0);
+
+  // ---------- camera ----------
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, -60, 120);
+  const view = { yaw: Math.PI / 4, pitch: Math.atan(1 / Math.SQRT2), zoom: 15.5, target: new THREE.Vector3(0, 1.4, 0) };
+  const VIEWS = [Math.PI / 4, -Math.PI / 4, -3 * Math.PI / 4, 3 * Math.PI / 4];
+  let goalYaw = view.yaw;
+  function resize() {
+    const r = stage.getBoundingClientRect();
+    renderer.setSize(r.width, r.height, false);
+    const a = r.width / r.height, half = view.zoom;
+    cam.left = -half * a; cam.right = half * a; cam.top = half; cam.bottom = -half;
+    cam.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(stage);
+  const camDir = new THREE.Vector3();
+  function placeCamera() {
+    const cp = Math.cos(view.pitch);
+    cam.position.set(view.target.x + Math.sin(view.yaw) * cp * 40, view.target.y + Math.sin(view.pitch) * 40, view.target.z + Math.cos(view.yaw) * cp * 40);
+    cam.lookAt(view.target);
+    camDir.set(Math.sin(view.yaw), 0, Math.cos(view.yaw));
+    for (const w of walls) w.visible = w.userData.normal.dot(camDir) < -0.05;   // hide walls that face the camera
+    for (const d of deco) d.visible = d.userData.wall.visible;
+  }
+
+  // ---------- controls ----------
+  const buttons = [...document.querySelectorAll("[data-view]")];
+  const spinBtn = document.getElementById("spin");
+  let spinning = false, dragging = false, lastX = 0, lastY = 0;
+  function setView(i) { goalYaw = VIEWS[i]; while (goalYaw - view.yaw > Math.PI) goalYaw -= 2 * Math.PI; while (goalYaw - view.yaw < -Math.PI) goalYaw += 2 * Math.PI;
+    buttons.forEach((b, k) => b.setAttribute("aria-pressed", String(k === i))); }
+  buttons.forEach((b, i) => b.addEventListener("click", () => { spinning = false; spinBtn.setAttribute("aria-pressed", "false"); setView(i); }));
+  spinBtn.addEventListener("click", () => { spinning = !spinning; spinBtn.setAttribute("aria-pressed", String(spinning)); if (spinning) buttons.forEach(b => b.setAttribute("aria-pressed", "false")); });
+  const el = renderer.domElement;
+  el.addEventListener("pointerdown", e => { dragging = true; lastX = e.clientX; lastY = e.clientY; el.setPointerCapture(e.pointerId); });
+  el.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    view.yaw -= (e.clientX - lastX) * 0.006; goalYaw = view.yaw;
+    view.pitch = Math.max(0.3, Math.min(1.25, view.pitch + (e.clientY - lastY) * 0.004));
+    lastX = e.clientX; lastY = e.clientY;
+    buttons.forEach(b => b.setAttribute("aria-pressed", "false"));
+  });
+  const up = () => { dragging = false; };
+  el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up);
+  el.addEventListener("wheel", e => { e.preventDefault(); view.zoom = Math.max(6, Math.min(28, view.zoom * (1 + Math.sign(e.deltaY) * 0.08))); resize(); }, { passive: false });
+  window.addEventListener("keydown", e => { const n = parseInt(e.key, 10); if (n >= 1 && n <= 4) { spinning = false; spinBtn.setAttribute("aria-pressed", "false"); setView(n - 1); } });
+
+  // ---------- loop ----------
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let last = performance.now(), t = 0;
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt;
+    if (spinning) { view.yaw += dt * 0.25; goalYaw = view.yaw; }
+    else if (!dragging) view.yaw += (goalYaw - view.yaw) * Math.min(1, dt * 6);
+    if (!reduceMotion || t < 0.1) {
+      updateCharacters(dt, t);
+      speedBag.rotation.x = Math.sin(t * 9) * 0.25; speedBag.rotation.z = Math.cos(t * 9) * 0.12;
+    }
+    placeCamera();
+    renderer.render(scene, cam);
+    requestAnimationFrame(frame);
+  }
+  resize();
+  requestAnimationFrame(frame);
+})();
+</script>

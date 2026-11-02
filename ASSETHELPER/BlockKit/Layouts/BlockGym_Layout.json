@@ -1,0 +1,472 @@
+{
+  "note": "Positions in metres. 'unity' = ready to use in Unity (FBX import mirrors X). 'fbx' = raw coordinates of the FBX files (Y up, right handed). Rotation = yaw around Y in degrees.",
+  "root": "BlockGym",
+  "placements": [
+    {
+      "model": "Floor",
+      "name": "Floor",
+      "unity": {
+        "position": [0, 0, 0],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [0, 0, 0],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "Wall",
+      "name": "Wall_North",
+      "unity": {
+        "position": [0, 0, -12.25],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [0, 0, -12.25],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "Wall",
+      "name": "Wall_West",
+      "unity": {
+        "position": [12.25, 0, 0],
+        "rotationY": -90.0
+      },
+      "fbx": {
+        "position": [-12.25, 0, 0],
+        "rotationY": 90.0
+      }
+    },
+    {
+      "model": "Wall",
+      "name": "Wall_South",
+      "unity": {
+        "position": [0, 0, 12.25],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [0, 0, 12.25],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "Wall",
+      "name": "Wall_East",
+      "unity": {
+        "position": [-12.25, 0, 0],
+        "rotationY": -90.0
+      },
+      "fbx": {
+        "position": [12.25, 0, 0],
+        "rotationY": 90.0
+      }
+    },
+    {
+      "model": "Poster_Red",
+      "name": "Poster_Red",
+      "unity": {
+        "position": [4, 4.2, -11.95],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-4, 4.2, -11.95],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "Poster_Blue",
+      "name": "Poster_Blue",
+      "unity": {
+        "position": [1.6, 4.2, -11.95],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-1.6, 4.2, -11.95],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "Poster_Black",
+      "name": "Poster_Black",
+      "unity": {
+        "position": [11.95, 4.2, 6],
+        "rotationY": -90.0
+      },
+      "fbx": {
+        "position": [-11.95, 4.2, 6],
+        "rotationY": 90.0
+      }
+    },
+    {
+      "model": "Clock",
+      "name": "Clock",
+      "unity": {
+        "position": [-2.5, 5.75, -11.95],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [2.5, 5.75, -11.95],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "Window",
+      "name": "Window",
+      "unity": {
+        "position": [11.95, 3.4, -3],
+        "rotationY": -90.0
+      },
+      "fbx": {
+        "position": [-11.95, 3.4, -3],
+        "rotationY": 90.0
+      }
+    },
+    {
+      "model": "BoxingRing",
+      "name": "BoxingRing",
+      "unity": {
+        "position": [0, 0, 0],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [0, 0, 0],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "HeavyBagRack",
+      "name": "HeavyBagRack",
+      "unity": {
+        "position": [-6.5, 0, -8.5],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [6.5, 0, -8.5],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "SpeedBag",
+      "name": "SpeedBag",
+      "unity": {
+        "position": [8.5, 0, -11.7],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-8.5, 0, -11.7],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "Treadmill",
+      "name": "Treadmill_1",
+      "unity": {
+        "position": [-9.5, 0, -1.2],
+        "rotationY": -90.0
+      },
+      "fbx": {
+        "position": [9.5, 0, -1.2],
+        "rotationY": 90.0
+      }
+    },
+    {
+      "model": "Treadmill",
+      "name": "Treadmill_2",
+      "unity": {
+        "position": [-9.5, 0, 1.2],
+        "rotationY": -90.0
+      },
+      "fbx": {
+        "position": [9.5, 0, 1.2],
+        "rotationY": 90.0
+      }
+    },
+    {
+      "model": "ExerciseBike",
+      "name": "ExerciseBike",
+      "unity": {
+        "position": [-9.5, 0, 4.4],
+        "rotationY": -90.0
+      },
+      "fbx": {
+        "position": [9.5, 0, 4.4],
+        "rotationY": 90.0
+      }
+    },
+    {
+      "model": "RubberMat",
+      "name": "RubberMat",
+      "unity": {
+        "position": [8.3, 0, 3],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-8.3, 0, 3],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "BenchPress",
+      "name": "BenchPress",
+      "unity": {
+        "position": [8.5, 0, 4.5],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-8.5, 0, 4.5],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "DumbbellRack",
+      "name": "DumbbellRack",
+      "unity": {
+        "position": [11, 0, 0.8],
+        "rotationY": -90.0
+      },
+      "fbx": {
+        "position": [-11, 0, 0.8],
+        "rotationY": 90.0
+      }
+    },
+    {
+      "model": "SquatRack",
+      "name": "SquatRack",
+      "unity": {
+        "position": [8.5, 0, 9.5],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-8.5, 0, 9.5],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "PlateTree",
+      "name": "PlateTree",
+      "unity": {
+        "position": [5, 0, 9],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-5, 0, 9],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "Kettlebells",
+      "name": "Kettlebells",
+      "unity": {
+        "position": [5.3, 0, 1],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-5.3, 0, 1],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "MedicineBalls",
+      "name": "MedicineBalls",
+      "unity": {
+        "position": [4.2, 0, 1],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-4.2, 0, 1],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "Lockers",
+      "name": "Lockers",
+      "unity": {
+        "position": [2.5, 0, -11.4],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-2.5, 0, -11.4],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "WaterCooler",
+      "name": "WaterCooler",
+      "unity": {
+        "position": [-10.5, 0, 9.5],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [10.5, 0, 9.5],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "Bench",
+      "name": "Bench",
+      "unity": {
+        "position": [-7.9, 0, 9.5],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [7.9, 0, 9.5],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "StretchMat",
+      "name": "StretchMat_1",
+      "unity": {
+        "position": [-4.5, 0, 9.5],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [4.5, 0, 9.5],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "StretchMat",
+      "name": "StretchMat_2",
+      "unity": {
+        "position": [-7, 0, 9.5],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [7, 0, 9.5],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "SparePlates",
+      "name": "SparePlates",
+      "unity": {
+        "position": [-5.5, 0.06, 7.8],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [5.5, 0.06, 7.8],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "model": "Dumbbells",
+      "name": "Dumbbells",
+      "unity": {
+        "position": [9.6, 0, -0.6],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-9.6, 0, -0.6],
+        "rotationY": 0.0
+      }
+    }
+  ],
+  "spawns": [
+    {
+      "name": "Spawn_RingBoxer_1",
+      "role": "RingBoxer",
+      "target": "",
+      "unity": {
+        "position": [0, 0.87, 1.15],
+        "rotationY": -180.0
+      },
+      "fbx": {
+        "position": [0, 0.87, 1.15],
+        "rotationY": 180.0
+      }
+    },
+    {
+      "name": "Spawn_RingBoxer_2",
+      "role": "RingBoxer",
+      "target": "",
+      "unity": {
+        "position": [0, 0.87, -1.15],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [0, 0.87, -1.15],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "name": "Spawn_BagBoxer_1@HeavyBag_1",
+      "role": "BagBoxer",
+      "target": "HeavyBag_1",
+      "unity": {
+        "position": [-4.2, 0, -7.25],
+        "rotationY": -180.0
+      },
+      "fbx": {
+        "position": [4.2, 0, -7.25],
+        "rotationY": 180.0
+      }
+    },
+    {
+      "name": "Spawn_BagBoxer_2@HeavyBag_3",
+      "role": "BagBoxer",
+      "target": "HeavyBag_3",
+      "unity": {
+        "position": [-8.8, 0, -7.25],
+        "rotationY": -180.0
+      },
+      "fbx": {
+        "position": [8.8, 0, -7.25],
+        "rotationY": 180.0
+      }
+    },
+    {
+      "name": "Spawn_BenchPress",
+      "role": "BenchPress",
+      "target": "",
+      "unity": {
+        "position": [8.5, 0, 4.5],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-8.5, 0, 4.5],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "name": "Spawn_DumbbellCurl",
+      "role": "DumbbellCurl",
+      "target": "",
+      "unity": {
+        "position": [9.6, 0, -0.6],
+        "rotationY": -0.0
+      },
+      "fbx": {
+        "position": [-9.6, 0, -0.6],
+        "rotationY": 0.0
+      }
+    },
+    {
+      "name": "Spawn_Treadmill_1",
+      "role": "Treadmill",
+      "target": "",
+      "unity": {
+        "position": [-9.75, 0.36, -1.2],
+        "rotationY": 90.0
+      },
+      "fbx": {
+        "position": [9.75, 0.36, -1.2],
+        "rotationY": -90.0
+      }
+    },
+    {
+      "name": "Spawn_Treadmill_2",
+      "role": "Treadmill",
+      "target": "",
+      "unity": {
+        "position": [-9.75, 0.36, 1.2],
+        "rotationY": 90.0
+      },
+      "fbx": {
+        "position": [9.75, 0.36, 1.2],
+        "rotationY": -90.0
+      }
+    }
+  ]
+}
