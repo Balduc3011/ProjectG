@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4313dc20e07f9f448ab43125d55ab287, type: 3}
+  m_Name: WeaponData_Spear
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  type: 2
+  hand: 0
+  modelRight: {fileID: 919132149155446097, guid: 74f8b396e05d34c4191252ecd581754d, type: 3}
+  modelLeft: {fileID: 0}
+  idle:
+    clip: {fileID: -5255951476674721889, guid: fcd9e75456b36d741ab4b9be1024ab61, type: 3}
+    hits: []
+    hitHands: 
+    arrows: []
+  run:
+    clip: {fileID: 130988572402349275, guid: 895848056407a7348bc007e95b3b9b4d, type: 3}
+    hits: []
+    hitHands: 
+    arrows: []
+  attacks:
+  - clip: {fileID: 9115381529576751940, guid: 2c34bb16159330b4ebb82de44c5de30d, type: 3}
+    hits:
+    - 0.5
+    hitHands: 00000000
+    arrows: []
+  - clip: {fileID: -687567281095257810, guid: 9a18b33d208a43e4490737b82b37a8e0, type: 3}
+    hits:
+    - 0.53
+    hitHands: 00000000
+    arrows: []
+  skill:
+    clip: {fileID: 6814879713071178555, guid: 53e2c051ec331af4f986a9b57b5d77d9, type: 3}
+    hits:
+    - 0.33
+    - 0.58
+    - 0.85
+    hitHands: 000000000000000000000000
+    arrows: []

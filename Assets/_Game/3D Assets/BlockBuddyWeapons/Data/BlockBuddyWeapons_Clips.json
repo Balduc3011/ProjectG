@@ -1,0 +1,326 @@
+{
+  "note": "Times in seconds from the clip start. hits = moment the blow lands. arrows = arrow shown between the hands from nock to release; at release spawn a flying arrow. All one-shot clips start and end in the weapon's Idle pose. hitHands = which fist / hand lands each hit (R = Socket_R, L = Socket_L).",
+  "sockets": {
+    "grip_offset_from_hand_bone_m": [
+      0,
+      0.0625,
+      0
+    ],
+    "note": "At bind pose: socket.position = Hand.X.position + character.up * 0.0625, socket.rotation = character.rotation. Weapon models are authored in that socket space (pivot = grip, +Z = tip / upper bow limb)."
+  },
+  "arrow": {
+    "lift_m": 0.12,
+    "speed_mps": 18,
+    "note": "nock = Socket_R + up*0.12, aim at Socket_L + up*0.12; Weapon_Arrow pivot = nock, +Z = tip"
+  },
+  "weapons": {
+    "Sword": {
+      "hand": "Right",
+      "idle": "Sword_Idle",
+      "run": "Sword_Run",
+      "attacks": [
+        "Sword_Attack1",
+        "Sword_Attack2"
+      ],
+      "skill": "Sword_Skill",
+      "models": {
+        "right": "Models/Weapon_Sword.fbx"
+      }
+    },
+    "Bow": {
+      "hand": "Left",
+      "idle": "Bow_Idle",
+      "run": "Bow_Run",
+      "attacks": [
+        "Bow_Shoot"
+      ],
+      "skill": "Bow_Skill",
+      "models": {
+        "left": "Models/Weapon_Bow.fbx"
+      }
+    },
+    "Spear": {
+      "hand": "Right",
+      "idle": "Spear_Idle",
+      "run": "Spear_Run",
+      "attacks": [
+        "Spear_Attack1",
+        "Spear_Attack2"
+      ],
+      "skill": "Spear_Skill",
+      "models": {
+        "right": "Models/Weapon_Spear.fbx"
+      }
+    },
+    "Fist": {
+      "hand": "Both",
+      "idle": "Fist_Idle",
+      "run": "Fist_Run",
+      "attacks": [
+        "Fist_Jab",
+        "Fist_Cross"
+      ],
+      "skill": "Fist_Skill",
+      "models": {
+        "right": "Models/Weapon_Gauntlet_R.fbx",
+        "left": "Models/Weapon_Gauntlet_L.fbx"
+      }
+    }
+  },
+  "clips": [
+    {
+      "name": "Sword_Idle",
+      "weapon": "Sword",
+      "file": "Animations/Sword/BlockBuddy@Sword_Idle.fbx",
+      "length": 3.0,
+      "loop": true,
+      "hits": [],
+      "arrows": [],
+      "hitHands": []
+    },
+    {
+      "name": "Sword_Run",
+      "weapon": "Sword",
+      "file": "Animations/Sword/BlockBuddy@Sword_Run.fbx",
+      "length": 0.7,
+      "loop": true,
+      "hits": [],
+      "arrows": [],
+      "hitHands": []
+    },
+    {
+      "name": "Sword_Attack1",
+      "weapon": "Sword",
+      "file": "Animations/Sword/BlockBuddy@Sword_Attack1.fbx",
+      "length": 0.9,
+      "loop": false,
+      "hits": [
+        0.4
+      ],
+      "arrows": [],
+      "hitHands": [
+        "R"
+      ]
+    },
+    {
+      "name": "Sword_Attack2",
+      "weapon": "Sword",
+      "file": "Animations/Sword/BlockBuddy@Sword_Attack2.fbx",
+      "length": 0.933,
+      "loop": false,
+      "hits": [
+        0.41
+      ],
+      "arrows": [],
+      "hitHands": [
+        "R"
+      ]
+    },
+    {
+      "name": "Sword_Skill",
+      "weapon": "Sword",
+      "file": "Animations/Sword/BlockBuddy@Sword_Skill.fbx",
+      "length": 1.3,
+      "loop": false,
+      "hits": [
+        0.36,
+        0.76
+      ],
+      "arrows": [],
+      "hitHands": [
+        "R",
+        "R"
+      ]
+    },
+    {
+      "name": "Bow_Idle",
+      "weapon": "Bow",
+      "file": "Animations/Bow/BlockBuddy@Bow_Idle.fbx",
+      "length": 3.0,
+      "loop": true,
+      "hits": [],
+      "arrows": [],
+      "hitHands": []
+    },
+    {
+      "name": "Bow_Run",
+      "weapon": "Bow",
+      "file": "Animations/Bow/BlockBuddy@Bow_Run.fbx",
+      "length": 0.7,
+      "loop": true,
+      "hits": [],
+      "arrows": [],
+      "hitHands": []
+    },
+    {
+      "name": "Bow_Shoot",
+      "weapon": "Bow",
+      "file": "Animations/Bow/BlockBuddy@Bow_Shoot.fbx",
+      "length": 1.8,
+      "loop": false,
+      "hits": [],
+      "arrows": [
+        {
+          "nock": 0.32,
+          "release": 1.06
+        }
+      ],
+      "hitHands": []
+    },
+    {
+      "name": "Bow_Skill",
+      "weapon": "Bow",
+      "file": "Animations/Bow/BlockBuddy@Bow_Skill.fbx",
+      "length": 2.033,
+      "loop": false,
+      "hits": [],
+      "arrows": [
+        {
+          "nock": 0.28,
+          "release": 0.59
+        },
+        {
+          "nock": 0.72,
+          "release": 1.03
+        },
+        {
+          "nock": 1.17,
+          "release": 1.48
+        }
+      ],
+      "hitHands": []
+    },
+    {
+      "name": "Spear_Idle",
+      "weapon": "Spear",
+      "file": "Animations/Spear/BlockBuddy@Spear_Idle.fbx",
+      "length": 3.0,
+      "loop": true,
+      "hits": [],
+      "arrows": [],
+      "hitHands": []
+    },
+    {
+      "name": "Spear_Run",
+      "weapon": "Spear",
+      "file": "Animations/Spear/BlockBuddy@Spear_Run.fbx",
+      "length": 0.7,
+      "loop": true,
+      "hits": [],
+      "arrows": [],
+      "hitHands": []
+    },
+    {
+      "name": "Spear_Attack1",
+      "weapon": "Spear",
+      "file": "Animations/Spear/BlockBuddy@Spear_Attack1.fbx",
+      "length": 1.0,
+      "loop": false,
+      "hits": [
+        0.5
+      ],
+      "arrows": [],
+      "hitHands": [
+        "R"
+      ]
+    },
+    {
+      "name": "Spear_Attack2",
+      "weapon": "Spear",
+      "file": "Animations/Spear/BlockBuddy@Spear_Attack2.fbx",
+      "length": 1.067,
+      "loop": false,
+      "hits": [
+        0.53
+      ],
+      "arrows": [],
+      "hitHands": [
+        "R"
+      ]
+    },
+    {
+      "name": "Spear_Skill",
+      "weapon": "Spear",
+      "file": "Animations/Spear/BlockBuddy@Spear_Skill.fbx",
+      "length": 1.333,
+      "loop": false,
+      "hits": [
+        0.33,
+        0.58,
+        0.85
+      ],
+      "arrows": [],
+      "hitHands": [
+        "R",
+        "R",
+        "R"
+      ]
+    },
+    {
+      "name": "Fist_Idle",
+      "weapon": "Fist",
+      "file": "Animations/Fist/BlockBuddy@Fist_Idle.fbx",
+      "length": 3.0,
+      "loop": true,
+      "hits": [],
+      "hitHands": [],
+      "arrows": []
+    },
+    {
+      "name": "Fist_Run",
+      "weapon": "Fist",
+      "file": "Animations/Fist/BlockBuddy@Fist_Run.fbx",
+      "length": 0.7,
+      "loop": true,
+      "hits": [],
+      "hitHands": [],
+      "arrows": []
+    },
+    {
+      "name": "Fist_Jab",
+      "weapon": "Fist",
+      "file": "Animations/Fist/BlockBuddy@Fist_Jab.fbx",
+      "length": 0.7,
+      "loop": false,
+      "hits": [
+        0.21
+      ],
+      "hitHands": [
+        "L"
+      ],
+      "arrows": []
+    },
+    {
+      "name": "Fist_Cross",
+      "weapon": "Fist",
+      "file": "Animations/Fist/BlockBuddy@Fist_Cross.fbx",
+      "length": 0.8,
+      "loop": false,
+      "hits": [
+        0.24
+      ],
+      "hitHands": [
+        "R"
+      ],
+      "arrows": []
+    },
+    {
+      "name": "Fist_Skill",
+      "weapon": "Fist",
+      "file": "Animations/Fist/BlockBuddy@Fist_Skill.fbx",
+      "length": 1.8,
+      "loop": false,
+      "hits": [
+        0.22,
+        0.58,
+        1.15
+      ],
+      "hitHands": [
+        "L",
+        "R",
+        "L"
+      ],
+      "arrows": []
+    }
+  ]
+}
